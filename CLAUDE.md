@@ -53,3 +53,19 @@ Dashboard rules (`src/lib/dashboard.ts`), all derived on read:
 - Productivity score: 40% focus goal, 35% tasks due today or overdue, 25% habits due; a part with nothing due hands its weight to the others.
 
 Streak rules (`src/lib/habits.ts`): exact-day habits count scheduled days in a row; weekly-count habits count weeks reaching the number; a day or week still in progress can extend a streak but never breaks it.
+
+## Roadmap
+
+Later phases from the product blueprint, each to be planned and approved before building, one reviewed step at a time:
+
+- **P1 Gamification:** badges and daily missions as checks on the data (never stored), weekly challenges, personal bests.
+- **P1 Analytics:** daily, weekly and monthly reports, focus trends, best time of day, time by category.
+- **P1 Social:**
+  - public profiles with unique usernames, friends, private groups, weekly leaderboards built from self-reported totals
+  - focus rooms using Firestore for the room and Realtime Database presence with `onDisconnect`
+  - rooms show who is focusing without task details
+- **P1 Tasks extras:** Kanban with drag and drop, templates, manual ordering via `order`.
+- **P2 AI coach:** Firebase AI Logic on the Gemini free tier with App Check. It only suggests, and the user approves each change. Check Spark support first.
+- **P2 Distraction blocker:** a Chrome/Edge extension in `extension/`, signalled by the app during a session.
+
+Free-plan limits that shape these: no push reminders while the app is closed (they need Cloud Functions), a web app can't block other apps or sites, and leaderboards can't be server-verified.
