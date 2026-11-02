@@ -24,7 +24,7 @@ firebase use your-project-id
 firebase deploy
 ```
 
-The app is then live at `https://your-project-id.web.app`.
+The app is then live at `https://your-project-id.firebaseapp.com`. Use that address, not `.web.app`: it matches the sign-in domain, which keeps Google sign-in working in the iPhone home-screen app. The current live app is at https://lockin-habits-aerosalu.firebaseapp.com.
 
 ## Install on your phone
 

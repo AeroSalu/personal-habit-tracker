@@ -19,7 +19,7 @@ Habit tracker PWA. Vanilla HTML, CSS and JS with no build step, on Firebase Auth
 - Run locally: `firebase emulators:start --project demo-lockin`, then open http://127.0.0.1:5000
 - Test: `node tests/logic.test.js`. Tests are entries in one `tests` object, with no runner or filter, so to run a single test, temporarily remove the others.
 - Icons: `node tools/make-icons.js` (writes the PNGs in `public/icons/`)
-- Deploy: `firebase deploy`. `.firebaserc` defaults to the `demo-lockin` emulator project, so run `firebase use <project-id>` against the real project first.
+- Deploy: `firebase deploy` (the `.firebaserc` default is the live project, `lockin-habits-aerosalu`)
 
 ## Architecture
 
