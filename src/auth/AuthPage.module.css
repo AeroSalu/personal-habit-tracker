@@ -1,0 +1,128 @@
+/* Phone: brand above the form. Desktop: brand and form side by side. */
+.page {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-6);
+  width: min(960px, 100%);
+  min-height: 100dvh;
+  margin: 0 auto;
+  padding-block: max(var(--space-6), env(safe-area-inset-top)) var(--space-6);
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+@media (min-width: 860px) {
+  .page {
+    flex-direction: row;
+    align-items: center;
+    gap: 64px;
+  }
+
+  .intro {
+    flex: 1;
+  }
+
+  .panel {
+    flex: 0 0 400px;
+  }
+}
+
+.intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.tagline {
+  font-size: clamp(34px, 7vw, 54px);
+  font-weight: 750;
+  line-height: 1.05;
+  letter-spacing: -0.035em;
+}
+
+.tagline span {
+  color: var(--accent);
+}
+
+.loop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: step;
+}
+
+.loop li {
+  counter-increment: step;
+  padding: 4px 10px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.loop li::before {
+  content: counter(step) ' ';
+  color: var(--accent);
+  font-variant-numeric: tabular-nums;
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+}
+
+.panel h2 {
+  font-size: 20px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.or {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.or::before,
+.or::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.notice {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 14px;
+}
+
+.links {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}

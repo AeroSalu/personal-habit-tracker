@@ -1,0 +1,38 @@
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100dvh;
+  padding-block: max(var(--space-6), env(safe-area-inset-top)) var(--space-6);
+  padding-left: max(var(--space-4), env(safe-area-inset-left));
+  padding-right: max(var(--space-4), env(safe-area-inset-right));
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  width: min(460px, 100%);
+  padding: var(--space-5);
+}
+
+.panel > form {
+  align-self: stretch;
+}
+
+.panel h1 {
+  font-size: 26px;
+}
+
+.step {
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.lead {
+  color: var(--muted);
+}

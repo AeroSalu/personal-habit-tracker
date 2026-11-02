@@ -40,7 +40,8 @@ export default defineConfig({
       },
     },
   },
-  server: { port: 5173, strictPort: true },
+  // Same host as the emulators, so Google sign-in by redirect isn't blocked as cross-site.
+  server: { host: '127.0.0.1', port: 5173, strictPort: true },
   test: {
     include: ['src/**/*.test.ts'],
   },

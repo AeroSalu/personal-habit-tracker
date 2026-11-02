@@ -1,5 +1,6 @@
 import { NavLink, Outlet } from 'react-router-dom'
 import { Ellipsis, Lock } from 'lucide-react'
+import { useSignedIn } from '../auth/authContext'
 import { BOTTOM_BAR, NAV_GROUPS, type NavItem } from './nav'
 import styles from './AppLayout.module.css'
 
@@ -31,6 +32,8 @@ function SidebarItem({ item }: { item: NavItem }) {
 }
 
 export function AppLayout() {
+  const { profile } = useSignedIn()
+
   return (
     <div className={styles.frame}>
       <aside className={styles.sidebar}>
@@ -50,6 +53,12 @@ export function AppLayout() {
             </div>
           ))}
         </nav>
+        <NavLink to="/profile" className={styles.me}>
+          <span className={styles.avatar} aria-hidden="true">
+            {profile.displayName.trim().charAt(0).toUpperCase()}
+          </span>
+          <span className={styles.label}>{profile.displayName}</span>
+        </NavLink>
       </aside>
 
       <main className={styles.main}>

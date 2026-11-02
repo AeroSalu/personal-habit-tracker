@@ -1,0 +1,13 @@
+.splash {
+  display: grid;
+  place-items: center;
+  min-height: 100dvh;
+  color: var(--accent);
+  animation: breathe 1.4s ease-in-out infinite;
+}
+
+@keyframes breathe {
+  50% {
+    opacity: 0.35;
+  }
+}

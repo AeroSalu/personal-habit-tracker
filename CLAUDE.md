@@ -16,7 +16,7 @@ Productivity app: tasks, habits, focus sessions and (later) gamification, social
 
 ## Commands
 
-- Dev: `npm run emulators` in one terminal, `npm run dev` in another, then open http://localhost:5173. `.env.development` points dev at the `demo-lockin` emulators, never the live project.
+- Dev: `npm run emulators` in one terminal, `npm run dev` in another, then open http://127.0.0.1:5173 (not `localhost`: Google sign-in by redirect fails across the two hostnames). `.env.development` points dev at the `demo-lockin` emulators, never the live project.
 - Test: `npm test` (Vitest, `src/**/*.test.ts`); one file with `npx vitest run src/lib/streak.test.ts`, one test with `-t "name"`
 - Lint and type-check: `npm run lint`, `npm run build`
 - Legacy tests (until the port in step 3): `node tests/legacy-logic.test.js`
@@ -27,7 +27,11 @@ Productivity app: tasks, habits, focus sessions and (later) gamification, social
 
 - `src/firebase.ts` creates the app, auth and Firestore (persistent multi-tab cache) from `VITE_FIREBASE_*` env values, and connects to the emulators when `VITE_USE_EMULATORS=true`. `.env` holds the live web config, which is public by design.
 - `src/app/nav.ts` is the single navigation list. The desktop sidebar (1024px and up), phone bottom bar and phone More page are all built from it; entries without a `path` are later-phase modules shown as "Soon".
+- `src/auth/AuthProvider.tsx` combines the Firebase user and the `users/{uid}` profile document into one `AuthState`: `loading`, `signedOut`, `needsProfile` or `ready`. `App.tsx` gates on it (sign-in page, then first-time setup, then the app), so every screen inside the app can call `useSignedIn()` and rely on a profile existing.
+- A missing profile is only believed once the server confirms it, not from an empty local cache, or a returning user on a new device would be sent to setup.
+- Google sign-in uses a redirect on phones and in the installed app, and a popup on desktop (`src/auth/authActions.ts`). `redirectError` is read once at startup.
 - Routes live in `src/app/App.tsx`, all inside `AppLayout`.
+- Shared buttons, inputs and chips are classes in `src/components/ui.module.css`; screens compose them rather than restyling controls.
 
 ## Data
 

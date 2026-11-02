@@ -125,6 +125,34 @@ a.item:hover {
   min-width: 0;
 }
 
+.me {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.me:hover {
+  background: var(--card-raised);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 700;
+}
+
 .soon {
   padding: 1px 6px;
   border: 1px solid var(--border);
