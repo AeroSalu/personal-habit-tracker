@@ -1,0 +1,298 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 980px;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.head h1 {
+  font-size: 28px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.footnote {
+  color: var(--faint);
+  font-size: 12.5px;
+}
+
+.level {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--accent);
+}
+
+.level div {
+  display: flex;
+  flex-direction: column;
+}
+
+.level strong {
+  color: var(--text);
+  font-size: 17px;
+}
+
+.level span {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.columns {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 860px) {
+  .columns {
+    grid-template-columns: 3fr 2fr;
+  }
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--space-4);
+  }
+}
+
+.card h2,
+.badges h2 {
+  font-size: 16px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+/* Missions and challenges */
+.goals {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.goal {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.goalCheck {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  margin-top: 1px;
+  border: 2px solid var(--faint);
+  border-radius: 50%;
+}
+
+.goalDone .goalCheck {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.goalBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+
+.goalHead {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.goalTitle {
+  font-weight: 550;
+  overflow-wrap: anywhere;
+}
+
+.goalDone .goalTitle {
+  color: var(--muted);
+}
+
+.goalXp {
+  flex: none;
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.goalBar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--card-raised);
+}
+
+.goalBar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+.goalCount {
+  color: var(--faint);
+  font-size: 12.5px;
+}
+
+/* Personal bests */
+.bests {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+@media (max-width: 640px) {
+  .bests {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.bests div {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.bests dt {
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.bests dd {
+  margin: 2px 0 0;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.bests span {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+/* Badges */
+.badges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.badgeGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.groupTitle {
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.badgeGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--space-2);
+}
+
+.badge {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-areas:
+    'icon name'
+    'icon text'
+    'icon status';
+  column-gap: var(--space-3);
+  row-gap: 2px;
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.badgeIcon {
+  display: grid;
+  grid-area: icon;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--card-raised);
+  color: var(--faint);
+}
+
+.earned {
+  border-color: rgb(163 230 53 / 0.3);
+}
+
+.earned .badgeIcon {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.badgeName {
+  grid-area: name;
+  font-weight: 650;
+}
+
+.badge:not(.earned) .badgeName {
+  color: var(--muted);
+}
+
+.badgeText {
+  grid-area: text;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.badgeStatus {
+  grid-area: status;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.earned .badgeStatus {
+  color: var(--accent);
+}

@@ -1,4 +1,4 @@
-﻿// Draws the app icon to PNGs with no dependencies: node tools/make-icons.cjs
+// Draws the app icon to PNGs with no dependencies: node tools/make-icons.cjs
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');

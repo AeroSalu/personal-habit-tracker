@@ -1,4 +1,4 @@
-﻿import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch, type DocumentData } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch, type DocumentData } from 'firebase/firestore'
 import { db } from '../firebase'
 import { dayKey } from '../lib/dates'
 import { CATEGORIES, type Category } from '../lib/habits'

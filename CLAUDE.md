@@ -50,6 +50,7 @@ Repeating tasks keep one live instance. Completing one creates the next in the s
 Dashboard rules (`src/lib/dashboard.ts`), all derived on read:
 - Lock-in day: any completed focus session, habit tick or completed task. The streak counts consecutive days; today extends it but can't break it.
 - XP: 10 per completed task (once per task, lost if reopened), 10 per habit tick, 20 per completed session (capped at 8 a day; stopped sessions earn nothing), 50 per day where everything due was done on time (tasks finished late never earn their day the bonus). Level n needs 100·n more XP than level n−1.
+- Gamification (`src/lib/game.ts`, `achievements.ts`, `missions.ts`): `indexGame` sorts and indexes the records once; badges are checks that return progress and the day earned; daily missions (3) and the weekly challenge are picked by a seed of uid and date, from candidates decided by records made before that day so picks never change mid-day; their XP (15 each, +30 for all three, 100 per challenge) is recomputed over every active day and passed into `xpBreakdown`. `src/game/useGame.ts` does all of this once per data change; `BadgeWatcher` announces new badges, storing only already-announced IDs per device.
 - Productivity score: 40% focus goal, 35% tasks due today or overdue, 25% habits due; a part with nothing due hands its weight to the others.
 
 Streak rules (`src/lib/habits.ts`): exact-day habits count scheduled days in a row; weekly-count habits count weeks reaching the number; a day or week still in progress can extend a streak but never breaks it.

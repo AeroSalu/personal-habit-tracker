@@ -47,7 +47,7 @@ export const XP = {
 } as const
 
 /** Exact-day habits scheduled on a day; weekly-count habits have no fixed day, so they're left out. */
-function habitsScheduledOn(habits: Habit[], key: string): Habit[] {
+export function habitsScheduledOn(habits: Habit[], key: string): Habit[] {
   return habits.filter(
     (h) =>
       !h.archived &&
@@ -78,14 +78,24 @@ export function allDoneDays(tasks: Task[], habits: Habit[], logs: HabitLog[], to
     .sort()
 }
 
-export type XpBreakdown = { tasks: number; habits: number; sessions: number; allDone: number; total: number }
+export type XpBreakdown = {
+  tasks: number
+  habits: number
+  sessions: number
+  allDone: number
+  missions: number
+  challenges: number
+  total: number
+}
 
+/** `earned` is XP from daily missions and weekly challenges, worked out in `missions.ts`. */
 export function xpBreakdown(
   tasks: Task[],
   habits: Habit[],
   logs: HabitLog[],
   sessions: Session[],
   today: string,
+  earned: { missions: number; challenges: number } = { missions: 0, challenges: 0 },
 ): XpBreakdown {
   const doneTasks = tasks.filter((t) => t.status === 'done').length * XP.task
   const habitTicks = logs.length * XP.habit
@@ -101,7 +111,9 @@ export function xpBreakdown(
     habits: habitTicks,
     sessions: sessionXp,
     allDone: bonus,
-    total: doneTasks + habitTicks + sessionXp + bonus,
+    missions: earned.missions,
+    challenges: earned.challenges,
+    total: doneTasks + habitTicks + sessionXp + bonus + earned.missions + earned.challenges,
   }
 }
 

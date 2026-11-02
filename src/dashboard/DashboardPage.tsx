@@ -6,7 +6,6 @@ import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
 import {
-  levelFor,
   lineFor,
   lockInDays,
   lockInStreak,
@@ -14,8 +13,10 @@ import {
   productivityScore,
   todaysTasks,
   upcomingDeadlines,
-  xpBreakdown,
 } from '../lib/dashboard'
+import { MISSION_XP } from '../lib/missions'
+import { GoalRow } from '../game/GoalRow'
+import { useGame } from '../game/useGame'
 import { dayKey } from '../lib/dates'
 import { completedOn, minutesOn } from '../lib/focus'
 import { byUsualTime, isDue, keysFor, type Habit } from '../lib/habits'
@@ -83,8 +84,7 @@ export function DashboardPage() {
     habitsTotal: dueHabits.length,
   })
   const streak = lockInStreak(lockInDays(sessions.data, logs.data, tasks.data), today)
-  const xp = xpBreakdown(tasks.data, habits.data, logs.data, sessions.data, today)
-  const level = levelFor(xp.total)
+  const { xp, level, missions } = useGame()
   const deadlines = upcomingDeadlines(tasks.data, today).slice(0, 6)
 
   const prefs = loadPrefs()
@@ -253,7 +253,22 @@ export function DashboardPage() {
           <p className={`${styles.footnote} num`}>
             {level.needed - level.into} XP to level {level.level + 1} · tasks {xp.tasks} · habits {xp.habits} · focus {xp.sessions}
             {xp.allDone ? ` · all-done days ${xp.allDone}` : ''}
+            {xp.missions + xp.challenges ? ` · missions ${xp.missions + xp.challenges}` : ''}
           </p>
+        </article>
+
+        <article className={`${ui.card} ${styles.missions}`}>
+          <div className={styles.cardHead}>
+            <h2>Today’s missions</h2>
+            <Link to="/challenges" className={styles.more}>
+              Challenges <ChevronRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+          <ul className={styles.missionList}>
+            {missions.map((m) => (
+              <GoalRow key={m.id} goal={m} xp={MISSION_XP} />
+            ))}
+          </ul>
         </article>
 
         <article className={`${ui.card} ${styles.deadlines}`}>

@@ -1,4 +1,4 @@
-﻿import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthPage } from '../auth/AuthPage'
 import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
@@ -8,6 +8,8 @@ import { CalendarPage } from '../calendar/CalendarPage'
 import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
 import { FocusProvider } from '../focus/FocusProvider'
+import { BadgeWatcher } from '../game/BadgeWatcher'
+import { ChallengesPage } from '../game/ChallengesPage'
 import { HabitsPage } from '../habits/HabitsPage'
 import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
@@ -18,6 +20,7 @@ import { Splash } from './Splash'
 function SignedInRoutes() {
   return (
     <FocusProvider>
+      <BadgeWatcher />
       <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
@@ -25,6 +28,7 @@ function SignedInRoutes() {
         <Route path="focus" element={<FocusPage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="habits" element={<HabitsPage />} />
+        <Route path="challenges" element={<ChallengesPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
