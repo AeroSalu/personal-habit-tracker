@@ -41,6 +41,9 @@ All user data sits under `users/{uid}/…`, and `firestore.rules` allows only th
 - `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`)
 - `habits/{id}`: `name`, `category`, `schedule` (`{type:'days', days}` with `Date.getDay` numbers, or `{type:'count', perWeek}`), `usualTime`, `targetNote`, `archived`, `createdAt`
 - `habitLogs/{habitId_dayKey}`: `habitId`, `dayKey`, `completedAt`, `note`. The ID allows one per habit per day and makes undo a delete.
-- Planned: `tasks`, `sessions`
+- `tasks/{id}`: `title`, `description`, `category`, `priority` (urgent, high, medium, low), `status` (todo, in_progress, done), `dueDate` (day key or ''), `dueTime` ("HH:MM" or ''), `subtasks` (array of `{id, title, done}`), `recurrence` (`{type:'none'|'daily'|'weekly'}` or `{type:'custom', days}`), `estimateMinutes`, `order`, `createdAt`, `completedAt`, `nextTaskId`
+- Planned: `sessions`
+
+Repeating tasks keep one live instance. Completing one creates the next in the same batch (`completeTask` in `src/data/tasks.ts`) and records its ID in `nextTaskId`; reopening deletes that next instance unless it has been worked on. Any status change into or out of done must go through those two functions, not a plain update.
 
 Streak rules (`src/lib/habits.ts`): exact-day habits count scheduled days in a row; weekly-count habits count weeks reaching the number; a day or week still in progress can extend a streak but never breaks it.

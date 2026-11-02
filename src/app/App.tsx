@@ -4,7 +4,9 @@ import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
 import { useAuth } from '../auth/authContext'
 import { ToastProvider } from '../components/ToastProvider'
+import { CalendarPage } from '../calendar/CalendarPage'
 import { HabitsPage } from '../habits/HabitsPage'
+import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
 import { Placeholder } from './Placeholder'
@@ -16,9 +18,9 @@ function SignedInRoutes() {
     <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<Placeholder title="Dashboard" step="step 6" />} />
-        <Route path="tasks" element={<Placeholder title="Tasks" step="step 4" />} />
+        <Route path="tasks" element={<TasksPage />} />
         <Route path="focus" element={<Placeholder title="Focus Mode" step="step 5" />} />
-        <Route path="calendar" element={<Placeholder title="Calendar" step="step 4" />} />
+        <Route path="calendar" element={<CalendarPage />} />
         <Route path="habits" element={<HabitsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
