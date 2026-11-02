@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Plus, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
+import { minutesByTask } from '../lib/focus'
 import { dayKey } from '../lib/dates'
 import { CATEGORIES } from '../lib/habits'
 import {
@@ -28,6 +30,7 @@ const DONE_SHOWN = 30
 export function TasksPage() {
   const { user } = useSignedIn()
   const tasks = useTasks(user.uid)
+  const focused = minutesByTask(useSessions(user.uid).data)
   const actions = useTaskActions(user.uid, tasks.data)
   const navigate = useNavigate()
   const now = useNow()
@@ -144,6 +147,7 @@ export function TasksPage() {
                   task={t}
                   now={now}
                   today={today}
+                  focusMinutes={focused.get(t.id)}
                   onToggle={() => actions.toggle(t)}
                   onOpen={() => setEditing(t)}
                 />

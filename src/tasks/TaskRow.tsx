@@ -12,9 +12,11 @@ type Props = {
   onOpen: () => void
   /** Hide the date where the surrounding list already shows it, as on the calendar. */
   hideDate?: boolean
+  /** Minutes of focus sessions spent on this task. */
+  focusMinutes?: number
 }
 
-export function TaskRow({ task, now, today, onToggle, onOpen, hideDate }: Props) {
+export function TaskRow({ task, now, today, onToggle, onOpen, hideDate, focusMinutes = 0 }: Props) {
   const done = task.status === 'done'
   const late = isOverdue(task, now)
   const steps = subtaskProgress(task)
@@ -50,10 +52,17 @@ export function TaskRow({ task, now, today, onToggle, onOpen, hideDate }: Props)
               <Repeat size={13} aria-label="Repeats" />
             </span>
           )}
-          {task.estimateMinutes > 0 && (
-            <span className={styles.metaIcon}>
+          {(task.estimateMinutes > 0 || focusMinutes > 0) && (
+            <span
+              className={`${styles.metaIcon} ${task.estimateMinutes && focusMinutes > task.estimateMinutes ? styles.over : ''}`}
+              title={task.estimateMinutes ? 'Focused / estimated' : 'Focused'}
+            >
               <Clock3 size={13} aria-hidden="true" />
-              {formatMinutes(task.estimateMinutes)}
+              <span className="num">
+                {focusMinutes > 0 && formatMinutes(focusMinutes)}
+                {focusMinutes > 0 && task.estimateMinutes > 0 && ' / '}
+                {task.estimateMinutes > 0 && formatMinutes(task.estimateMinutes)}
+              </span>
             </span>
           )}
           <span className={styles.categoryText}>{task.category}</span>

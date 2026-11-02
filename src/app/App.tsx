@@ -5,6 +5,8 @@ import { ProfileSetup } from '../auth/ProfileSetup'
 import { useAuth } from '../auth/authContext'
 import { ToastProvider } from '../components/ToastProvider'
 import { CalendarPage } from '../calendar/CalendarPage'
+import { FocusPage } from '../focus/FocusPage'
+import { FocusProvider } from '../focus/FocusProvider'
 import { HabitsPage } from '../habits/HabitsPage'
 import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
@@ -15,18 +17,20 @@ import { Splash } from './Splash'
 
 function SignedInRoutes() {
   return (
-    <Routes>
+    <FocusProvider>
+      <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<Placeholder title="Dashboard" step="step 6" />} />
         <Route path="tasks" element={<TasksPage />} />
-        <Route path="focus" element={<Placeholder title="Focus Mode" step="step 5" />} />
+        <Route path="focus" element={<FocusPage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="habits" element={<HabitsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>
-    </Routes>
+      </Routes>
+    </FocusProvider>
   )
 }
 

@@ -198,6 +198,10 @@
   gap: 3px;
 }
 
+.over {
+  color: var(--warning);
+}
+
 .late {
   color: var(--urgent);
   font-weight: 600;

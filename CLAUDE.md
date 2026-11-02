@@ -32,6 +32,7 @@ Productivity app: tasks, habits, focus sessions and (later) gamification, social
 - Routes live in `src/app/App.tsx`, all inside `AppLayout`.
 - Shared buttons, inputs and chips are classes in `src/components/ui.module.css`; screens compose them rather than restyling controls. `Dialog` (native `<dialog>`, a bottom sheet on phones) and `useToast` are the shared overlays; the toast provider wraps the whole app.
 - Layering: `src/lib/` holds pure rules with tests (no React, no Firebase); `src/data/` holds Firestore mappers, live hooks (`useUserCollection`) and write functions; feature folders such as `src/habits/` hold screens. Mappers fill gaps in stored documents so older data still loads.
+- Focus: `src/lib/focus.ts` is a pure state machine over timestamps (focus, summary, break, breakOver), with `now` always passed in. `src/focus/FocusProvider.tsx` wraps the signed-in app and owns the running session: it ticks the clock, saves the state to `localStorage` so a reload resumes it (an expired phase resolves to its real end time), turns `visibilitychange` into leaves (strict mode stops a session left for over 30 seconds, at the moment of leaving), holds a wake lock, plays Web Audio ambient sound and the chime, and writes the finished session once (`saveSession` is idempotent and never touches the note). It renders `FocusOverlay` above everything while a session or break runs. Read visibility in the event handler, not inside a state updater.
 - `useNow()` refreshes every minute and when the app returns to the foreground; screens derive "today" from it so day changes don't need a reload.
 
 ## Data
@@ -42,7 +43,7 @@ All user data sits under `users/{uid}/…`, and `firestore.rules` allows only th
 - `habits/{id}`: `name`, `category`, `schedule` (`{type:'days', days}` with `Date.getDay` numbers, or `{type:'count', perWeek}`), `usualTime`, `targetNote`, `archived`, `createdAt`
 - `habitLogs/{habitId_dayKey}`: `habitId`, `dayKey`, `completedAt`, `note`. The ID allows one per habit per day and makes undo a delete.
 - `tasks/{id}`: `title`, `description`, `category`, `priority` (urgent, high, medium, low), `status` (todo, in_progress, done), `dueDate` (day key or ''), `dueTime` ("HH:MM" or ''), `subtasks` (array of `{id, title, done}`), `recurrence` (`{type:'none'|'daily'|'weekly'}` or `{type:'custom', days}`), `estimateMinutes`, `order`, `createdAt`, `completedAt`, `nextTaskId`
-- Planned: `sessions`
+- `sessions/{id}`: `taskId`, `habitId`, `title`, `preset`, `plannedMinutes`, `minutes` (focused, excluding pauses), `pausedMinutes`, `startedAt`, `endedAt`, `dayKey`, `outcome` (completed or stopped), `leaves` (`{at, seconds}` each time the app went to the background), `note`. Sessions under a minute aren't saved.
 
 Repeating tasks keep one live instance. Completing one creates the next in the same batch (`completeTask` in `src/data/tasks.ts`) and records its ID in `nextTaskId`; reopening deletes that next instance unless it has been worked on. Any status change into or out of done must go through those two functions, not a plain update.
 

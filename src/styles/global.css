@@ -2,6 +2,7 @@
    by redefining these tokens, so components must use them and never raw colors. */
 :root {
   --bg: #111318;
+  --bg-calm: #0f1a1c;
   --card: #1d222b;
   --card-raised: #252b36;
   --border: #2c3340;

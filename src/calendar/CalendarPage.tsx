@@ -2,7 +2,9 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
+import { minutesByTask } from '../lib/focus'
 import { addDays, dayKey, parseDay, WEEK, weekStart } from '../lib/dates'
 import { isOverdue, tasksOn, type Task } from '../lib/tasks'
 import { useNow } from '../lib/useNow'
@@ -35,6 +37,7 @@ function monthCells(key: string): string[] {
 export function CalendarPage() {
   const { user } = useSignedIn()
   const tasks = useTasks(user.uid)
+  const focused = minutesByTask(useSessions(user.uid).data)
   const actions = useTaskActions(user.uid, tasks.data)
   const navigate = useNavigate()
   const now = useNow()
@@ -157,6 +160,7 @@ export function CalendarPage() {
                 now={now}
                 today={today}
                 hideDate
+                focusMinutes={focused.get(t.id)}
                 onToggle={() => actions.toggle(t)}
                 onOpen={() => setEditing(t)}
               />
