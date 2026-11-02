@@ -1,0 +1,485 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+  max-width: 760px;
+}
+
+.head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.head h1 {
+  font-size: 28px;
+}
+
+.sub {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.reminder {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid rgb(251 191 36 / 0.3);
+  border-radius: var(--radius);
+  background: rgb(251 191 36 / 0.08);
+  color: var(--warning);
+  font-size: 14px;
+  font-weight: 550;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.groupTitle {
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+summary.groupTitle {
+  cursor: pointer;
+}
+
+.quiet {
+  color: var(--muted);
+}
+
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-5);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius-lg);
+}
+
+.empty h2 {
+  font-size: 19px;
+}
+
+.empty p {
+  max-width: 52ch;
+  color: var(--muted);
+}
+
+/* Habit card */
+.cards {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+  transition: border-color 0.2s;
+}
+
+.card.done {
+  border-color: rgb(163 230 53 / 0.25);
+}
+
+.tick {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--faint);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.tick:hover {
+  border-color: var(--accent);
+}
+
+.done .tick {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.pop .tick {
+  animation: pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.7);
+  }
+  60% {
+    transform: scale(1.15);
+  }
+}
+
+.cardBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.name {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.done .name {
+  color: var(--muted);
+}
+
+.meta {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.meta.overdue {
+  color: var(--warning);
+}
+
+.category {
+  display: inline-block;
+  margin-right: var(--space-2);
+  padding: 0 6px;
+  border-radius: 4px;
+  background: var(--card-raised);
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: capitalize;
+}
+
+.cardStats {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.streak {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.rate {
+  color: var(--faint);
+  font-size: 12px;
+}
+
+/* Not today and archived rows */
+.rows {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--card);
+}
+
+.rows li + li {
+  border-top: 1px solid var(--border);
+}
+
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  padding: var(--space-3) var(--space-4);
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.row:hover {
+  background: var(--card-raised);
+}
+
+/* Form */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.fieldset {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.fieldset legend {
+  padding: 0 0 var(--space-2);
+}
+
+.segmented {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.segmented button {
+  min-height: 38px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.segmented [aria-pressed='true'] {
+  background: var(--card-raised);
+  color: var(--text);
+}
+
+.dayPicker {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 6px;
+}
+
+.dayPicker button {
+  aspect-ratio: 1;
+  max-width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.dayPicker [aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.twoUp {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+}
+
+.twoUp > * {
+  min-width: 0;
+}
+
+.formActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.formActions > :first-child {
+  flex: 1;
+}
+
+/* Detail */
+.detailFacts {
+  margin-top: calc(var(--space-2) * -1);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-2);
+  margin: 0;
+}
+
+@media (max-width: 420px) {
+  .stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.stats div {
+  min-width: 0;
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+}
+
+.stats dt {
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.stats dd {
+  margin: 0;
+  font-weight: 650;
+}
+
+.calendar {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  width: min(340px, 100%);
+  margin: 0 auto;
+}
+
+.calendarHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.calendarHead p {
+  font-weight: 600;
+}
+
+.calendarHead button {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--card-raised);
+  color: var(--muted);
+}
+
+.calendarHead button:disabled {
+  opacity: 0.35;
+}
+
+.calendarGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+
+.calendarWeekday {
+  color: var(--faint);
+  font-size: 11px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.day {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  max-width: 100%;
+  border-radius: 6px;
+  color: var(--faint);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+
+.day.done {
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-weight: 700;
+}
+
+.day.missed {
+  background: rgb(248 113 113 / 0.14);
+  color: var(--urgent);
+}
+
+.day.due {
+  box-shadow: inset 0 0 0 1.5px var(--accent);
+  color: var(--text);
+}
+
+.day.off {
+  color: var(--faint);
+}
+
+.day.future {
+  opacity: 0.4;
+}
+
+.day.outside {
+  visibility: hidden;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+  font-size: 12px;
+}
+
+.legend span {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend .done {
+  background: var(--accent);
+}
+
+.legend .missed {
+  margin-left: var(--space-2);
+  background: rgb(248 113 113 / 0.5);
+}
+
+.note {
+  min-height: 64px;
+  padding: var(--space-2) var(--space-3);
+  resize: vertical;
+}
+
+.subhead {
+  margin-bottom: var(--space-2);
+  font-size: 14px;
+}
+
+.history {
+  display: flex;
+  flex-direction: column;
+}
+
+.history li {
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.historyNote {
+  color: var(--text);
+}

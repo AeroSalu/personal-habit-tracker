@@ -3,6 +3,8 @@ import { AuthPage } from '../auth/AuthPage'
 import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
 import { useAuth } from '../auth/authContext'
+import { ToastProvider } from '../components/ToastProvider'
+import { HabitsPage } from '../habits/HabitsPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
 import { Placeholder } from './Placeholder'
@@ -17,7 +19,7 @@ function SignedInRoutes() {
         <Route path="tasks" element={<Placeholder title="Tasks" step="step 4" />} />
         <Route path="focus" element={<Placeholder title="Focus Mode" step="step 5" />} />
         <Route path="calendar" element={<Placeholder title="Calendar" step="step 4" />} />
-        <Route path="habits" element={<Placeholder title="Habits" step="step 3" />} />
+        <Route path="habits" element={<HabitsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
@@ -38,7 +40,9 @@ export function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <Gate />
+        <ToastProvider>
+          <Gate />
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   )
