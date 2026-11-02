@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "lockin-emulators",
+      "runtimeExecutable": "firebase.cmd",
+      "runtimeArgs": ["emulators:start", "--project", "demo-lockin"],
+      "port": 5000
+    }
+  ]
+}
