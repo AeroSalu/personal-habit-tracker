@@ -47,4 +47,9 @@ All user data sits under `users/{uid}/…`, and `firestore.rules` allows only th
 
 Repeating tasks keep one live instance. Completing one creates the next in the same batch (`completeTask` in `src/data/tasks.ts`) and records its ID in `nextTaskId`; reopening deletes that next instance unless it has been worked on. Any status change into or out of done must go through those two functions, not a plain update.
 
+Dashboard rules (`src/lib/dashboard.ts`), all derived on read:
+- Lock-in day: any completed focus session, habit tick or completed task. The streak counts consecutive days; today extends it but can't break it.
+- XP: 10 per completed task (once per task, lost if reopened), 10 per habit tick, 20 per completed session (capped at 8 a day; stopped sessions earn nothing), 50 per day where everything due was done on time (tasks finished late never earn their day the bonus). Level n needs 100·n more XP than level n−1.
+- Productivity score: 40% focus goal, 35% tasks due today or overdue, 25% habits due; a part with nothing due hands its weight to the others.
+
 Streak rules (`src/lib/habits.ts`): exact-day habits count scheduled days in a row; weekly-count habits count weeks reaching the number; a day or week still in progress can extend a streak but never breaks it.

@@ -2,25 +2,13 @@ import { useMemo, useState } from 'react'
 import { BellRing, Plus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
-import {
-  createHabit,
-  logHabit,
-  setHabitArchived,
-  setLogNote,
-  unlogHabit,
-  updateHabit,
-  useHabitLogs,
-  useHabits,
-} from '../data/habits'
+import { createHabit, setHabitArchived, setLogNote, updateHabit, useHabitLogs, useHabits } from '../data/habits'
 import { addDays, clock, dayKey, parseClock, WEEK, weekday } from '../lib/dates'
 import {
   byUsualTime,
-  doneLine,
   isDue,
   isOverdue,
   scheduleLabel,
-  streak,
-  streakLabel,
   weekProgress,
   type Habit,
   type HabitFields,
@@ -30,6 +18,7 @@ import { useNow } from '../lib/useNow'
 import { HabitCard } from './HabitCard'
 import { HabitDetail } from './HabitDetail'
 import { HabitForm } from './HabitForm'
+import { useHabitToggle } from './useHabitToggle'
 import ui from '../components/ui.module.css'
 import styles from './Habits.module.css'
 
@@ -53,6 +42,7 @@ export function HabitsPage() {
   const habits = useHabits(uid)
   const logs = useHabitLogs(uid)
   const toast = useToast()
+  const toggleHabit = useHabitToggle(uid)
   const now = useNow()
   const today = dayKey(now)
 
@@ -78,16 +68,7 @@ export function HabitsPage() {
   const failed = () => toast('That change could not be saved. Check your connection.')
 
   function toggle(habit: Habit) {
-    const keys = keysOf(habit)
-    if (keys.has(today)) {
-      unlogHabit(uid, habit.id, today).catch(failed)
-      return
-    }
-    const at = new Date()
-    setJustDone(habit.id)
-    logHabit(uid, habit.id, at).catch(failed)
-    const run = streak(habit, new Set([...keys, today]), today).current
-    toast(`${doneLine(habit, at)}${run > 1 ? ` · ${streakLabel(habit, run)} streak` : ''}`)
+    if (toggleHabit(habit, keysOf(habit), today)) setJustDone(habit.id)
   }
 
   function save(fields: HabitFields) {

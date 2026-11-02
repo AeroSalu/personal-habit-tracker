@@ -1,4 +1,4 @@
-import type { PresetId } from '../lib/focus'
+import { PRESETS, type FocusLink, type Plan, type PresetId } from '../lib/focus'
 import { SOUNDS, type Sound } from './sound'
 
 /** Per-device choices remembered between sessions. */
@@ -31,6 +31,21 @@ export function loadPrefs(): FocusPrefs {
   } catch {
     return DEFAULTS
   }
+}
+
+/** A session plan from the remembered choices, for one-tap starts such as the dashboard's. */
+export function planFromPrefs(prefs: FocusPrefs, link: FocusLink): Plan {
+  const preset = PRESETS.find((p) => p.id === prefs.preset)
+  return preset
+    ? { preset: preset.id, focusMinutes: preset.focus, shortBreak: preset.short, longBreak: preset.long, strict: prefs.strict, link }
+    : {
+        preset: 'custom',
+        focusMinutes: prefs.customFocus,
+        shortBreak: prefs.customShort,
+        longBreak: prefs.customLong,
+        strict: prefs.strict,
+        link,
+      }
 }
 
 export function savePrefs(prefs: FocusPrefs) {

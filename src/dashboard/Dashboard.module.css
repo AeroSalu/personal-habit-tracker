@@ -1,0 +1,403 @@
+/* Phone: one column. Wide screens: focus and score up top, today beside streak and deadlines. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-5);
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.head h1 {
+  font-size: clamp(26px, 5vw, 32px);
+}
+
+.date {
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.line {
+  color: var(--muted);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-3);
+}
+
+@media (min-width: 900px) {
+  .grid {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .focus {
+    grid-column: span 4;
+  }
+
+  .score {
+    grid-column: span 2;
+  }
+
+  .today {
+    grid-column: span 3;
+    grid-row: span 2;
+  }
+
+  .progress,
+  .deadlines {
+    grid-column: span 3;
+  }
+}
+
+.grid > article {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-5);
+}
+
+@media (max-width: 480px) {
+  .grid > article {
+    padding: var(--space-4);
+  }
+}
+
+.grid h2 {
+  font-size: 16px;
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.more {
+  display: inline-flex;
+  align-items: center;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.more:hover {
+  color: var(--text);
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.footnote {
+  color: var(--faint);
+  font-size: 12.5px;
+}
+
+/* Focus */
+.focus {
+  flex-direction: row !important;
+  align-items: center;
+  gap: var(--space-5) !important;
+}
+
+@media (max-width: 480px) {
+  .focus {
+    flex-direction: column !important;
+    align-items: flex-start;
+  }
+}
+
+.ringWrap {
+  position: relative;
+  flex: none;
+  width: 132px;
+  height: 132px;
+}
+
+.ring {
+  width: 100%;
+  height: 100%;
+}
+
+.ringTrack {
+  fill: none;
+  stroke: var(--card-raised);
+  stroke-width: 10;
+}
+
+.ringValue {
+  fill: none;
+  stroke: var(--accent);
+  stroke-width: 10;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 0.6s ease;
+}
+
+.ringLabel {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ringLabel strong {
+  font-size: 24px;
+  font-weight: 750;
+  letter-spacing: -0.02em;
+}
+
+.ringLabel span {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+.focusBody {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.nextUp {
+  font-size: 14px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.nextUp strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.focusActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+/* Score */
+.scoreValue {
+  color: var(--accent);
+  font-size: 34px;
+  font-weight: 750;
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+.parts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.partHead {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 2px var(--space-2);
+  margin-bottom: 4px;
+  font-size: 14px;
+}
+
+.partHead .muted {
+  font-size: 12.5px;
+}
+
+.partBar,
+.xpBar {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: var(--card-raised);
+}
+
+.partBar span,
+.xpBar span {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  background: var(--accent);
+  transition: width 0.4s ease;
+}
+
+/* Today */
+.subhead {
+  margin-top: var(--space-1);
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.checklist {
+  display: flex;
+  flex-direction: column;
+}
+
+.checklist li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 44px;
+  border-bottom: 1px solid var(--border);
+}
+
+.checklist li:last-child {
+  border-bottom: 0;
+}
+
+.itemText {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.check {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 2px solid var(--faint);
+  border-radius: 50%;
+  background: transparent;
+  color: transparent;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.check::after {
+  content: '';
+  position: absolute;
+  inset: -10px;
+}
+
+.check:hover {
+  border-color: var(--accent);
+}
+
+.done .check {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.done .itemText {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+.pop .check {
+  animation: pop 0.45s cubic-bezier(0.3, 1.6, 0.5, 1);
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(0.7);
+  }
+  60% {
+    transform: scale(1.18);
+  }
+}
+
+.badge {
+  flex: none;
+  padding: 0 6px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 650;
+  text-transform: capitalize;
+}
+
+.urgent {
+  background: rgb(248 113 113 / 0.15);
+  color: var(--urgent);
+}
+
+.high {
+  background: rgb(251 191 36 / 0.14);
+  color: var(--warning);
+}
+
+.medium,
+.low {
+  background: var(--card-raised);
+  color: var(--muted);
+}
+
+/* Streak and level */
+.stat {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.stat > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat strong {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.stat span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.flame {
+  color: var(--warning);
+}
+
+.trophy {
+  color: var(--accent);
+}
+
+/* Deadlines */
+.deadlineList {
+  display: flex;
+  flex-direction: column;
+}
+
+.deadlineList li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.deadlineList li:last-child {
+  border-bottom: 0;
+}
+
+.deadlineList .muted,
+.deadlineList .late {
+  flex: none;
+  font-size: 13px;
+}
+
+.late {
+  color: var(--urgent);
+  font-weight: 600;
+}

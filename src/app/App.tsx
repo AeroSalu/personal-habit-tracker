@@ -1,17 +1,17 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+﻿import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthPage } from '../auth/AuthPage'
 import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
 import { useAuth } from '../auth/authContext'
 import { ToastProvider } from '../components/ToastProvider'
 import { CalendarPage } from '../calendar/CalendarPage'
+import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
 import { FocusProvider } from '../focus/FocusProvider'
 import { HabitsPage } from '../habits/HabitsPage'
 import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
-import { Placeholder } from './Placeholder'
 import { ProfilePage } from './ProfilePage'
 import { Splash } from './Splash'
 
@@ -20,7 +20,7 @@ function SignedInRoutes() {
     <FocusProvider>
       <Routes>
       <Route element={<AppLayout />}>
-        <Route index element={<Placeholder title="Dashboard" step="step 6" />} />
+        <Route index element={<DashboardPage />} />
         <Route path="tasks" element={<TasksPage />} />
         <Route path="focus" element={<FocusPage />} />
         <Route path="calendar" element={<CalendarPage />} />
