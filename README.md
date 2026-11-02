@@ -1,51 +1,79 @@
-# Lock In
+# LOCKIN
 
-Add the things you want to do regularly, tick them off, and see exactly when you finished each one. Sign in on your phone or PC and your tasks follow you. It installs to a phone like an app and works without signal.
+**Stop planning. Start executing.**
 
-## Go live (free)
+A productivity app that combines tasks, habits and focus sessions: plan your day, lock in on one thing at a time, and track your consistency. It works on phone and desktop, installs like an app, and keeps working without signal.
 
-This uses Firebase's free Spark plan. You don't need a billing account or card.
+Live at **https://lockin-habits-aerosalu.firebaseapp.com**
 
-1. Go to the [Firebase console](https://console.firebase.google.com) and create a project. Skip Google Analytics.
-2. Open **Build > Authentication > Get started**, then enable **Email/Password** and **Google**.
-3. Open **Build > Firestore Database > Create database**. Pick a region close to you and start in production mode.
-4. Open **Project settings > General > Your apps**, and add a **Web app** (the `</>` icon). Skip its setup steps; Hosting supplies the config.
-5. Run these from this folder, using your project ID in place of `your-project-id`:
+## What's in it
+
+- **Dashboard:** focus ring against your daily goal, one-tap Lock in, an explainable productivity score, today's tasks and habits, lock-in streak, XP and level, upcoming deadlines.
+- **Tasks:** priorities, deadlines with times, subtasks, estimates, categories, daily, weekly or custom-day repeats, search and filters.
+- **Calendar:** month and week views of tasks, with overdue markers.
+- **Focus mode:** 25/5, 50/10, 90/15 or custom, linked to a task or habit, pause and resume, breaks, strict mode, generated ambient sound, session history and notes.
+- **Habits:** exact days or times per week, completion time compared with your usual time, streaks, 30-day rate, a calendar and notes.
+- **Sign-in:** email and password, or Google.
+
+## Install on your phone
+
+Use the `firebaseapp.com` address above, not `.web.app`: it matches the sign-in domain, which keeps Google sign-in working from the home-screen app.
+
+- **Android (Chrome):** open the link and use **Install app** from the browser menu.
+- **iPhone (Safari):** open the link, tap **Share**, then **Add to Home Screen**.
+
+## Develop
+
+Needs Node 20 or later and the Firebase CLI.
 
 ```bash
-firebase login
+npm install
 ```
 
 ```bash
-firebase use your-project-id
+npm run emulators
 ```
+
+Then, in a second terminal:
+
+```bash
+npm run dev
+```
+
+Open http://127.0.0.1:5173. Development always uses the local emulators, so accounts and data are fake and disappear when the emulators stop.
+
+## Check
+
+```bash
+npm test
+```
+
+```bash
+npm run lint
+```
+
+```bash
+npm run build
+```
+
+## Deploy
 
 ```bash
 firebase deploy
 ```
 
-The app is then live at `https://your-project-id.firebaseapp.com`. Use that address, not `.web.app`: it matches the sign-in domain, which keeps Google sign-in working in the iPhone home-screen app. The current live app is at https://lockin-habits-aerosalu.firebaseapp.com.
+This builds the app first, then publishes it with the Firestore security rules. It stays on Firebase's free Spark plan.
 
-## Install on your phone
+## Set up your own copy
 
-- **Android (Chrome):** open the link and tap **Install app**, or use the browser menu.
-- **iPhone (Safari):** open the link, tap **Share**, then **Add to Home Screen**.
-
-## Run it locally
-
-```bash
-firebase emulators:start --project demo-lockin
-```
-
-Then open http://127.0.0.1:5000. Accounts and data here are fake and disappear when the emulators stop.
-
-## Test
-
-```bash
-node tests/logic.test.js
-```
+1. Create a project in the [Firebase console](https://console.firebase.google.com).
+2. Under **Authentication**, enable **Email/Password** and **Google**.
+3. Create a **Firestore** database in production mode.
+4. Add a **Web app** and copy its config values into `.env`.
+5. Set your project ID in `.firebaserc`, then deploy.
 
 ## Limits
 
-- Sign-in is email and Google only. Phone number login needs a paid Firebase plan, so it's left out.
-- There are no reminders yet.
+- Reminders only show while the app is open; push reminders would need a paid plan.
+- A web app can't block other apps or websites.
+- A running focus timer stays on the device where it started until the session is saved.

@@ -25,6 +25,7 @@ const MESSAGES: Record<string, string> = {
     'That email already has an account. Sign in with your password.',
   'auth/popup-blocked': 'Your browser blocked the Google window. Allow pop-ups and try again.',
   'auth/operation-not-allowed': 'This sign-in method is turned off for now.',
+  'auth/configuration-not-found': 'Sign-in is not set up for this app yet.',
 }
 
 const IGNORED = new Set(['auth/popup-closed-by-user', 'auth/cancelled-popup-request'])

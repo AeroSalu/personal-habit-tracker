@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 # LOCKIN
 
-Productivity app: tasks, habits, focus sessions and (later) gamification, social and an AI coach. Mid-rebuild from a vanilla JS PWA (`legacy/`) to React + Vite + TypeScript (`src/`), following the P0 plan: scaffold → auth → habits → tasks and calendar → focus → dashboard → remove `legacy/`.
+Productivity PWA in React + Vite + TypeScript on Firebase Auth, Firestore and Hosting. The P0 modules are built: Dashboard, Tasks, Calendar, Focus, Habits. Later phases (gamification badges, analytics, social and focus rooms, AI coach) show as "Soon" in the navigation. Live at https://lockin-habits-aerosalu.firebaseapp.com (project `lockin-habits-aerosalu`); use that address, not `.web.app`, because it matches `authDomain`.
 
 ## Rules
 
@@ -17,10 +17,10 @@ Productivity app: tasks, habits, focus sessions and (later) gamification, social
 ## Commands
 
 - Dev: `npm run emulators` in one terminal, `npm run dev` in another, then open http://127.0.0.1:5173 (not `localhost`: Google sign-in by redirect fails across the two hostnames). `.env.development` points dev at the `demo-lockin` emulators, never the live project.
-- Test: `npm test` (Vitest, `src/**/*.test.ts`); one file with `npx vitest run src/lib/streak.test.ts`, one test with `-t "name"`
+- Test: `npm test` (Vitest, `src/**/*.test.ts`); one file with `npx vitest run src/lib/habits.test.ts`, one test with `-t "name"`
 - Lint and type-check: `npm run lint`, `npm run build`
 - Icons: `node tools/make-icons.cjs` (writes `public/icons/`)
-- Deploy: `firebase deploy`. Hosting still serves `legacy/` until the rebuild reaches parity; then `firebase.json` switches to `dist/`.
+- Deploy: `firebase deploy` (its predeploy runs `npm run build`; Hosting serves `dist/` with an SPA rewrite, and `sw.js` and `index.html` are served `no-cache` so updates reach installed apps)
 
 ## Architecture
 
