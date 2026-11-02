@@ -1,10 +1,10 @@
-// Draws the app icon to PNGs with no dependencies: node tools/make-icons.js
+﻿// Draws the app icon to PNGs with no dependencies: node tools/make-icons.cjs
 const fs = require('fs');
 const path = require('path');
 const zlib = require('zlib');
 
-const BG = [17, 21, 31];
-const GOLD = [246, 179, 60];
+const BG = [17, 19, 24];
+const ACCENT = [163, 230, 53];
 
 function segmentDistance(px, py, ax, ay, bx, by) {
   const dx = bx - ax;
@@ -37,7 +37,7 @@ function pixels(size) {
         }
       }
       const share = hits / (samples * samples);
-      for (let c = 0; c < 3; c += 1) rows[at++] = Math.round(BG[c] + (GOLD[c] - BG[c]) * share);
+      for (let c = 0; c < 3; c += 1) rows[at++] = Math.round(BG[c] + (ACCENT[c] - BG[c]) * share);
     }
   }
   return rows;

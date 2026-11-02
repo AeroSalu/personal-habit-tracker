@@ -1,5 +1,5 @@
-const assert = require('assert');
-const L = require('../public/logic.js');
+﻿const assert = require('assert');
+const L = require('../legacy/logic.js');
 
 const days = (...d) => ({ schedule: { type: 'days', days: d } });
 const count = (perWeek) => ({ schedule: { type: 'count', perWeek } });
