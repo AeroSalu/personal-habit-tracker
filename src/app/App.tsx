@@ -9,6 +9,7 @@ import { CalendarPage } from '../calendar/CalendarPage'
 import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
 import { FriendsPage } from '../friends/FriendsPage'
+import { LeaderboardPage } from '../friends/LeaderboardPage'
 import { FocusProvider } from '../focus/FocusProvider'
 import { AchievementPoster } from '../game/AchievementPoster'
 import { BadgeWatcher } from '../game/BadgeWatcher'
@@ -37,6 +38,7 @@ function SignedInRoutes() {
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="challenges" element={<ChallengesPage />} />
         <Route path="friends" element={<FriendsPage />} />
+        <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

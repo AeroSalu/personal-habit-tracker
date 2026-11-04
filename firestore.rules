@@ -130,6 +130,81 @@ service cloud.firestore {
         && (resource == null ? id.matches(request.auth.uid + '_.+') : resource.data.uid == request.auth.uid);
     }
 
+    // ---- Groups ----
+
+    function groupPath(gid) {
+      return /databases/$(database)/documents/groups/$(gid);
+    }
+
+    function isMember(gid) {
+      return signedIn() && exists(/databases/$(database)/documents/groups/$(gid)/members/$(request.auth.uid));
+    }
+
+    function validGroup(g) {
+      return g.name is string && g.name.size() > 0 && g.name.size() <= 40
+        && g.code is string && g.code.matches('^[A-HJ-NP-Z2-9]{6}$')
+        && intIn(g.targetMinutes, 0, 100000);
+    }
+
+    // A member's copy of their own weekly numbers, so the group can rank them.
+    function validMember(m, uid) {
+      return m.keys().hasOnly([
+          'uid', 'displayName', 'username', 'code', 'joinedAt', 'level', 'weekKey', 'weekXp',
+          'weekFocusMinutes', 'seasonKey', 'seasonXp', 'streak', 'updatedAt'])
+        && m.uid == uid
+        && m.displayName is string && m.displayName.size() <= 40
+        && isUsername(m.username)
+        && intIn(m.level, 1, 1000)
+        && m.weekKey is string && m.weekKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && intIn(m.weekXp, 0, 20000)
+        && intIn(m.weekFocusMinutes, 0, 10080)
+        && m.seasonKey is string && m.seasonKey.matches('^[0-9]{4}-[0-9]{2}$')
+        && intIn(m.seasonXp, 0, 80000)
+        && intIn(m.streak, 0, 100000);
+    }
+
+    match /groups/{gid} {
+      allow read: if isMember(gid);
+      // Created together with its invite code and the owner's own membership.
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['name', 'ownerUid', 'code', 'targetMinutes', 'createdAt'])
+        && request.resource.data.ownerUid == request.auth.uid
+        && validGroup(request.resource.data)
+        && getAfter(/databases/$(database)/documents/groupCodes/$(request.resource.data.code)).data.groupId == gid;
+      allow update: if signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'targetMinutes'])
+        && validGroup(request.resource.data);
+      allow delete: if signedIn() && resource.data.ownerUid == request.auth.uid;
+
+      match /members/{uid} {
+        allow read: if isMember(gid);
+        // Knowing the group's invite code is what lets you join.
+        allow create: if isMe(uid)
+          && validMember(request.resource.data, uid)
+          && request.resource.data.code == getAfter(groupPath(gid)).data.code;
+        allow update: if isMe(uid)
+          && validMember(request.resource.data, uid)
+          && request.resource.data.code == resource.data.code;
+        // Leave, or be removed by the owner.
+        allow delete: if isMe(uid) || (signedIn() && get(groupPath(gid)).data.ownerUid == request.auth.uid);
+      }
+    }
+
+    // Invite codes point to a group and show its name before joining. Fetched one at a
+    // time by code; they can't be listed.
+    match /groupCodes/{code} {
+      allow get: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['groupId', 'name'])
+        && getAfter(groupPath(request.resource.data.groupId)).data.ownerUid == request.auth.uid
+        && getAfter(groupPath(request.resource.data.groupId)).data.code == code;
+      allow update: if signedIn()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name'])
+        && get(groupPath(resource.data.groupId)).data.ownerUid == request.auth.uid;
+      allow delete: if signedIn() && get(groupPath(resource.data.groupId)).data.ownerUid == request.auth.uid;
+    }
+
     function validStats(s) {
       return s.keys().hasOnly([
           'level', 'xp', 'badges', 'weekKey', 'weekXp', 'weekFocusMinutes',
