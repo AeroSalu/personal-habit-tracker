@@ -146,6 +146,14 @@ export function setStatus(uid: string, id: string, status: Exclude<Status, 'done
   return updateDoc(doc(tasksRef(uid), id), { status })
 }
 
+/** A board move. Into or out of Done goes through completion and reopening, like saveTask. */
+export function moveTask(uid: string, task: Task, status: Status, order: number, all: Task[], at = new Date()) {
+  const moved = { ...task, order }
+  if (task.status !== 'done' && status === 'done') return completeTask(uid, moved, at)
+  if (task.status === 'done' && status !== 'done') return reopenTask(uid, moved, all, status)
+  return updateDoc(doc(tasksRef(uid), task.id), { status, order })
+}
+
 export function deleteTask(uid: string, id: string) {
   return deleteDoc(doc(tasksRef(uid), id))
 }

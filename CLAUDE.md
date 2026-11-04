@@ -45,6 +45,10 @@ All user data sits under `users/{uid}/…`, and `firestore.rules` allows only th
 - `tasks/{id}`: `title`, `description`, `category`, `priority` (urgent, high, medium, low), `status` (todo, in_progress, done), `dueDate` (day key or ''), `dueTime` ("HH:MM" or ''), `subtasks` (array of `{id, title, done}`), `recurrence` (`{type:'none'|'daily'|'weekly'}` or `{type:'custom', days}`), `estimateMinutes`, `order`, `createdAt`, `completedAt`, `nextTaskId`
 - `sessions/{id}`: `taskId`, `habitId`, `title`, `preset`, `plannedMinutes`, `minutes` (focused, excluding pauses), `pausedMinutes`, `startedAt`, `endedAt`, `dayKey`, `outcome` (completed or stopped), `leaves` (`{at, seconds}` each time the app went to the background), `note`. Sessions under a minute aren't saved.
 
+- `taskTemplates/{id}`: `name`, `title`, `description`, `category`, `priority`, `steps` (subtask titles), `estimateMinutes`, `recurrence`. Built-in starters live in `src/lib/templates.ts`, not Firestore.
+
+Board and order (`src/lib/board.ts`, `src/tasks/TaskBoard.tsx`): `order` is a plain number; a move writes only the moved task, at the midpoint of its new neighbours (±1024 at an end). Board moves go through `moveTask`, which routes into and out of Done via `completeTask`/`reopenTask`. Drag uses @dnd-kit with mouse, a 250 ms touch long-press, and keyboard sensors, plus a "Move to" menu on every card; screen-reader announcements are customised to use task titles, never the library's IDs.
+
 Repeating tasks keep one live instance. Completing one creates the next in the same batch (`completeTask` in `src/data/tasks.ts`) and records its ID in `nextTaskId`; reopening deletes that next instance unless it has been worked on. Any status change into or out of done must go through those two functions, not a plain update.
 
 Dashboard rules (`src/lib/dashboard.ts`), all derived on read:

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Plus, Timer, Trash2, X } from 'lucide-react'
+import { BookmarkPlus, Plus, Timer, Trash2, X } from 'lucide-react'
 import { Dialog } from '../components/Dialog'
 import { WEEK, weekday } from '../lib/dates'
 import { CATEGORIES, type Category } from '../lib/habits'
@@ -22,9 +22,13 @@ type Props = {
   task: Task | null
   /** Pre-filled deadline for a new task, such as the day picked on the calendar. */
   defaultDate?: string
+  /** Starting values for a new task, such as from a template. */
+  preset?: TaskFields
   onSave: (fields: TaskFields) => void
   onDelete?: () => void
   onFocus?: () => void
+  /** Offers "Save as template" with the form's current details. */
+  onSaveTemplate?: (name: string, fields: TaskFields) => void
   onClose: () => void
 }
 
@@ -32,19 +36,35 @@ const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
 const ESTIMATES = [15, 30, 60, 90, 120]
 const newId = () => Math.random().toString(36).slice(2, 10)
 
-export function TaskForm({ task, defaultDate = '', onSave, onDelete, onFocus, onClose }: Props) {
-  const [title, setTitle] = useState(task?.title ?? '')
-  const [description, setDescription] = useState(task?.description ?? '')
-  const [category, setCategory] = useState<Category>(task?.category ?? 'work')
-  const [priority, setPriority] = useState<Priority>(task?.priority ?? 'medium')
-  const [status, setStatus] = useState<Status>(task?.status ?? 'todo')
-  const [dueDate, setDueDate] = useState(task?.dueDate ?? defaultDate)
-  const [dueTime, setDueTime] = useState(task?.dueTime ?? '')
-  const [recurrence, setRecurrence] = useState<Recurrence>(task?.recurrence ?? { type: 'none' })
-  const [estimate, setEstimate] = useState(task?.estimateMinutes ?? 0)
-  const [subtasks, setSubtasks] = useState<Subtask[]>(task?.subtasks ?? [])
+export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onFocus, onSaveTemplate, onClose }: Props) {
+  const start = task ?? preset
+  const [title, setTitle] = useState(start?.title ?? '')
+  const [description, setDescription] = useState(start?.description ?? '')
+  const [category, setCategory] = useState<Category>(start?.category ?? 'work')
+  const [priority, setPriority] = useState<Priority>(start?.priority ?? 'medium')
+  const [status, setStatus] = useState<Status>(start?.status ?? 'todo')
+  const [dueDate, setDueDate] = useState(start?.dueDate || defaultDate)
+  const [dueTime, setDueTime] = useState(start?.dueTime ?? '')
+  const [recurrence, setRecurrence] = useState<Recurrence>(start?.recurrence ?? { type: 'none' })
+  const [estimate, setEstimate] = useState(start?.estimateMinutes ?? 0)
+  const [subtasks, setSubtasks] = useState<Subtask[]>(start?.subtasks ?? [])
   const [confirmDelete, setConfirmDelete] = useState(false)
+  const [templateName, setTemplateName] = useState<string | null>(null)
+  const [templateSaved, setTemplateSaved] = useState(false)
   const [error, setError] = useState('')
+
+  const currentFields = (): TaskFields => ({
+    title,
+    description,
+    category,
+    priority,
+    status,
+    dueDate,
+    dueTime: dueDate ? dueTime : '',
+    subtasks,
+    recurrence,
+    estimateMinutes: estimate,
+  })
 
   function setRepeat(type: Recurrence['type']) {
     if (type === 'custom') setRecurrence({ type, days: dueDate ? [weekday(dueDate)] : [1] })
@@ -63,18 +83,7 @@ export function TaskForm({ task, defaultDate = '', onSave, onDelete, onFocus, on
 
   function submit(e: FormEvent) {
     e.preventDefault()
-    const fields: TaskFields = {
-      title,
-      description,
-      category,
-      priority,
-      status,
-      dueDate,
-      dueTime: dueDate ? dueTime : '',
-      subtasks,
-      recurrence,
-      estimateMinutes: estimate,
-    }
+    const fields = currentFields()
     const problem = taskError(fields)
     setError(problem)
     if (!problem) {
@@ -270,6 +279,46 @@ export function TaskForm({ task, defaultDate = '', onSave, onDelete, onFocus, on
             </button>
           )}
         </div>
+
+        {onSaveTemplate &&
+          (templateSaved ? (
+            <p className={styles.saved} role="status">
+              Saved as a template.
+            </p>
+          ) : templateName === null ? (
+            <button
+              type="button"
+              className={`${ui.button} ${ui.ghost} ${styles.templateButton}`}
+              onClick={() => setTemplateName(title.trim())}
+            >
+              <BookmarkPlus size={16} aria-hidden="true" />
+              Save as template
+            </button>
+          ) : (
+            <div className={styles.templateRow}>
+              <label className={ui.field}>
+                <span className={ui.label}>Template name</span>
+                <input
+                  id="template-name"
+                  className={ui.input}
+                  value={templateName}
+                  maxLength={60}
+                  onChange={(e) => setTemplateName(e.target.value)}
+                />
+              </label>
+              <button
+                type="button"
+                className={ui.button}
+                disabled={!templateName.trim()}
+                onClick={() => {
+                  onSaveTemplate(templateName, currentFields())
+                  setTemplateSaved(true)
+                }}
+              >
+                Save template
+              </button>
+            </div>
+          ))}
 
         {onDelete &&
           (confirmDelete ? (

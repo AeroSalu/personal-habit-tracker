@@ -21,6 +21,125 @@
   font-size: 14px;
 }
 
+.headActions {
+  display: flex;
+  flex: none;
+  gap: var(--space-2);
+}
+
+.headActions button {
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .headActions button {
+    padding: 0 var(--space-3);
+  }
+}
+
+.showNarrow {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .hideNarrow {
+    display: none;
+  }
+
+  .showNarrow {
+    display: inline;
+  }
+}
+
+.layoutBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.viewSwitch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4px;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+
+.viewSwitch button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.viewSwitch [aria-pressed='true'] {
+  background: var(--card-raised);
+  color: var(--text);
+}
+
+.sortPick {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--faint);
+}
+
+.sortPick select {
+  min-height: 36px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.templateItem {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding-right: var(--space-2);
+}
+
+.templateUse {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  padding: var(--space-3);
+  border: 0;
+  background: none;
+  text-align: left;
+}
+
+.templateUse:hover {
+  background: var(--card-raised);
+}
+
+.inlineConfirm {
+  display: flex;
+  gap: var(--space-1);
+}
+
+.inlineConfirm .button,
+.inlineConfirm button {
+  min-height: 34px;
+  padding: 0 var(--space-3);
+  font-size: 13px;
+}
+
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -399,6 +518,27 @@
 
 .formActions > :first-child {
   flex: 1;
+}
+
+.templateButton {
+  align-self: flex-start;
+}
+
+.templateRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.templateRow > label {
+  flex: 1 1 200px;
+}
+
+.saved {
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 550;
 }
 
 .deleteButton {
