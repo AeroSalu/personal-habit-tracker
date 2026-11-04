@@ -205,17 +205,23 @@ export function weeklyChallenge(ix: GameIndex, week: string): Goal {
   return finish(chosen.id, chosen.build(ix, week))
 }
 
-/** XP from every mission and challenge completed so far. */
-export function goalXp(ix: GameIndex) {
-  let missions = 0
-  for (const day of ix.activeDays) {
-    const list = missionsFor(ix, day)
-    const done = list.filter((m) => m.done).length
-    missions += done * MISSION_XP + (list.length && done === list.length ? ALL_MISSIONS_BONUS : 0)
-  }
+/** XP earned from one day's missions, bonus included. */
+export function missionXpOn(ix: GameIndex, day: string): number {
+  const list = missionsFor(ix, day)
+  const done = list.filter((m) => m.done).length
+  return done * MISSION_XP + (list.length && done === list.length ? ALL_MISSIONS_BONUS : 0)
+}
+
+/**
+ * XP from missions on active days between `from` and `to`, and from challenges of weeks
+ * starting in that span. With no span, everything so far.
+ */
+export function goalXp(ix: GameIndex, from = '', to = '9999') {
+  const days = ix.activeDays.filter((d) => d >= from && d <= to)
+  const missions = days.reduce((sum, d) => sum + missionXpOn(ix, d), 0)
   let challenges = 0
   for (const week of new Set(ix.activeDays.map(weekStart))) {
-    if (weeklyChallenge(ix, week).done) challenges += CHALLENGE_XP
+    if (week >= from && week <= to && weeklyChallenge(ix, week).done) challenges += CHALLENGE_XP
   }
   return { missions, challenges }
 }

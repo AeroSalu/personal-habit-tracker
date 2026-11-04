@@ -33,7 +33,13 @@ describe('formatMinutes', () => {
 
 describe('toProfile', () => {
   it('fills missing fields', () => {
-    expect(toProfile({})).toEqual({ displayName: '', dailyFocusGoalMinutes: 120, createdAt: '' })
+    expect(toProfile({})).toEqual({
+      displayName: '',
+      dailyFocusGoalMinutes: 120,
+      createdAt: '',
+      username: '',
+      shareAchievements: true,
+    })
     expect(toProfile({ displayName: 'A', dailyFocusGoalMinutes: 60, createdAt: 'x' }).dailyFocusGoalMinutes).toBe(60)
   })
 

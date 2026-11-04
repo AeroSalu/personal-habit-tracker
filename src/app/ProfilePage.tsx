@@ -4,6 +4,7 @@ import { signOut } from '../auth/authActions'
 import { useSignedIn } from '../auth/authContext'
 import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
+import { SocialSettings } from './SocialSettings'
 import ui from '../components/ui.module.css'
 import styles from './ProfilePage.module.css'
 
@@ -30,6 +31,8 @@ export function ProfilePage() {
           {status}
         </p>
       </div>
+
+      <SocialSettings />
 
       <div className={`${ui.card} ${styles.section}`}>
         <h2>Account</h2>

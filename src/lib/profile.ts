@@ -2,6 +2,10 @@ export type Profile = {
   displayName: string
   dailyFocusGoalMinutes: number
   createdAt: string
+  /** '' until a username is chosen; friends features need one. */
+  username: string
+  /** Post badges and level-ups to friends' activity feed. */
+  shareAchievements: boolean
 }
 
 export type ProfileFields = Pick<Profile, 'displayName' | 'dailyFocusGoalMinutes'>
@@ -34,6 +38,8 @@ export function toProfile(data: Record<string, unknown>): Profile {
     dailyFocusGoalMinutes:
       typeof data.dailyFocusGoalMinutes === 'number' ? data.dailyFocusGoalMinutes : 120,
     createdAt: typeof data.createdAt === 'string' ? data.createdAt : '',
+    username: typeof data.username === 'string' ? data.username : '',
+    shareAchievements: data.shareAchievements !== false,
   }
 }
 

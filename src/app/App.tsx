@@ -11,6 +11,7 @@ import { FocusPage } from '../focus/FocusPage'
 import { FocusProvider } from '../focus/FocusProvider'
 import { BadgeWatcher } from '../game/BadgeWatcher'
 import { ChallengesPage } from '../game/ChallengesPage'
+import { StatsPublisher } from '../game/StatsPublisher'
 import { HabitsPage } from '../habits/HabitsPage'
 import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
@@ -22,6 +23,7 @@ function SignedInRoutes() {
   return (
     <FocusProvider>
       <BadgeWatcher />
+      <StatsPublisher />
       <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />

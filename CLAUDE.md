@@ -18,6 +18,8 @@ Productivity PWA in React + Vite + TypeScript on Firebase Auth, Firestore and Ho
 
 - Dev: `npm run emulators` in one terminal, `npm run dev` in another, then open http://127.0.0.1:5173 (not `localhost`: Google sign-in by redirect fails across the two hostnames). `.env.development` points dev at the `demo-lockin` emulators, never the live project.
 - Test: `npm test` (Vitest, `src/**/*.test.ts`); one file with `npx vitest run src/lib/habits.test.ts`, one test with `-t "name"`
+- Security rules tests: `npm run test:rules`. It starts its own Firestore emulator on port 8181 (`firebase.rules-test.json`) and runs `tests/rules/` against `firestore.rules`, so the dev emulator's data is untouched. If it reports port 8181 taken, a previous run is still alive; stop that process. Add a test for every rule change, covering owner, friend and stranger cases.
+- Rules gotcha: in a rules path, `$(x)` inserts one segment, so build paths in full (`/databases/$(database)/documents/usernames/$(name)`), not from a joined string. The dev emulator hot-reloads `firestore.rules` and can catch a half-finished edit; re-save the file if it starts reporting unknown functions.
 - Lint and type-check: `npm run lint`, `npm run build`
 - Icons: `node tools/make-icons.cjs` (writes `public/icons/`)
 - Deploy: `firebase deploy` (its predeploy runs `npm run build`; Hosting serves `dist/` with an SPA rewrite, and `sw.js` and `index.html` are served `no-cache` so updates reach installed apps)
@@ -37,7 +39,12 @@ Productivity PWA in React + Vite + TypeScript on Firebase Auth, Firestore and Ho
 
 ## Data
 
-All user data sits under `users/{uid}/…`, and `firestore.rules` allows only that signed-in user. `dayKey` is the device's local YYYY-MM-DD date, and timestamps are ISO strings from the device clock so offline actions keep their real time.
+Private data sits under `users/{uid}/…`, which only that signed-in user can reach. Shared collections, each with its own rules and tests:
+- `usernames/{name}`: `{uid}`. Created only if free and only for yourself, never updated, deleted only by its holder. This is what makes names unique.
+- `profiles/{uid}`: `{username, displayName, level, updatedAt}`. Readable by any signed-in user, for search. Its username must be one you hold (checked with `getAfter`, so claiming and setting share one batch in `claimUsername`).
+- `stats/{uid}`: the summary friends see (level, xp, badge IDs, this week's XP and focus minutes, this month's season XP, streak, `focusing.until`). Readable by the owner and friends (a `friendships/{lowerUid_higherUid}` document exists). Written only by the owner, with range checks. `StatsPublisher` writes it at most every 30 s and only once a username exists. Weekly totals come from `xpBetween` in `src/lib/social.ts`, which follows the same rules as the total.
+
+Everything else is closed by default. `dayKey` is the device's local YYYY-MM-DD date, and timestamps are ISO strings from the device clock so offline actions keep their real time.
 
 - `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`)
 - `habits/{id}`: `name`, `category`, `schedule` (`{type:'days', days}` with `Date.getDay` numbers, or `{type:'count', perWeek}`), `usualTime`, `targetNote`, `archived`, `createdAt`

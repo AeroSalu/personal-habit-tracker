@@ -32,6 +32,139 @@
   font-size: 13px;
 }
 
+.usernameForm {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+  align-self: stretch;
+}
+
+.usernameForm > label {
+  flex: 1;
+  min-width: 0;
+}
+
+.atInput {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 44px;
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--faint);
+}
+
+.atInput:focus-within {
+  border-color: var(--accent);
+}
+
+.atInput input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  outline: none;
+}
+
+.help {
+  margin-top: calc(var(--space-3) * -1);
+  color: var(--faint);
+  font-size: 13px;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  align-self: stretch;
+  padding: var(--space-4);
+  border-radius: var(--radius);
+  background: var(--bg);
+}
+
+.preview .help {
+  margin-top: 0;
+}
+
+.previewTitle {
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.previewCard {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.avatar {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.previewText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.previewText span {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.previewStats {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.previewStats li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.toggle input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.toggle span {
+  display: flex;
+  flex-direction: column;
+}
+
+.toggle small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
 .facts {
   display: flex;
   flex-direction: column;

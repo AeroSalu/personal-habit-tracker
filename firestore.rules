@@ -1,9 +1,86 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Each person can reach only their own tasks and completions.
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isMe(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    // Friendships are stored once per pair, under the two IDs in sorted order.
+    function pairId(a, b) {
+      return a < b ? a + '_' + b : b + '_' + a;
+    }
+
+    function isFriend(uid) {
+      return signedIn()
+        && exists(/databases/$(database)/documents/friendships/$(pairId(request.auth.uid, uid)));
+    }
+
+    function isUsername(name) {
+      return name is string && name.matches('^[a-z0-9_]{3,20}$');
+    }
+
+    function intIn(v, lo, hi) {
+      return v is int && v >= lo && v <= hi;
+    }
+
+    // Private records: tasks, habits, logs, sessions, templates and the private profile
+    // (users/{uid} itself, which holds the username and sharing choices).
     match /users/{uid}/{document=**} {
-      allow read, write: if request.auth != null && request.auth.uid == uid;
+      allow read, write: if isMe(uid);
+    }
+
+    // One document per taken name, so names are unique. Created only if free, never
+    // reassigned, and released by deleting it.
+    match /usernames/{name} {
+      allow read: if signedIn();
+      allow create: if isMe(request.resource.data.uid)
+        && isUsername(name)
+        && request.resource.data.keys().hasOnly(['uid']);
+      allow delete: if signedIn() && resource.data.uid == request.auth.uid;
+    }
+
+    // The public card search needs: name, display name and level. Its username must be
+    // one this user holds, checked after the write so claiming and setting can share a batch.
+    match /profiles/{uid} {
+      allow read: if signedIn();
+      allow create, update: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['username', 'displayName', 'level', 'updatedAt'])
+        && isUsername(request.resource.data.username)
+        && getAfter(/databases/$(database)/documents/usernames/$(request.resource.data.username)).data.uid == uid
+        && request.resource.data.displayName is string
+        && request.resource.data.displayName.size() > 0
+        && request.resource.data.displayName.size() <= 40
+        && intIn(request.resource.data.level, 1, 1000)
+        && request.resource.data.updatedAt is string;
+      allow delete: if isMe(uid);
+    }
+
+    // Numbers friends see. Written only by the owner, with limits a real week can't exceed.
+    match /stats/{uid} {
+      allow read: if isMe(uid) || isFriend(uid);
+      allow create, update: if isMe(uid) && validStats(request.resource.data);
+      allow delete: if isMe(uid);
+    }
+
+    function validStats(s) {
+      return s.keys().hasOnly([
+          'level', 'xp', 'badges', 'weekKey', 'weekXp', 'weekFocusMinutes',
+          'seasonKey', 'seasonXp', 'streak', 'focusing', 'updatedAt'])
+        && intIn(s.level, 1, 1000)
+        && intIn(s.xp, 0, 10000000)
+        && s.badges is list && s.badges.size() <= 60
+        && s.weekKey is string && s.weekKey.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$')
+        && intIn(s.weekXp, 0, 20000)
+        && intIn(s.weekFocusMinutes, 0, 10080)
+        && s.seasonKey is string && s.seasonKey.matches('^[0-9]{4}-[0-9]{2}$')
+        && intIn(s.seasonXp, 0, 80000)
+        && intIn(s.streak, 0, 100000)
+        && (s.focusing == null || (s.focusing is map && s.focusing.keys().hasOnly(['until', 'roomId'])))
+        && s.updatedAt is string;
     }
   }
 }
