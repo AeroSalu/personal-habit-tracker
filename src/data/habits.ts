@@ -1,6 +1,8 @@
-import { deleteDoc, doc, setDoc, updateDoc, addDoc, collection, type DocumentData } from 'firebase/firestore'
+import { doc, updateDoc, addDoc, collection, writeBatch, type DocumentData } from 'firebase/firestore'
 import { db } from '../firebase'
 import { dayKey } from '../lib/dates'
+import { activityIds } from '../lib/friends'
+import { postInBatch, removeInBatch } from './activity'
 import { CATEGORIES, logId, type Category, type Habit, type HabitFields, type HabitLog, type Schedule } from '../lib/habits'
 import { useUserCollection } from './useCollection'
 
@@ -20,6 +22,7 @@ function toHabit(id: string, d: DocumentData): Habit {
     targetNote: typeof d.targetNote === 'string' ? d.targetNote : '',
     archived: d.archived === true,
     createdAt: typeof d.createdAt === 'string' ? d.createdAt : '',
+    shared: d.shared === true,
   }
 }
 
@@ -38,7 +41,7 @@ export const useHabitLogs = (uid: string) => useUserCollection(uid, 'habitLogs',
 
 // Writes resolve once the server confirms; screens don't await them (see CLAUDE.md).
 function clean(fields: HabitFields): HabitFields {
-  return { ...fields, name: fields.name.trim(), targetNote: fields.targetNote.trim() }
+  return { ...fields, name: fields.name.trim(), targetNote: fields.targetNote.trim(), shared: fields.shared === true }
 }
 
 export function createHabit(uid: string, fields: HabitFields) {
@@ -57,19 +60,29 @@ export function setHabitArchived(uid: string, id: string, archived: boolean) {
   return updateDoc(doc(db, 'users', uid, 'habits', id), { archived })
 }
 
-/** Records the habit as done, at the moment it was ticked. */
-export function logHabit(uid: string, habitId: string, at: Date) {
+type HabitRef = Pick<Habit, 'id' | 'name' | 'shared'>
+
+/** Records the habit as done, at the moment it was ticked, and posts it if it's shared. */
+export function logHabit(uid: string, habit: HabitRef, at: Date) {
   const key = dayKey(at)
-  return setDoc(doc(db, 'users', uid, 'habitLogs', logId(habitId, key)), {
-    habitId,
+  const batch = writeBatch(db)
+  batch.set(doc(db, 'users', uid, 'habitLogs', logId(habit.id, key)), {
+    habitId: habit.id,
     dayKey: key,
     completedAt: at.toISOString(),
     note: '',
   })
+  if (habit.shared) {
+    postInBatch(batch, activityIds.habit(uid, habit.id, key), { uid, kind: 'habit', title: habit.name, at: at.toISOString() })
+  }
+  return batch.commit()
 }
 
-export function unlogHabit(uid: string, habitId: string, key: string) {
-  return deleteDoc(doc(db, 'users', uid, 'habitLogs', logId(habitId, key)))
+export function unlogHabit(uid: string, habit: HabitRef, key: string) {
+  const batch = writeBatch(db)
+  batch.delete(doc(db, 'users', uid, 'habitLogs', logId(habit.id, key)))
+  removeInBatch(batch, activityIds.habit(uid, habit.id, key))
+  return batch.commit()
 }
 
 export function setLogNote(uid: string, id: string, note: string) {

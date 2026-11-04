@@ -8,7 +8,9 @@ import { AnalyticsPage } from '../analytics/AnalyticsPage'
 import { CalendarPage } from '../calendar/CalendarPage'
 import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
+import { FriendsPage } from '../friends/FriendsPage'
 import { FocusProvider } from '../focus/FocusProvider'
+import { AchievementPoster } from '../game/AchievementPoster'
 import { BadgeWatcher } from '../game/BadgeWatcher'
 import { ChallengesPage } from '../game/ChallengesPage'
 import { StatsPublisher } from '../game/StatsPublisher'
@@ -24,6 +26,7 @@ function SignedInRoutes() {
     <FocusProvider>
       <BadgeWatcher />
       <StatsPublisher />
+      <AchievementPoster />
       <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
@@ -33,6 +36,7 @@ function SignedInRoutes() {
         <Route path="habits" element={<HabitsPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="challenges" element={<ChallengesPage />} />
+        <Route path="friends" element={<FriendsPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

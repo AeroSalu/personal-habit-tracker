@@ -13,6 +13,8 @@ import {
   type Task,
   type TaskFields,
 } from '../lib/tasks'
+import { activityIds } from '../lib/friends'
+import { postInBatch, removeInBatch } from './activity'
 import { useUserCollection } from './useCollection'
 
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
@@ -50,6 +52,7 @@ function toTask(id: string, d: DocumentData): Task {
     createdAt: str(d.createdAt),
     completedAt: str(d.completedAt),
     nextTaskId: str(d.nextTaskId),
+    shared: d.shared === true,
   }
 }
 
@@ -67,6 +70,8 @@ function stored(task: Task): Omit<Task, 'id'> {
 function clean(fields: TaskFields) {
   return {
     ...fields,
+    // Firestore refuses undefined values, so the optional flag is always written as a boolean.
+    shared: fields.shared === true,
     title: fields.title.trim(),
     description: fields.description.trim(),
     subtasks: fields.subtasks
@@ -121,7 +126,10 @@ export function completeTask(uid: string, task: Task, at: Date) {
     })
   }
 
-  batch.set(ref, { ...stored(task), status: 'done', completedAt: at.toISOString(), nextTaskId })
+  batch.set(ref, { ...stored(task), shared: task.shared === true, status: 'done', completedAt: at.toISOString(), nextTaskId })
+  if (task.shared) {
+    postInBatch(batch, activityIds.task(uid, task.id), { uid, kind: 'task', title: task.title, at: at.toISOString() })
+  }
   return batch.commit()
 }
 
@@ -134,7 +142,9 @@ export function reopenTask(uid: string, task: Task, all: Task[], status: Status 
   const next = all.find((t) => t.id === task.nextTaskId)
   const untouched = next && next.status === 'todo' && !next.subtasks.some((s) => s.done)
   if (next && untouched) batch.delete(doc(tasksRef(uid), next.id))
-  batch.set(doc(tasksRef(uid), task.id), { ...stored(task), status, completedAt: '', nextTaskId: '' })
+  batch.set(doc(tasksRef(uid), task.id), { ...stored(task), shared: task.shared === true, status, completedAt: '', nextTaskId: '' })
+  // Clearing is allowed even if nothing was posted, so this never blocks reopening.
+  removeInBatch(batch, activityIds.task(uid, task.id))
   return batch.commit()
 }
 

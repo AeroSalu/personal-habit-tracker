@@ -520,6 +520,33 @@
   flex: 1;
 }
 
+.shareToggle {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  cursor: pointer;
+}
+
+.shareToggle input {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 2px 0 0;
+  accent-color: var(--accent);
+}
+
+.shareToggle span {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.shareToggle small {
+  color: var(--muted);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
 .templateButton {
   align-self: flex-start;
 }

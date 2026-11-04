@@ -1,9 +1,12 @@
-import { Flame, ListChecks, Lock, Repeat, Timer, Trophy, type LucideIcon } from 'lucide-react'
+import { Flame, ListChecks, Lock, Repeat, Share2, Timer, Trophy, type LucideIcon } from 'lucide-react'
 import { addDays, parseDay, weekStart } from '../lib/dates'
 import type { BadgeGroup } from '../lib/achievements'
 import { ALL_MISSIONS_BONUS, CHALLENGE_XP, MISSION_XP } from '../lib/missions'
 import { formatMinutes } from '../lib/profile'
+import { useSignedIn } from '../auth/authContext'
+import { useToast } from '../components/toast'
 import { GoalRow } from './GoalRow'
+import { shareBadge } from './shareCard'
 import { useGame } from './useGame'
 import ui from '../components/ui.module.css'
 import styles from './Challenges.module.css'
@@ -19,6 +22,8 @@ const shortDate = (key: string) => parseDay(key).toLocaleDateString('en-US', { m
 
 export function ChallengesPage() {
   const { loaded, today, xp, level, badges, missions, challenge, bests } = useGame()
+  const { profile } = useSignedIn()
+  const toast = useToast()
   const missionsDone = missions.filter((m) => m.done).length
   const daysLeft = 6 - Math.round((parseDay(today).getTime() - parseDay(weekStart(today)).getTime()) / 86_400_000)
   const earnedCount = badges.filter((b) => b.earnedOn).length
@@ -127,6 +132,21 @@ export function ChallengesPage() {
                       <span className={styles.badgeText}>{b.description}</span>
                       <span className={`${styles.badgeStatus} num`}>
                         {b.earnedOn ? `Earned ${shortDate(b.earnedOn)}` : `${Math.min(b.current, b.target)} / ${b.target}`}
+                        {b.earnedOn && (
+                          <button
+                            type="button"
+                            className={styles.share}
+                            aria-label={`Share ${b.name}`}
+                            onClick={() =>
+                              shareBadge(b, { name: profile.displayName, username: profile.username || 'lockin' })
+                                .then((how) => how === 'downloaded' && toast('Badge image saved. Share it from your downloads.'))
+                                .catch(() => toast('Could not make the badge image.'))
+                            }
+                          >
+                            <Share2 size={13} aria-hidden="true" />
+                            Share
+                          </button>
+                        )}
                       </span>
                     </li>
                   ))}

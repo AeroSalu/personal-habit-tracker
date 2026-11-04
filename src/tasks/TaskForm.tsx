@@ -48,6 +48,7 @@ export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onF
   const [recurrence, setRecurrence] = useState<Recurrence>(start?.recurrence ?? { type: 'none' })
   const [estimate, setEstimate] = useState(start?.estimateMinutes ?? 0)
   const [subtasks, setSubtasks] = useState<Subtask[]>(start?.subtasks ?? [])
+  const [shared, setShared] = useState(start?.shared === true)
   const [confirmDelete, setConfirmDelete] = useState(false)
   const [templateName, setTemplateName] = useState<string | null>(null)
   const [templateSaved, setTemplateSaved] = useState(false)
@@ -64,6 +65,7 @@ export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onF
     subtasks,
     recurrence,
     estimateMinutes: estimate,
+    shared,
   })
 
   function setRepeat(type: Recurrence['type']) {
@@ -263,6 +265,14 @@ export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onF
             Add subtask
           </button>
         </fieldset>
+
+        <label className={styles.shareToggle}>
+          <input id="task-shared" type="checkbox" checked={shared} onChange={(e) => setShared(e.target.checked)} />
+          <span>
+            <strong>Share with friends</strong>
+            <small>When you complete it, friends see “completed {title.trim() || 'this task'}” in their feed.</small>
+          </span>
+        </label>
 
         <p className={ui.error} role="alert">
           {error}

@@ -27,9 +27,11 @@ export type Habit = {
   targetNote: string
   archived: boolean
   createdAt: string
+  /** Show each tick in friends' feeds. Off unless chosen. */
+  shared?: boolean
 }
 
-export type HabitFields = Pick<Habit, 'name' | 'category' | 'schedule' | 'usualTime' | 'targetNote'>
+export type HabitFields = Pick<Habit, 'name' | 'category' | 'schedule' | 'usualTime' | 'targetNote' | 'shared'>
 
 /** One per habit per day; its document ID is `${habitId}_${dayKey}`. */
 export type HabitLog = {

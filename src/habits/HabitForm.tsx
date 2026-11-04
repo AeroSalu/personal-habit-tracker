@@ -22,6 +22,7 @@ export function HabitForm({ habit, onSave, onArchive, onClose }: Props) {
   const [perWeek, setPerWeek] = useState(habit?.schedule.type === 'count' ? habit.schedule.perWeek : 3)
   const [usualTime, setUsualTime] = useState(habit?.usualTime ?? '')
   const [targetNote, setTargetNote] = useState(habit?.targetNote ?? '')
+  const [shared, setShared] = useState(habit?.shared === true)
   const [error, setError] = useState('')
 
   function toggleDay(day: number) {
@@ -36,6 +37,7 @@ export function HabitForm({ habit, onSave, onArchive, onClose }: Props) {
       schedule: type === 'days' ? { type, days: [...days].sort() } : { type, perWeek },
       usualTime,
       targetNote,
+      shared,
     }
     const problem = habitError(fields)
     setError(problem)
@@ -120,6 +122,14 @@ export function HabitForm({ habit, onSave, onArchive, onClose }: Props) {
             />
           </label>
         </div>
+
+        <label className={styles.shareToggle}>
+          <input id="habit-shared" type="checkbox" checked={shared} onChange={(e) => setShared(e.target.checked)} />
+          <span>
+            <strong>Share with friends</strong>
+            <small>Each time you tick it, friends see it in their feed.</small>
+          </span>
+        </label>
 
         <p className={ui.error} role="alert">
           {error}

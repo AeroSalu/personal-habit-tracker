@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
-import { logHabit, useHabitLogs } from '../data/habits'
+import { logHabit, useHabitLogs, useHabits } from '../data/habits'
 import { newSessionId, saveSession, setSessionNote, useSessions } from '../data/sessions'
 import { completeTask, setStatus, useTasks } from '../data/tasks'
 import { dayKey } from '../lib/dates'
@@ -56,6 +56,7 @@ export function FocusProvider({ children }: { children: ReactNode }) {
   const sessions = useSessions(uid)
   const tasks = useTasks(uid)
   const habitLogs = useHabitLogs(uid)
+  const habits = useHabits(uid)
   const toast = useToast()
 
   const [state, setState] = useState<FocusState | null>(() => loadState(uid))
@@ -119,7 +120,8 @@ export function FocusProvider({ children }: { children: ReactNode }) {
     if (link?.kind === 'habit' && state.outcome === 'completed') {
       const today = dayKey(new Date(state.endedAt))
       if (!habitLogs.data.some((l) => l.id === logId(link.id, today))) {
-        logHabit(uid, link.id, new Date(state.endedAt)).catch(failed)
+        const habit = habits.data.find((h) => h.id === link.id) ?? { id: link.id, name: link.title, shared: false }
+        logHabit(uid, habit, new Date(state.endedAt)).catch(failed)
       }
     }
     // Runs once per finished session; the other values are read at that moment.

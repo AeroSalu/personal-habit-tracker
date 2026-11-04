@@ -37,11 +37,13 @@ export type Task = {
   completedAt: string
   /** The instance created when this recurring task was completed, so undo can remove it. */
   nextTaskId: string
+  /** Show this task in friends' feeds when it's completed. Off unless chosen. */
+  shared?: boolean
 }
 
 export type TaskFields = Pick<
   Task,
-  'title' | 'description' | 'category' | 'priority' | 'status' | 'dueDate' | 'dueTime' | 'subtasks' | 'recurrence' | 'estimateMinutes'
+  'title' | 'description' | 'category' | 'priority' | 'status' | 'dueDate' | 'dueTime' | 'subtasks' | 'recurrence' | 'estimateMinutes' | 'shared'
 >
 
 const RANK: Record<Priority, number> = { urgent: 0, high: 1, medium: 2, low: 3 }

@@ -12,11 +12,11 @@ export function useHabitToggle(uid: string) {
 
   return (habit: Habit, keys: Set<string>, today: string): boolean => {
     if (keys.has(today)) {
-      unlogHabit(uid, habit.id, today).catch(failed)
+      unlogHabit(uid, habit, today).catch(failed)
       return false
     }
     const at = new Date()
-    logHabit(uid, habit.id, at).catch(failed)
+    logHabit(uid, habit, at).catch(failed)
     const run = streak(habit, new Set([...keys, today]), today).current
     toast(`${doneLine(habit, at)}${run > 1 ? ` · ${streakLabel(habit, run)} streak` : ''}`)
     return true
