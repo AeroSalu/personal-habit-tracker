@@ -30,7 +30,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
       { label: 'Focus Mode', icon: Timer, path: '/focus' },
       { label: 'Calendar', icon: CalendarDays, path: '/calendar' },
       { label: 'Habits', icon: Repeat, path: '/habits' },
-      { label: 'Analytics', icon: ChartColumn },
+      { label: 'Analytics', icon: ChartColumn, path: '/analytics' },
     ],
   },
   {

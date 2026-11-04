@@ -17,6 +17,21 @@
   --warning: #fbbf24;
   --success: #4ade80;
 
+  /* Charts. Category hues are the dataviz reference dark steps, validated against --card
+     (adjacent CVD ΔE ≥ 8.4, contrast ≥ 3:1). The heat ramp is one hue, dark to light. */
+  --chart-grid: #2a313d;
+  --chart-axis: #3a4250;
+  --cat-study: #3987e5;
+  --cat-work: #d95926;
+  --cat-fitness: #199e70;
+  --cat-personal: #c98500;
+  --cat-none: #5d6575;
+  --heat-0: #232934;
+  --heat-1: #36481f;
+  --heat-2: #557a25;
+  --heat-3: #7eb12d;
+  --heat-4: #a3e635;
+
   --font: 'Inter Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
   --space-1: 4px;

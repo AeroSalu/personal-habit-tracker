@@ -4,6 +4,7 @@ import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
 import { useAuth } from '../auth/authContext'
 import { ToastProvider } from '../components/ToastProvider'
+import { AnalyticsPage } from '../analytics/AnalyticsPage'
 import { CalendarPage } from '../calendar/CalendarPage'
 import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
@@ -28,6 +29,7 @@ function SignedInRoutes() {
         <Route path="focus" element={<FocusPage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="habits" element={<HabitsPage />} />
+        <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="challenges" element={<ChallengesPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
