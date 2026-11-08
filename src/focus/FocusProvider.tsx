@@ -2,6 +2,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } fro
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
 import { logHabit, useHabitLogs, useHabits } from '../data/habits'
+import { setRoomMinutes } from '../data/rooms'
 import { newSessionId, saveSession, setSessionNote, useSessions } from '../data/sessions'
 import { completeTask, setStatus, useTasks } from '../data/tasks'
 import { dayKey } from '../lib/dates'
@@ -115,6 +116,12 @@ export function FocusProvider({ children }: { children: ReactNode }) {
     handled.current.add(state.sessionId)
     if (state.minutes >= MIN_SAVED_MINUTES) {
       saveSession(uid, toSession(state, dayKey(new Date(state.startedAt)))).catch(failed)
+      const roomId = state.plan.roomId
+      if (roomId) {
+        const earlier = sessions.data.filter((s) => s.roomId === roomId && s.id !== state.sessionId)
+        const total = earlier.reduce((sum, s) => sum + s.minutes, 0) + state.minutes
+        setRoomMinutes(roomId, uid, total).catch(() => {})
+      }
     }
     const link = state.plan.link
     if (link?.kind === 'habit' && state.outcome === 'completed') {
@@ -172,11 +179,11 @@ export function FocusProvider({ children }: { children: ReactNode }) {
         savePrefs({ ...loadPrefs(), sound: next })
         unlockAudio()
       },
-      start(plan: Plan) {
+      start(plan: Plan, endsAt?: number) {
         unlockAudio()
         enterFullscreen()
         const today = dayKey(new Date())
-        setState(startFocus(uid, plan, completedOn(sessions.data, today) + 1, at(), newSessionId(uid)))
+        setState(startFocus(uid, plan, completedOn(sessions.data, today) + 1, at(), newSessionId(uid), endsAt))
       },
       pause: () => setState((s) => (s ? pause(s, at()) : s)),
       resume: () => setState((s) => (s ? resume(s, at()) : s)),

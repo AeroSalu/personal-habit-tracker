@@ -19,6 +19,8 @@ export type Plan = {
   longBreak: number
   strict: boolean
   link: FocusLink
+  /** Set when the session was joined from a focus room, so its minutes count toward the room's goal. */
+  roomId?: string
 }
 
 export type Leave = { at: number; ms: number }
@@ -62,7 +64,8 @@ export type FocusState = Running | Summary | OnBreak | BreakOver
 
 const MINUTE = 60_000
 
-export function startFocus(uid: string, plan: Plan, sessionNumber: number, now: number, sessionId: string): Running {
+/** `endsAt` lines the session up with a shared end time, as when joining a room session late. */
+export function startFocus(uid: string, plan: Plan, sessionNumber: number, now: number, sessionId: string, endsAt?: number): Running {
   return {
     uid,
     plan,
@@ -70,7 +73,7 @@ export function startFocus(uid: string, plan: Plan, sessionNumber: number, now: 
     phase: 'focus',
     sessionId,
     startedAt: now,
-    endsAt: now + plan.focusMinutes * MINUTE,
+    endsAt: endsAt ?? now + plan.focusMinutes * MINUTE,
     pausedAt: null,
     pausedMs: 0,
     leaves: [],
@@ -215,6 +218,8 @@ export type Session = {
   outcome: 'completed' | 'stopped'
   leaves: { at: string; seconds: number }[]
   note: string
+  /** The focus room it was part of, or '' when none. */
+  roomId?: string
 }
 
 /** Sessions shorter than this are not saved. */
@@ -237,6 +242,7 @@ export function toSession(summary: Summary, dayKey: string): Session {
     outcome: summary.outcome,
     leaves: summary.leaves.map((l) => ({ at: new Date(l.at).toISOString(), seconds: Math.round(l.ms / 1000) })),
     note: '',
+    roomId: summary.plan.roomId ?? '',
   }
 }
 

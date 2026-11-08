@@ -8,7 +8,8 @@ export type FocusApi = {
   now: number
   sound: Sound
   setSound: (sound: Sound) => void
-  start: (plan: Plan) => void
+  /** `endsAt` lines the session up with a room's shared end time. */
+  start: (plan: Plan, endsAt?: number) => void
   pause: () => void
   resume: () => void
   endEarly: () => void

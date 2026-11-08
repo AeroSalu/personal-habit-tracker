@@ -53,6 +53,11 @@ Private data sits under `users/{uid}/…`, which only that signed-in user can re
 - `groupCodes/{CODE}`: `{groupId, name}`. Single gets only, no listing, so knowing a code is what lets you find a group. Codes are 6 characters with no 0/O or 1/I. A group, its code, the owner's membership and the owner's private `users/{uid}/groups/{gid}` record are written in one batch (`createGroup`), retrying with a new code if one is taken.
 - Deleting a group leaves members' private records behind; their app sees the group document missing (confirmed by the server, not the cache) and offers to remove it. `useLiveDocs` and `useLiveQuery` retry a refused listen a few times, because a read can race the write that grants access.
 
+- `rooms/{rid}`: `{name, hostUid, code, goalMinutes, session: {startedAt, endsAt, minutes} | null, createdAt}`. Members can read it; only the host renames it, sets the goal, or starts and ends the shared session.
+- `rooms/{rid}/members/{uid}`: `{uid, displayName, username, code, joinedAt, state: idle|focusing|break, heartbeatAt, minutes}`. Names and states only, never what anyone works on. Joining needs the room's code. You update only your own; `minutes` can only rise, by at most 240 per write.
+- `roomCodes/{CODE}` and `users/{uid}/rooms/{rid}` work like the group ones.
+- Presence: `RoomPresence` (mounted app-wide) sends a heartbeat every 60 s for the room of a running room session, or else the room page that's open (`src/rooms/viewing.ts`); anyone silent for over two heartbeats shows as away. Joining a shared session calls `focus.start(plan, endsAt)` so everyone finishes together. Sessions saved from a room carry `roomId`, and the member's `minutes` is set to the total of their sessions in that room (a total, not an increment, so a reload can't double-count).
+
 Everything else is closed by default. `dayKey` is the device's local YYYY-MM-DD date, and timestamps are ISO strings from the device clock so offline actions keep their real time.
 
 - `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`)

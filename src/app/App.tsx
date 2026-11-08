@@ -16,6 +16,9 @@ import { BadgeWatcher } from '../game/BadgeWatcher'
 import { ChallengesPage } from '../game/ChallengesPage'
 import { StatsPublisher } from '../game/StatsPublisher'
 import { HabitsPage } from '../habits/HabitsPage'
+import { RoomPage } from '../rooms/RoomPage'
+import { RoomPresence } from '../rooms/RoomPresence'
+import { RoomsPage } from '../rooms/RoomsPage'
 import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
@@ -28,6 +31,7 @@ function SignedInRoutes() {
       <BadgeWatcher />
       <StatsPublisher />
       <AchievementPoster />
+      <RoomPresence />
       <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />
@@ -39,6 +43,8 @@ function SignedInRoutes() {
         <Route path="challenges" element={<ChallengesPage />} />
         <Route path="friends" element={<FriendsPage />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
+        <Route path="rooms" element={<RoomsPage />} />
+        <Route path="rooms/:id" element={<RoomPage />} />
         <Route path="profile" element={<ProfilePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />

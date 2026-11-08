@@ -25,6 +25,7 @@ function toSession(id: string, d: DocumentData): Session {
       ? d.leaves.map((l: DocumentData) => ({ at: str(l?.at), seconds: num(l?.seconds) }))
       : [],
     note: str(d.note),
+    roomId: str(d.roomId),
   }
 }
 

@@ -205,6 +205,80 @@ service cloud.firestore {
       allow delete: if signedIn() && get(groupPath(resource.data.groupId)).data.ownerUid == request.auth.uid;
     }
 
+    // ---- Focus rooms ----
+
+    function roomPath(rid) {
+      return /databases/$(database)/documents/rooms/$(rid);
+    }
+
+    function inRoom(rid) {
+      return signedIn() && exists(/databases/$(database)/documents/rooms/$(rid)/members/$(request.auth.uid));
+    }
+
+    function validSession(s) {
+      return s == null || (s is map
+        && s.keys().hasOnly(['startedAt', 'endsAt', 'minutes'])
+        && s.startedAt is string && s.endsAt is string
+        && intIn(s.minutes, 1, 240));
+    }
+
+    function validRoom(r) {
+      return r.name is string && r.name.size() > 0 && r.name.size() <= 40
+        && r.code is string && r.code.matches('^[A-HJ-NP-Z2-9]{6}$')
+        && intIn(r.goalMinutes, 0, 100000)
+        && validSession(r.session);
+    }
+
+    // Names and states only: what someone is working on is never stored here.
+    function validRoomMember(m, uid) {
+      return m.keys().hasOnly(['uid', 'displayName', 'username', 'code', 'joinedAt', 'state', 'heartbeatAt', 'minutes'])
+        && m.uid == uid
+        && m.displayName is string && m.displayName.size() <= 40
+        && isUsername(m.username)
+        && m.state in ['idle', 'focusing', 'break']
+        && m.heartbeatAt is string
+        && intIn(m.minutes, 0, 1000000);
+    }
+
+    match /rooms/{rid} {
+      allow read: if inRoom(rid);
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['name', 'hostUid', 'code', 'goalMinutes', 'session', 'createdAt'])
+        && request.resource.data.hostUid == request.auth.uid
+        && validRoom(request.resource.data)
+        && getAfter(/databases/$(database)/documents/roomCodes/$(request.resource.data.code)).data.roomId == rid;
+      // Only the host renames, sets the goal, or starts and ends the shared session.
+      allow update: if signedIn()
+        && resource.data.hostUid == request.auth.uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['name', 'goalMinutes', 'session'])
+        && validRoom(request.resource.data);
+      allow delete: if signedIn() && resource.data.hostUid == request.auth.uid;
+
+      match /members/{uid} {
+        allow read: if inRoom(rid);
+        allow create: if isMe(uid)
+          && validRoomMember(request.resource.data, uid)
+          && request.resource.data.minutes == 0
+          && request.resource.data.code == getAfter(roomPath(rid)).data.code;
+        // Your own state and heartbeat; focus minutes only go up, by at most one session.
+        allow update: if isMe(uid)
+          && validRoomMember(request.resource.data, uid)
+          && request.resource.data.code == resource.data.code
+          && request.resource.data.minutes >= resource.data.minutes
+          && request.resource.data.minutes <= resource.data.minutes + 240;
+        allow delete: if isMe(uid) || (signedIn() && get(roomPath(rid)).data.hostUid == request.auth.uid);
+      }
+    }
+
+    match /roomCodes/{code} {
+      allow get: if signedIn();
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['roomId', 'name'])
+        && getAfter(roomPath(request.resource.data.roomId)).data.hostUid == request.auth.uid
+        && getAfter(roomPath(request.resource.data.roomId)).data.code == code;
+      allow delete: if signedIn() && get(roomPath(resource.data.roomId)).data.hostUid == request.auth.uid;
+    }
+
     function validStats(s) {
       return s.keys().hasOnly([
           'level', 'xp', 'badges', 'weekKey', 'weekXp', 'weekFocusMinutes',

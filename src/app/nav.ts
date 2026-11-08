@@ -38,7 +38,7 @@ export const NAV_GROUPS: { title: string; items: NavItem[] }[] = [
     items: [
       { label: 'Friends', icon: Users, path: '/friends' },
       { label: 'Leaderboard', icon: Trophy, path: '/leaderboard' },
-      { label: 'Focus Rooms', icon: DoorOpen },
+      { label: 'Focus Rooms', icon: DoorOpen, path: '/rooms' },
       { label: 'Challenges', icon: Target, path: '/challenges' },
     ],
   },
