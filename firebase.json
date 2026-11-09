@@ -13,6 +13,19 @@
     ]
   },
   "firestore": { "rules": "firestore.rules", "indexes": "firestore.indexes.json" },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "LOCKIN",
+        "supportEmail": "aero.salu@gmail.com",
+        "authorizedRedirectUris": [
+          "https://lockin-habits-aerosalu.firebaseapp.com",
+          "https://lockin-habits-aerosalu.web.app"
+        ]
+      }
+    }
+  },
   "emulators": {
     "auth": { "port": 9099 },
     "firestore": { "port": 8080 },
