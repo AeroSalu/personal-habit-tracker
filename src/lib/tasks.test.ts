@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  quickTask,
   DEFAULT_FILTER,
   dueLabel,
   groupTasks,
@@ -175,5 +176,14 @@ describe('taskError', () => {
     expect(taskError({ ...ok, dueDate: '2026-11-02', recurrence: { type: 'custom', days: [] } })).not.toBe('')
     expect(taskError({ ...ok, estimateMinutes: 2000 })).not.toBe('')
     expect(taskError({ ...ok, estimateMinutes: Number.NaN })).not.toBe('')
+  })
+})
+
+describe('quickTask', () => {
+  it('makes a valid task due today from a title', () => {
+    const f = quickTask('  Revise notes ', '2026-11-02')
+    expect(f.title).toBe('Revise notes')
+    expect(f.dueDate).toBe('2026-11-02')
+    expect(taskError(f)).toBe('')
   })
 })

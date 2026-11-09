@@ -4,11 +4,11 @@ import { useToast } from '../components/toast'
 import { useGame } from './useGame'
 
 /**
- * Announces newly earned badges once per device. Only the IDs already announced are kept,
+ * Announces newly earned badges once per device, when badge alerts are on. Only the IDs already announced are kept,
  * in localStorage; the badges themselves are always worked out from the records.
  */
 export function BadgeWatcher() {
-  const { user } = useSignedIn()
+  const { user, profile } = useSignedIn()
   const { loaded, badges } = useGame()
   const toast = useToast()
   const earned = badges.filter((b) => b.earnedOn)
@@ -25,7 +25,8 @@ export function BadgeWatcher() {
     }
     const ids = earnedKey ? earnedKey.split(',') : []
     // First visit on this device: remember what's already earned without announcing it.
-    if (seen) {
+    // With alerts off, badges are still marked seen so turning alerts on never floods old ones.
+    if (seen && profile.badgeAlerts) {
       const fresh = earned.filter((b) => !seen.includes(b.id))
       if (fresh.length === 1) toast(`Badge unlocked: ${fresh[0].name}`)
       else if (fresh.length > 1) toast(`${fresh.length} badges unlocked, including ${fresh[0].name}`)

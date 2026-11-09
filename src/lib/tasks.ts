@@ -46,6 +46,23 @@ export type TaskFields = Pick<
   'title' | 'description' | 'category' | 'priority' | 'status' | 'dueDate' | 'dueTime' | 'subtasks' | 'recurrence' | 'estimateMinutes' | 'shared'
 >
 
+/** A task typed into quick add: just a title, due today, everything else at its default. */
+export function quickTask(title: string, today: string): TaskFields {
+  return {
+    title: title.trim(),
+    description: '',
+    category: 'work',
+    priority: 'medium',
+    status: 'todo',
+    dueDate: today,
+    dueTime: '',
+    subtasks: [],
+    recurrence: { type: 'none' },
+    estimateMinutes: 0,
+    shared: false,
+  }
+}
+
 const RANK: Record<Priority, number> = { urgent: 0, high: 1, medium: 2, low: 3 }
 
 /** Sort key for a deadline: no date goes last, no time sorts at the end of its day. */

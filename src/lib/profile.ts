@@ -6,6 +6,8 @@ export type Profile = {
   username: string
   /** Post badges and level-ups to friends' activity feed. */
   shareAchievements: boolean
+  /** Pop up a message when a badge is earned. Off unless chosen, to keep the app quiet. */
+  badgeAlerts: boolean
 }
 
 export type ProfileFields = Pick<Profile, 'displayName' | 'dailyFocusGoalMinutes'>
@@ -40,6 +42,7 @@ export function toProfile(data: Record<string, unknown>): Profile {
     createdAt: typeof data.createdAt === 'string' ? data.createdAt : '',
     username: typeof data.username === 'string' ? data.username : '',
     shareAchievements: data.shareAchievements !== false,
+    badgeAlerts: data.badgeAlerts === true,
   }
 }
 

@@ -39,6 +39,7 @@ describe('toProfile', () => {
       createdAt: '',
       username: '',
       shareAchievements: true,
+      badgeAlerts: false,
     })
     expect(toProfile({ displayName: 'A', dailyFocusGoalMinutes: 60, createdAt: 'x' }).dailyFocusGoalMinutes).toBe(60)
   })

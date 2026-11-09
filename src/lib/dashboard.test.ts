@@ -7,6 +7,7 @@ import {
   lockInDays,
   lockInStreak,
   productivityScore,
+  todayList,
   todaysTasks,
   upcomingDeadlines,
   xpBreakdown,
@@ -200,5 +201,30 @@ describe('words', () => {
   it('keeps the same line all day', () => {
     expect(lineFor(TODAY)).toBe(lineFor(TODAY))
     expect(typeof lineFor('2026-11-03')).toBe('string')
+  })
+})
+
+describe('todayList', () => {
+  const at = (h: number, m = 0) => new Date(2026, 10, 2, h, m)
+  const timed = (id: string, time: string): Habit => ({ ...habit(id, [1]), usualTime: time })
+
+  it('puts overdue first, then by time, untimed after, finished last', () => {
+    const tasks = [
+      task({ title: 'later', dueDate: TODAY }),
+      task({ title: 'urgent', dueDate: TODAY, priority: 'urgent' }),
+      task({ title: 'late', dueDate: '2026-11-01' }),
+      task({ title: 'at 18', dueDate: TODAY, dueTime: '18:00' }),
+      task({ title: 'done', dueDate: TODAY, status: 'done', completedAt: at(8).toISOString() }),
+      task({ title: 'tomorrow', dueDate: '2026-11-03' }),
+    ]
+    const habits = [timed('gym', '07:00'), timed('read', '')]
+    const list = todayList(tasks, habits, [log('gym', TODAY)], at(12))
+    expect(list.map((i) => i.id)).toEqual(['late', 'at 18', 'urgent', 'later', 'read', 'gym', 'done'])
+    expect(list[0].overdue).toBe(true)
+  })
+
+  it('marks a task past its time today as overdue', () => {
+    const list = todayList([task({ title: 'call', dueDate: TODAY, dueTime: '09:00' })], [], [], at(10))
+    expect(list[0].overdue).toBe(true)
   })
 })

@@ -4,6 +4,7 @@ import { signOut } from '../auth/authActions'
 import { useSignedIn } from '../auth/authContext'
 import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
+import { setBadgeAlerts } from '../data/social'
 import { SocialSettings } from './SocialSettings'
 import ui from '../components/ui.module.css'
 import styles from './ProfilePage.module.css'
@@ -30,6 +31,22 @@ export function ProfilePage() {
         <p className={styles.status} role="status">
           {status}
         </p>
+      </div>
+
+      <div className={`${ui.card} ${styles.section}`}>
+        <h2>Preferences</h2>
+        <label className={styles.toggle}>
+          <input
+            id="badge-alerts"
+            type="checkbox"
+            checked={profile.badgeAlerts}
+            onChange={(e) => setBadgeAlerts(user.uid, e.target.checked).catch(() => setStatus('Could not save that setting.'))}
+          />
+          <span>
+            <strong>Show XP and badge alerts</strong>
+            <small>Pop up a message when you earn a badge. Your badges are always on the Challenges page.</small>
+          </span>
+        </label>
       </div>
 
       <SocialSettings />

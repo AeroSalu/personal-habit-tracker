@@ -27,7 +27,8 @@ Productivity PWA in React + Vite + TypeScript on Firebase Auth, Firestore and Ho
 ## Architecture
 
 - `src/firebase.ts` creates the app, auth and Firestore (persistent multi-tab cache) from `VITE_FIREBASE_*` env values, and connects to the emulators when `VITE_USE_EMULATORS=true`. `.env` holds the live web config, which is public by design.
-- `src/app/nav.ts` is the single navigation list. The desktop sidebar (1024px and up), phone bottom bar and phone More page are all built from it; entries without a `path` are later-phase modules shown as "Soon".
+- `src/app/nav.ts` is the single navigation list: `PRIMARY` (everyday screens, always in the sidebar; the first four are the phone bottom bar) and `SECONDARY` (folded under "More" in the sidebar, unfolded when one is open). The phone More page lists everything not on the bottom bar plus Settings. Entries without a `path` are later-phase modules shown as "Soon".
+- The dashboard is deliberately minimal and professional: one column with the focus card (score folded into a disclosure), one Today list (`todayList` in `src/lib/dashboard.ts` merges tasks and habits) with quick add, and the next three deadlines. Gamification (XP, levels, missions) stays off it; badge pop-ups only show when the profile's `badgeAlerts` is on.
 - `src/auth/AuthProvider.tsx` combines the Firebase user and the `users/{uid}` profile document into one `AuthState`: `loading`, `signedOut`, `needsProfile` or `ready`. `App.tsx` gates on it (sign-in page, then first-time setup, then the app), so every screen inside the app can call `useSignedIn()` and rely on a profile existing.
 - A missing profile is only believed once the server confirms it, not from an empty local cache, or a returning user on a new device would be sent to setup.
 - Google sign-in uses a redirect on phones and in the installed app, and a popup on desktop (`src/auth/authActions.ts`). `redirectError` is read once at startup.
@@ -60,7 +61,7 @@ Private data sits under `users/{uid}/…`, which only that signed-in user can re
 
 Everything else is closed by default. `dayKey` is the device's local YYYY-MM-DD date, and timestamps are ISO strings from the device clock so offline actions keep their real time.
 
-- `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`)
+- `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`, `username`, `shareAchievements`, `badgeAlerts`)
 - `habits/{id}`: `name`, `category`, `schedule` (`{type:'days', days}` with `Date.getDay` numbers, or `{type:'count', perWeek}`), `usualTime`, `targetNote`, `archived`, `createdAt`
 - `habitLogs/{habitId_dayKey}`: `habitId`, `dayKey`, `completedAt`, `note`. The ID allows one per habit per day and makes undo a delete.
 - `tasks/{id}`: `title`, `description`, `category`, `priority` (urgent, high, medium, low), `status` (todo, in_progress, done), `dueDate` (day key or ''), `dueTime` ("HH:MM" or ''), `subtasks` (array of `{id, title, done}`), `recurrence` (`{type:'none'|'daily'|'weekly'}` or `{type:'custom', days}`), `estimateMinutes`, `order`, `createdAt`, `completedAt`, `nextTaskId`

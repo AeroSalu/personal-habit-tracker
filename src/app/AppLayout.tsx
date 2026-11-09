@@ -1,7 +1,8 @@
-import { NavLink, Outlet } from 'react-router-dom'
-import { Ellipsis, Lock } from 'lucide-react'
+import { useState } from 'react'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { ChevronDown, Ellipsis, Lock } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
-import { BOTTOM_BAR, NAV_GROUPS, type NavItem } from './nav'
+import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
 import styles from './AppLayout.module.css'
 
 function SidebarItem({ item }: { item: NavItem }) {
@@ -33,6 +34,15 @@ function SidebarItem({ item }: { item: NavItem }) {
 
 export function AppLayout() {
   const { profile } = useSignedIn()
+  const { pathname } = useLocation()
+  const inMore = SECONDARY.some((item) => item.path && pathname.startsWith(item.path))
+  const [showMore, setMoreOpen] = useState(inMore)
+  // Opening a page that lives under More unfolds it; the user can still fold it again.
+  const [wasInMore, setWasInMore] = useState(inMore)
+  if (inMore !== wasInMore) {
+    setWasInMore(inMore)
+    if (inMore) setMoreOpen(true)
+  }
 
   return (
     <div className={styles.frame}>
@@ -42,16 +52,29 @@ export function AppLayout() {
           LOCKIN
         </p>
         <nav aria-label="Main">
-          {NAV_GROUPS.map((group) => (
-            <div key={group.title} className={styles.group}>
-              <p className={styles.groupTitle}>{group.title}</p>
-              <ul>
-                {group.items.map((item) => (
-                  <SidebarItem key={item.label} item={item} />
-                ))}
-              </ul>
-            </div>
-          ))}
+          <ul>
+            {PRIMARY.map((item) => (
+              <SidebarItem key={item.label} item={item} />
+            ))}
+          </ul>
+          <button
+            type="button"
+            className={`${styles.item} ${styles.moreToggle}`}
+            aria-expanded={showMore}
+            aria-controls="sidebar-more"
+            onClick={() => setMoreOpen(!showMore)}
+          >
+            <Ellipsis size={18} aria-hidden="true" />
+            <span className={styles.label}>More</span>
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </button>
+          {showMore && (
+            <ul id="sidebar-more">
+              {SECONDARY.map((item) => (
+                <SidebarItem key={item.label} item={item} />
+              ))}
+            </ul>
+          )}
         </nav>
         <NavLink to="/profile" className={styles.me}>
           <span className={styles.avatar} aria-hidden="true">

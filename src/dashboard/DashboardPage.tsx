@@ -1,27 +1,16 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ChevronRight, Flame, Lock, Trophy } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Lock, Plus, Repeat, SlidersHorizontal } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
-import {
-  lineFor,
-  lockInDays,
-  lockInStreak,
-  greeting,
-  productivityScore,
-  todaysTasks,
-  upcomingDeadlines,
-} from '../lib/dashboard'
-import { MISSION_XP } from '../lib/missions'
-import { GoalRow } from '../game/GoalRow'
-import { useGame } from '../game/useGame'
+import { greeting, productivityScore, todayList, upcomingDeadlines, type TodayItem } from '../lib/dashboard'
 import { dayKey } from '../lib/dates'
-import { completedOn, minutesOn } from '../lib/focus'
+import { minutesOn } from '../lib/focus'
 import { byUsualTime, isDue, keysFor, type Habit } from '../lib/habits'
 import { firstName, formatMinutes } from '../lib/profile'
-import { compareTasks, dueLabel, isOverdue } from '../lib/tasks'
+import { compareTasks, dueLabel, quickTask } from '../lib/tasks'
 import { useNow } from '../lib/useNow'
 import { useFocus } from '../focus/focusContext'
 import { loadPrefs, planFromPrefs } from '../focus/prefs'
@@ -49,6 +38,11 @@ function FocusRing({ share }: { share: number }) {
   )
 }
 
+function timeLabel(time: string) {
+  const [h, m] = time.split(':').map(Number)
+  return new Date(2000, 0, 1, h, m).toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })
+}
+
 export function DashboardPage() {
   const { user, profile } = useSignedIn()
   const uid = user.uid
@@ -62,36 +56,51 @@ export function DashboardPage() {
   const now = useNow()
   const today = dayKey(now)
   const [ticked, setTicked] = useState('')
+  const [draft, setDraft] = useState('')
 
   const loaded = tasks.loaded && habits.loaded && logs.loaded && sessions.loaded
 
   const minutes = minutesOn(sessions.data, today)
   const goal = profile.dailyFocusGoalMinutes
-  const sessionsToday = completedOn(sessions.data, today)
 
-  const todays = todaysTasks(tasks.data, today)
-  const pending = [...todays.pending].sort(compareTasks)
   const keysOf = (h: Habit) => keysFor(logs.data, h.id)
   const dueHabits = habits.data.filter((h) => !h.archived && isDue(h, keysOf(h), today)).sort(byUsualTime)
-  const habitsDone = dueHabits.filter((h) => keysOf(h).has(today)).length
+  const items = todayList(tasks.data, dueHabits, logs.data, now)
+  const doneCount = items.filter((i) => i.done).length
+  const taskItems = items.filter((i) => i.kind === 'task')
+  const habitItems = items.filter((i) => i.kind === 'habit')
 
   const score = productivityScore({
     focusMinutes: minutes,
     focusGoal: goal,
-    tasksDone: todays.done.length,
-    tasksTotal: todays.done.length + todays.pending.length,
-    habitsDone,
-    habitsTotal: dueHabits.length,
+    tasksDone: taskItems.filter((i) => i.done).length,
+    tasksTotal: taskItems.length,
+    habitsDone: habitItems.filter((i) => i.done).length,
+    habitsTotal: habitItems.length,
   })
-  const streak = lockInStreak(lockInDays(sessions.data, logs.data, tasks.data), today)
-  const { xp, level, missions } = useGame()
-  const deadlines = upcomingDeadlines(tasks.data, today).slice(0, 6)
+  const comingUp = upcomingDeadlines(tasks.data, today)
+    .filter((t) => t.dueDate > today)
+    .slice(0, 3)
 
-  const prefs = loadPrefs()
-  const nextUp = pending[0] ?? tasks.data.filter((t) => t.status !== 'done').sort(compareTasks)[0]
-  const quickPlan = planFromPrefs(prefs, nextUp ? { kind: 'task', id: nextUp.id, title: nextUp.title } : null)
+  const firstOpen = items.find((i) => i.kind === 'task' && !i.done)
+  const nextUp =
+    firstOpen?.kind === 'task' ? firstOpen.task : tasks.data.filter((t) => t.status !== 'done').sort(compareTasks)[0]
+  const quickPlan = planFromPrefs(loadPrefs(), nextUp ? { kind: 'task', id: nextUp.id, title: nextUp.title } : null)
 
   const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
+
+  function add(e: FormEvent) {
+    e.preventDefault()
+    if (!draft.trim()) return
+    taskActions.save(null, quickTask(draft, today))
+    setDraft('')
+  }
+
+  function toggle(item: TodayItem) {
+    setTicked(item.done ? '' : item.id)
+    if (item.kind === 'task') taskActions.toggle(item.task)
+    else if (!toggleHabit(item.habit, keysOf(item.habit), today)) setTicked('')
+  }
 
   return (
     <section className={styles.page} aria-busy={!loaded}>
@@ -100,11 +109,10 @@ export function DashboardPage() {
         <h1>
           {greeting(now.getHours())}, {firstName(profile)}
         </h1>
-        <p className={styles.line}>{lineFor(today)}</p>
       </header>
 
-      <div className={styles.grid}>
-        <article className={`${ui.card} ${styles.focus}`}>
+      <article className={`${ui.card} ${styles.focus}`}>
+        <div className={styles.focusMain}>
           <div className={styles.ringWrap}>
             <FocusRing share={minutes / goal} />
             <div className={styles.ringLabel}>
@@ -113,14 +121,12 @@ export function DashboardPage() {
             </div>
           </div>
           <div className={styles.focusBody}>
-            <h2>Focus today</h2>
-            <p className={`${styles.muted} num`}>
-              {sessionsToday} session{sessionsToday === 1 ? '' : 's'} completed
-              {minutes >= goal ? ' · goal reached' : ` · ${formatMinutes(goal - minutes)} to go`}
+            <p className={styles.toGo}>
+              {minutes >= goal ? 'Focus goal reached' : `${formatMinutes(goal - minutes)} of focus to go`}
             </p>
             {nextUp && (
               <p className={styles.nextUp}>
-                Next up: <strong>{nextUp.title}</strong>
+                Next: <strong>{nextUp.title}</strong>
               </p>
             )}
             <div className={styles.focusActions}>
@@ -128,170 +134,132 @@ export function DashboardPage() {
                 <Lock size={16} aria-hidden="true" />
                 Lock in · {quickPlan.focusMinutes} min
               </button>
-              <Link to="/focus" className={`${ui.button} ${ui.ghost}`}>
-                Options
+              <Link to="/focus" className={`${ui.button} ${ui.ghost} ${styles.iconButton}`} aria-label="Focus options" title="Focus options">
+                <SlidersHorizontal size={18} aria-hidden="true" />
               </Link>
             </div>
           </div>
-        </article>
+        </div>
 
-        <article className={`${ui.card} ${styles.score}`}>
-          <div className={styles.cardHead}>
-            <h2>Productivity score</h2>
-            <span className={`${styles.scoreValue} num`}>{score.score}</span>
-          </div>
-          <ul className={styles.parts} aria-label="How the score is made">
+        <details className={styles.score}>
+          <summary>
+            <span>Productivity score</span>
+            <strong className="num">{score.score}</strong>
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </summary>
+          <ul className={styles.parts}>
             {score.parts.map((p) => (
               <li key={p.id}>
-                <div className={styles.partHead}>
-                  <span>{p.label}</span>
-                  <span className={`${styles.muted} num`}>
-                    {p.detail} · {p.weight}%
-                  </span>
-                </div>
-                <div className={styles.partBar}>
+                <span>{p.label}</span>
+                <div className={styles.partBar} aria-hidden="true">
                   <span style={{ width: `${p.value * 100}%` }} />
                 </div>
+                <span className={`${styles.faint} num`}>
+                  {p.detail} · {p.weight}%
+                </span>
               </li>
             ))}
           </ul>
-          <p className={styles.footnote}>Focus counts 40%, tasks 35% and habits 25%. Parts with nothing due today are left out.</p>
-        </article>
+        </details>
+      </article>
 
-        <article className={`${ui.card} ${styles.today}`}>
-          <div className={styles.cardHead}>
-            <h2>Today</h2>
-            <Link to="/tasks" className={styles.more}>
-              All tasks <ChevronRight size={14} aria-hidden="true" />
-            </Link>
-          </div>
+      <article className={`${ui.card} ${styles.today}`}>
+        <div className={styles.cardHead}>
+          <h2>Today</h2>
+          {items.length > 0 && (
+            <span className={`${styles.faint} num`}>
+              {doneCount} of {items.length} done
+            </span>
+          )}
+        </div>
 
-          <p className={`${styles.subhead} num`}>
-            Tasks · {todays.done.length} done, {todays.pending.length} pending
-          </p>
-          {pending.length ? (
-            <ul className={styles.checklist}>
-              {pending.slice(0, 5).map((t) => (
-                <li key={t.id}>
+        <form className={styles.quickAdd} onSubmit={add}>
+          <Plus size={18} aria-hidden="true" />
+          <input
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            placeholder="Add a task for today"
+            aria-label="Add a task for today"
+            maxLength={120}
+            enterKeyHint="done"
+          />
+          {draft.trim() && (
+            <button type="submit" className={`${ui.button} ${ui.primary} ${styles.addButton}`}>
+              Add
+            </button>
+          )}
+        </form>
+
+        {items.length ? (
+          <ul className={styles.checklist}>
+            {items.map((item) => {
+              const title = item.kind === 'task' ? item.task.title : item.habit.name
+              const meta =
+                item.kind === 'task' && item.overdue
+                  ? item.task.dueDate < today
+                    ? dueLabel(item.task, today)
+                    : `Overdue · ${timeLabel(item.time)}`
+                  : item.time
+                    ? timeLabel(item.time)
+                    : ''
+              return (
+                <li
+                  key={`${item.kind}-${item.id}`}
+                  className={`${item.done ? styles.done : ''} ${ticked === item.id ? styles.pop : ''}`}
+                >
                   <button
                     type="button"
                     className={styles.check}
-                    aria-label={`Complete ${t.title}`}
-                    onClick={() => taskActions.toggle(t)}
+                    aria-pressed={item.done}
+                    aria-label={`${item.done ? 'Undo' : 'Complete'} ${title}`}
+                    onClick={() => toggle(item)}
                   >
                     <Check size={14} strokeWidth={3} aria-hidden="true" />
                   </button>
-                  <span className={styles.itemText}>{t.title}</span>
-                  <span className={`${styles.badge} ${styles[t.priority]}`}>{t.priority}</span>
+                  <span className={styles.itemText}>
+                    {title}
+                    {item.kind === 'habit' && (
+                      <Repeat size={13} className={styles.habitIcon} aria-label="Habit" role="img" />
+                    )}
+                  </span>
+                  {item.kind === 'task' && !item.done && (item.task.priority === 'urgent' || item.task.priority === 'high') && (
+                    <span
+                      className={`${styles.dot} ${styles[item.task.priority]}`}
+                      role="img"
+                      aria-label={`${item.task.priority} priority`}
+                      title={`${item.task.priority} priority`}
+                    />
+                  )}
+                  {meta && !item.done && (
+                    <span className={`num ${item.overdue ? styles.late : styles.faint}`}>{meta}</span>
+                  )}
                 </li>
-              ))}
-              {pending.length > 5 && <li className={styles.muted}>+{pending.length - 5} more</li>}
-            </ul>
-          ) : (
-            <p className={styles.muted}>{todays.done.length ? 'All of today’s tasks are done.' : 'No tasks due today.'}</p>
-          )}
-
-          <p className={`${styles.subhead} num`}>
-            Habits · {habitsDone} of {dueHabits.length} done
-          </p>
-          {dueHabits.length ? (
-            <ul className={styles.checklist}>
-              {dueHabits.map((h) => {
-                const done = keysOf(h).has(today)
-                return (
-                  <li key={h.id} className={`${done ? styles.done : ''} ${ticked === h.id ? styles.pop : ''}`}>
-                    <button
-                      type="button"
-                      className={styles.check}
-                      aria-pressed={done}
-                      aria-label={`${done ? 'Undo' : 'Complete'} ${h.name}`}
-                      onClick={() => {
-                        if (toggleHabit(h, keysOf(h), today)) setTicked(h.id)
-                      }}
-                    >
-                      <Check size={14} strokeWidth={3} aria-hidden="true" />
-                    </button>
-                    <span className={styles.itemText}>{h.name}</span>
-                  </li>
-                )
-              })}
-            </ul>
-          ) : (
-            <p className={styles.muted}>No habits due today.</p>
-          )}
-        </article>
-
-        <article className={`${ui.card} ${styles.progress}`}>
-          <div className={styles.stat}>
-            <Flame size={22} className={styles.flame} aria-hidden="true" />
-            <div>
-              <strong className="num">
-                {streak.current} day{streak.current === 1 ? '' : 's'}
-              </strong>
-              <span>Lock-in streak · best {streak.best}</span>
-            </div>
-          </div>
-          <p className={styles.footnote}>A day counts when you finish a focus session, a habit or a task.</p>
-
-          <div className={styles.stat}>
-            <Trophy size={22} className={styles.trophy} aria-hidden="true" />
-            <div>
-              <strong className="num">Level {level.level}</strong>
-              <span className="num">{xp.total} XP total</span>
-            </div>
-          </div>
-          <div
-            className={styles.xpBar}
-            role="progressbar"
-            aria-label="Progress to the next level"
-            aria-valuemin={0}
-            aria-valuemax={level.needed}
-            aria-valuenow={level.into}
-          >
-            <span style={{ width: `${level.share * 100}%` }} />
-          </div>
-          <p className={`${styles.footnote} num`}>
-            {level.needed - level.into} XP to level {level.level + 1} · tasks {xp.tasks} · habits {xp.habits} · focus {xp.sessions}
-            {xp.allDone ? ` · all-done days ${xp.allDone}` : ''}
-            {xp.missions + xp.challenges ? ` · missions ${xp.missions + xp.challenges}` : ''}
-          </p>
-        </article>
-
-        <article className={`${ui.card} ${styles.missions}`}>
-          <div className={styles.cardHead}>
-            <h2>Today’s missions</h2>
-            <Link to="/challenges" className={styles.more}>
-              Challenges <ChevronRight size={14} aria-hidden="true" />
-            </Link>
-          </div>
-          <ul className={styles.missionList}>
-            {missions.map((m) => (
-              <GoalRow key={m.id} goal={m} xp={MISSION_XP} />
-            ))}
+              )
+            })}
           </ul>
-        </article>
+        ) : (
+          <p className={styles.empty}>Nothing due today. Add a task above to plan your day.</p>
+        )}
+      </article>
 
-        <article className={`${ui.card} ${styles.deadlines}`}>
+      {comingUp.length > 0 && (
+        <section className={styles.comingUp} aria-labelledby="coming-up">
           <div className={styles.cardHead}>
-            <h2>Upcoming deadlines</h2>
+            <h2 id="coming-up">Coming up</h2>
             <Link to="/calendar" className={styles.more}>
               Calendar <ChevronRight size={14} aria-hidden="true" />
             </Link>
           </div>
-          {deadlines.length ? (
-            <ul className={styles.deadlineList}>
-              {deadlines.map((t) => (
-                <li key={t.id}>
-                  <span className={styles.itemText}>{t.title}</span>
-                  <span className={`num ${isOverdue(t, now) ? styles.late : styles.muted}`}>{dueLabel(t, today)}</span>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className={styles.muted}>Nothing due in the next 7 days.</p>
-          )}
-        </article>
-      </div>
+          <ul>
+            {comingUp.map((t) => (
+              <li key={t.id}>
+                <span className={styles.itemText}>{t.title}</span>
+                <span className={`${styles.faint} num`}>{dueLabel(t, today)}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </section>
   )
 }

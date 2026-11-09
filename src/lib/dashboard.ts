@@ -5,7 +5,7 @@
 import { addDays, dayKey, weekday } from './dates'
 import type { Habit, HabitLog } from './habits'
 import type { Session } from './focus'
-import type { Task } from './tasks'
+import { compareTasks, isOverdue, type Task } from './tasks'
 
 /** Days with any finished work: a completed focus session, a habit tick or a completed task. */
 export function lockInDays(sessions: Session[], logs: HabitLog[], tasks: Task[]): Set<string> {
@@ -142,6 +142,51 @@ export function todaysTasks(tasks: Task[], today: string) {
     done: relevant.filter((t) => t.status === 'done'),
     pending: relevant.filter((t) => t.status !== 'done'),
   }
+}
+
+export type TodayItem =
+  | { kind: 'task'; id: string; task: Task; done: boolean; overdue: boolean; time: string }
+  | { kind: 'habit'; id: string; habit: Habit; done: boolean; overdue: false; time: string }
+
+/**
+ * Today's tasks and due habits as one list: open overdue tasks first, then open items by
+ * time of day (untimed ones after, tasks by priority), then everything finished today.
+ */
+export function todayList(tasks: Task[], dueHabits: Habit[], logs: HabitLog[], now: Date): TodayItem[] {
+  const today = dayKey(now)
+  const { done, pending } = todaysTasks(tasks, today)
+  const ticked = new Set(logs.filter((l) => l.dayKey === today).map((l) => l.habitId))
+  const items: TodayItem[] = [
+    ...[...pending, ...done].map((t) => ({
+      kind: 'task' as const,
+      id: t.id,
+      task: t,
+      done: t.status === 'done',
+      overdue: isOverdue(t, now),
+      time: t.dueDate === today ? t.dueTime : '',
+    })),
+    ...dueHabits.map((h) => ({
+      kind: 'habit' as const,
+      id: h.id,
+      habit: h,
+      done: ticked.has(h.id),
+      overdue: false as const,
+      time: h.usualTime,
+    })),
+  ]
+  const rank = (i: TodayItem) => (i.done ? 2 : i.overdue ? 0 : 1)
+  return items.sort(
+    (a, b) =>
+      rank(a) - rank(b) ||
+      (a.time || '99').localeCompare(b.time || '99') ||
+      (a.kind === b.kind
+        ? a.kind === 'task'
+          ? compareTasks(a.task, (b as typeof a).task)
+          : a.habit.name.localeCompare((b as typeof a).habit.name)
+        : a.kind === 'task'
+          ? -1
+          : 1),
+  )
 }
 
 /** Open tasks due in the next `days` days, overdue first, then by deadline. */

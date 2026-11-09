@@ -40,6 +40,10 @@ export function publishStats(uid: string, stats: Omit<PublicStats, 'updatedAt'>)
   return setDoc(doc(db, 'stats', uid), { ...stats, updatedAt: new Date().toISOString() })
 }
 
+export function setBadgeAlerts(uid: string, on: boolean) {
+  return updateDoc(doc(db, 'users', uid), { badgeAlerts: on })
+}
+
 export function setShareAchievements(uid: string, share: boolean) {
   return updateDoc(doc(db, 'users', uid), { shareAchievements: share })
 }
