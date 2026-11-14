@@ -131,7 +131,7 @@ export function RoomPage() {
               <p className={`${styles.clock} num`}>{timerText(left)}</p>
               <p className={styles.muted}>Everyone who joins finishes together.</p>
               {inSession ? (
-                <p className={styles.good}>You’re locked in.</p>
+                <p className={styles.good}>You’re in the session.</p>
               ) : (
                 <button type="button" className={`${ui.button} ${ui.primary} ${styles.big}`} onClick={() => lockIn(new Date(room.session!.endsAt).getTime())}>
                   <Lock size={17} aria-hidden="true" /> Join the session

@@ -286,8 +286,8 @@ summary.groupTitle {
 
 .dayPicker [aria-pressed='true'] {
   border-color: var(--accent);
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--accent-soft);
+  color: var(--accent);
 }
 
 .twoUp {

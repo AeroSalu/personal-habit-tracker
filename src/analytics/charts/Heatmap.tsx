@@ -17,7 +17,7 @@ function level(c: Cell) {
 function describe(c: Cell) {
   const date = parseDay(c.key).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
   if (!c.lockedIn && !c.minutes) return `${date}: nothing recorded`
-  return `${date}: ${c.minutes ? `${formatMinutes(c.minutes)} focus` : 'locked in, no focus session'}`
+  return `${date}: ${c.minutes ? `${formatMinutes(c.minutes)} focus` : 'active, no focus session'}`
 }
 
 /** Lock-in days by week, Monday at the top, with one tooltip shared by all cells. */
@@ -36,7 +36,7 @@ export function Heatmap({ cells }: { cells: Cell[] }) {
         <div
           className={styles.heat}
           role="img"
-          aria-label={`Locked in on ${lockedIn} of the last ${cells.length} days`}
+          aria-label={`Active on ${lockedIn} of the last ${cells.length} days`}
           onPointerOver={(e) => {
             const el = e.target as HTMLElement
             const key = el.dataset.key
@@ -59,7 +59,7 @@ export function Heatmap({ cells }: { cells: Cell[] }) {
       </div>
       <figcaption className={styles.caption}>
         <span className="num">
-          Locked in on {lockedIn} of the last {cells.length} days
+          Active on {lockedIn} of the last {cells.length} days
         </span>
         <span className={styles.scale} aria-hidden="true">
           Less <i className={styles.h0} />

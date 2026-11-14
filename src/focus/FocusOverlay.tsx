@@ -179,7 +179,7 @@ export function FocusOverlay() {
   return (
     <div className={styles.overlay} role="dialog" aria-modal="true" aria-label="Focus session">
       <div className={styles.panel}>
-        <p className={styles.label}>{paused ? 'Paused' : 'Locked in on'}</p>
+        <p className={styles.label}>{paused ? 'Paused' : 'Focusing on'}</p>
         <h1 className={styles.title}>{state.plan.link?.title ?? 'Deep focus'}</h1>
         <p className={`${styles.timer} ${paused ? styles.pausedTimer : ''} num`} aria-live="off">
           {timerText(left)}
