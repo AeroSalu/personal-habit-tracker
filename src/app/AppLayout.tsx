@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { ChevronDown, Ellipsis, Lock } from 'lucide-react'
+import { ChevronDown, CircleCheck, Ellipsis } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
 import styles from './AppLayout.module.css'
@@ -48,8 +48,8 @@ export function AppLayout() {
     <div className={styles.frame}>
       <aside className={styles.sidebar}>
         <p className={styles.brand}>
-          <Lock size={18} aria-hidden="true" />
-          LOCKIN
+          <CircleCheck size={18} aria-hidden="true" />
+          CADENCE
         </p>
         <nav aria-label="Main">
           <ul>

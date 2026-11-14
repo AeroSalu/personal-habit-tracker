@@ -19,7 +19,7 @@ export function ProfileSetup({ user }: { user: User }) {
         </p>
         <ProfileForm
           initial={{ displayName: user.displayName ?? '', dailyFocusGoalMinutes: 120 }}
-          submitLabel="Start locking in"
+          submitLabel="Get started"
           onSubmit={(fields) =>
             createProfile(user.uid, fields).catch(() =>
               setError('Your profile could not be saved. Check your connection and try again.'),

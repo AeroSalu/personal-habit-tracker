@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Lock } from 'lucide-react'
+import { Play } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
@@ -213,8 +213,8 @@ export function FocusPage() {
           {error}
         </p>
         <button type="button" className={`${ui.button} ${ui.primary} ${styles.start}`} onClick={start}>
-          <Lock size={18} aria-hidden="true" />
-          Lock in
+          <Play size={18} aria-hidden="true" />
+          Start focus
         </button>
       </div>
 

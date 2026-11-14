@@ -50,7 +50,7 @@ function focusHours(ix: GameIndex, hours: number) {
 const streak = (id: string, n: number, name: string): BadgeDef => ({
   id,
   name,
-  description: `Lock in ${n} days in a row.`,
+  description: `Show up ${n} days in a row.`,
   group: 'streaks',
   target: n,
   check: (ix) => streakTo(ix, n),
@@ -68,7 +68,7 @@ const tasks = (id: string, n: number, name: string): BadgeDef => ({
 export const BADGES: BadgeDef[] = [
   {
     id: 'first-lock-in',
-    name: 'First Lock-In',
+    name: 'First Step',
     description: 'Finish your first focus session, habit or task.',
     group: 'streaks',
     target: 1,
@@ -81,7 +81,7 @@ export const BADGES: BadgeDef[] = [
   {
     id: 'perfect-week',
     name: 'Perfect Week',
-    description: 'Lock in every day from Monday to Sunday.',
+    description: 'Show up every day from Monday to Sunday.',
     group: 'streaks',
     target: 7,
     check: (ix) => {

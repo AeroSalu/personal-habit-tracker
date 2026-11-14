@@ -93,7 +93,7 @@ export function RoomsPage() {
       <header>
         <h1>Focus Rooms</h1>
         <p className={styles.muted}>
-          Lock in together. Everyone sees who’s focusing, never what they’re working on.
+          Focus together. Everyone sees who’s focusing, never what they’re working on.
         </p>
       </header>
 
@@ -159,7 +159,7 @@ export function RoomsPage() {
                 className={ui.input}
                 value={name}
                 maxLength={40}
-                placeholder="DSA Lock-in"
+                placeholder="DSA study block"
                 onChange={(e) => setName(e.target.value)}
               />
             </label>

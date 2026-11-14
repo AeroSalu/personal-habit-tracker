@@ -154,7 +154,7 @@ const CHALLENGES: ChallengeDef[] = [
     id: 'lock-in-days',
     eligible: () => true,
     build: (ix, start) => ({
-      title: 'Lock in on 6 days this week',
+      title: 'Show up on 6 days this week',
       current: daysOfWeek(ix, start).filter((d) => ix.lockIn.includes(d)).length,
       target: 6,
     }),

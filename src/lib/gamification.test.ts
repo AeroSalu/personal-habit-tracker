@@ -68,7 +68,7 @@ const badge = (ix: ReturnType<typeof game>, id: string) => badgeStates(ix).find(
 const run = (from: string, n: number) => Array.from({ length: n }, (_, i) => addDays(from, i))
 
 describe('badges', () => {
-  it('earns First Lock-In on the first day with finished work', () => {
+  it('earns First Step on the first day with finished work', () => {
     expect(badge(game({}), 'first-lock-in').earnedOn).toBeNull()
     expect(badge(game({ logs: [log('h', '2026-10-20')] }), 'first-lock-in').earnedOn).toBe('2026-10-20')
   })

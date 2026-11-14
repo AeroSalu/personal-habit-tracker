@@ -1,5 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { Lock } from 'lucide-react'
+import { CircleCheck } from 'lucide-react'
 import {
   authMessage,
   redirectError,
@@ -19,7 +19,7 @@ const COPY: Record<Mode, { heading: string; button: string }> = {
   reset: { heading: 'Reset your password', button: 'Send reset email' },
 }
 
-const LOOP = ['Plan', 'Lock in', 'Track', 'Improve']
+const LOOP = ['Plan', 'Focus', 'Track', 'Improve']
 
 function GoogleMark() {
   return (
@@ -88,15 +88,15 @@ export function AuthPage() {
     <div className={styles.page}>
       <section className={styles.intro}>
         <p className={styles.brand}>
-          <Lock size={22} aria-hidden="true" />
-          LOCKIN
+          <CircleCheck size={22} aria-hidden="true" />
+          CADENCE
         </p>
         <h1 className={styles.tagline}>
           Stop planning.
           <br />
           <span>Start executing.</span>
         </h1>
-        <ol className={styles.loop} aria-label="How LOCKIN works">
+        <ol className={styles.loop} aria-label="How Cadence works">
           {LOOP.map((step) => (
             <li key={step}>{step}</li>
           ))}

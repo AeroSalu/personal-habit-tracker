@@ -1,4 +1,4 @@
-/* LOCKIN design tokens, from the product blueprint. Dark only for now: light comes later
+/* Cadence design tokens, from the product blueprint. Dark only for now: light comes later
    by redefining these tokens, so components must use them and never raw colors. */
 :root {
   --bg: #111318;

@@ -80,7 +80,7 @@ export async function drawBadgeCard(badge: { name: string; description: string }
   ctx.textAlign = 'left'
   ctx.fillStyle = ACCENT
   ctx.font = font(800, 34)
-  ctx.fillText('LOCKIN', 130, 160)
+  ctx.fillText('CADENCE', 130, 160)
 
   return new Promise<Blob>((resolve, reject) => canvas.toBlob((b) => (b ? resolve(b) : reject(new Error('No image'))), 'image/png'))
 }
@@ -91,8 +91,8 @@ export async function shareBadge(
   person: { name: string; username: string },
 ): Promise<'shared' | 'downloaded' | 'cancelled'> {
   const blob = await drawBadgeCard(badge, person)
-  const file = new File([blob], `lockin-${badge.id}.png`, { type: 'image/png' })
-  const text = `I earned the ${badge.name} badge on LOCKIN.`
+  const file = new File([blob], `cadence-${badge.id}.png`, { type: 'image/png' })
+  const text = `I earned the ${badge.name} badge on Cadence.`
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], title: badge.name, text })

@@ -2,9 +2,11 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-# LOCKIN
+# Cadence (formerly LOCKIN)
 
 Productivity PWA in React + Vite + TypeScript on Firebase Auth, Firestore and Hosting. The P0 modules are built: Dashboard, Tasks, Calendar, Focus, Habits. Later phases (gamification badges, analytics, social and focus rooms, AI coach) show as "Soon" in the navigation. Live at https://lockin-habits-aerosalu.firebaseapp.com (project `lockin-habits-aerosalu`); use that address, not `.web.app`, because it matches `authDomain`.
+
+The app was renamed from LOCKIN to Cadence on 2026-11-14. Only what people see changed: the Firebase project, URL, repo, `lockin.*` localStorage keys, badge and mission IDs (such as `first-lock-in`) and code names like `lockInDays` keep the old name on purpose, so stored data and installed apps keep working. Don't use "Lock in" in UI copy.
 
 ## Rules
 

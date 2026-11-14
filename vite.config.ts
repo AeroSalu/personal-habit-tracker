@@ -10,8 +10,8 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['icons/icon-180.png'],
       manifest: {
-        name: 'LOCKIN',
-        short_name: 'LOCKIN',
+        name: 'Cadence',
+        short_name: 'Cadence',
         description: 'Stop planning. Start executing.',
         start_url: '/',
         scope: '/',

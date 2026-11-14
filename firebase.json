@@ -17,7 +17,7 @@
     "providers": {
       "emailPassword": true,
       "googleSignIn": {
-        "oAuthBrandDisplayName": "LOCKIN",
+        "oAuthBrandDisplayName": "Cadence",
         "supportEmail": "aero.salu@gmail.com",
         "authorizedRedirectUris": [
           "https://lockin-habits-aerosalu.firebaseapp.com",

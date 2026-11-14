@@ -1,14 +1,14 @@
-# LOCKIN
+# Cadence
 
 **Stop planning. Start executing.**
 
-A productivity app that combines tasks, habits and focus sessions: plan your day, lock in on one thing at a time, and track your consistency. It works on phone and desktop, installs like an app, and keeps working without signal.
+A productivity app that combines tasks, habits and focus sessions: plan your day, focus on one thing at a time, and track your consistency. It works on phone and desktop, installs like an app, and keeps working without signal.
 
 Live at **https://lockin-habits-aerosalu.firebaseapp.com**
 
 ## What's in it
 
-- **Dashboard:** focus ring against your daily goal, one-tap Lock in, an explainable productivity score, today's tasks and habits, lock-in streak, XP and level, upcoming deadlines.
+- **Dashboard:** focus ring against your daily goal, one-tap Start focus, an explainable productivity score, today's tasks and habits, lock-in streak, XP and level, upcoming deadlines.
 - **Tasks:** priorities, deadlines with times, subtasks, estimates, categories, daily, weekly or custom-day repeats, search and filters.
 - **Calendar:** month and week views of tasks, with overdue markers.
 - **Focus mode:** 25/5, 50/10, 90/15 or custom, linked to a task or habit, pause and resume, breaks, strict mode, generated ambient sound, session history and notes.
