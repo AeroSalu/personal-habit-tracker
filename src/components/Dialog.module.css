@@ -9,11 +9,20 @@
   border-radius: var(--radius-lg) var(--radius-lg) 0 0;
   background: var(--card);
   color: var(--text);
-  animation: rise 0.2s ease-out;
+  animation: sheet-in var(--dur-3) var(--ease-out);
 }
 
 .dialog::backdrop {
   background: var(--overlay);
+  animation: fade-in var(--dur-3) var(--ease-out);
+}
+
+.closing {
+  animation: sheet-out var(--dur-2) var(--ease-in-out) forwards;
+}
+
+.closing::backdrop {
+  animation: fade-out var(--dur-2) var(--ease-in-out) forwards;
 }
 
 @media (min-width: 640px) {
@@ -22,6 +31,12 @@
     margin: auto;
     border-bottom: 1px solid var(--border);
     border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-3);
+    animation-name: pop-in;
+  }
+
+  .closing {
+    animation-name: pop-out;
   }
 }
 
@@ -63,9 +78,40 @@
   color: var(--muted);
 }
 
-@keyframes rise {
+@keyframes sheet-in {
   from {
-    transform: translateY(16px);
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.98);
+  }
+}
+
+@keyframes pop-out {
+  to {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes fade-out {
+  to {
     opacity: 0;
   }
 }

@@ -84,9 +84,10 @@ export function TasksPage() {
   const current = editing && 'task' in editing ? tasks.data.find((t) => t.id === editing.task.id) ?? null : null
   const overdueCount = groups.find((g) => g.id === 'overdue')?.tasks.length ?? 0
 
-  const row = (t: Task) => (
+  const row = (t: Task, i: number) => (
     <TaskRow
       key={t.id}
+      index={i}
       task={t}
       now={now}
       today={today}

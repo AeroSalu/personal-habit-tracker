@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useLayoutEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ChevronDown, Ellipsis } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -45,6 +45,30 @@ export function AppLayout() {
     if (inMore) setMoreOpen(true)
   }
 
+  // One highlight that slides to the active item, instead of each item lighting up on its own.
+  const navRef = useRef<HTMLElement>(null)
+  const pillRef = useRef<HTMLSpanElement>(null)
+  useLayoutEffect(() => {
+    const nav = navRef.current
+    const pill = pillRef.current
+    if (!nav || !pill) return
+    const active = nav.querySelector<HTMLElement>('a[aria-current="page"]')
+    if (!active || active.closest('[inert]')) {
+      pill.style.opacity = '0'
+      return
+    }
+    // Appearing from hidden jumps into place; moving between items glides.
+    const wasHidden = pill.style.opacity !== '1'
+    if (wasHidden) pill.style.transition = 'none'
+    pill.style.transform = `translateY(${active.offsetTop}px)`
+    pill.style.height = `${active.offsetHeight}px`
+    if (wasHidden) {
+      void pill.offsetHeight
+      pill.style.transition = ''
+    }
+    pill.style.opacity = '1'
+  }, [pathname, showMore])
+
   return (
     <div className={styles.frame}>
       <aside className={styles.sidebar}>
@@ -52,7 +76,8 @@ export function AppLayout() {
           <Logo size={22} />
           CADENCE
         </p>
-        <nav aria-label="Main">
+        <nav aria-label="Main" className={styles.nav} ref={navRef}>
+          <span className={styles.pill} ref={pillRef} aria-hidden="true" />
           <ul>
             {PRIMARY.map((item) => (
               <SidebarItem key={item.label} item={item} />
@@ -69,13 +94,14 @@ export function AppLayout() {
             <span className={styles.label}>More</span>
             <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
           </button>
-          {showMore && (
+          {/* Always rendered so it can unfold smoothly; inert while folded. */}
+          <div className={`${styles.fold} ${showMore ? styles.open : ''}`} inert={!showMore}>
             <ul id="sidebar-more">
               {SECONDARY.map((item) => (
                 <SidebarItem key={item.label} item={item} />
               ))}
             </ul>
-          )}
+          </div>
         </nav>
         <NavLink to="/profile" className={styles.me}>
           <span className={styles.avatar} aria-hidden="true">
@@ -86,7 +112,10 @@ export function AppLayout() {
       </aside>
 
       <main className={styles.main}>
-        <Outlet />
+        {/* Keyed by path so each screen fades and rises in as you move between them. */}
+        <div key={pathname} className="page-enter">
+          <Outlet />
+        </div>
       </main>
 
       <nav className={styles.bottomBar} aria-label="Main">

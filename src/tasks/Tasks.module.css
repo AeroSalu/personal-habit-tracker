@@ -260,7 +260,7 @@
   border-radius: 50%;
   background: transparent;
   color: transparent;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background var(--dur-1), border-color var(--dur-1);
 }
 
 .check:hover {

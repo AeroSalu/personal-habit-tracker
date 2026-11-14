@@ -40,7 +40,7 @@
   height: 100%;
   border-radius: 4px;
   background: var(--accent);
-  transition: width 0.4s ease;
+  transition: width var(--dur-3) var(--ease-out);
 }
 
 .setup {
@@ -272,7 +272,8 @@
   padding: max(var(--space-5), env(safe-area-inset-top)) max(var(--space-4), env(safe-area-inset-right))
     max(var(--space-5), env(safe-area-inset-bottom)) max(var(--space-4), env(safe-area-inset-left));
   background: var(--bg);
-  animation: fade 0.25s ease-out;
+  animation: fade var(--dur-3) var(--ease-out);
+  transition: background-color calc(var(--dur-3) * 2) var(--ease-in-out);
 }
 
 .calm {

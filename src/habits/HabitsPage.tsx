@@ -121,9 +121,10 @@ export function HabitsPage() {
             <h2 className={styles.groupTitle}>Today</h2>
             {due.length ? (
               <ul className={styles.cards}>
-                {due.map((h) => (
+                {due.map((h, i) => (
                   <HabitCard
                     key={h.id}
+                    index={i}
                     habit={h}
                     keys={keysOf(h)}
                     today={today}

@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type CSSProperties, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { Check, ChevronDown, ChevronRight, Play, Plus, Repeat, SlidersHorizontal } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -14,6 +14,7 @@ import { compareTasks, dueLabel, quickTask } from '../lib/tasks'
 import { useNow } from '../lib/useNow'
 import { useFocus } from '../focus/focusContext'
 import { loadPrefs, planFromPrefs } from '../focus/prefs'
+import { useFlip } from '../components/useFlip'
 import { useHabitToggle } from '../habits/useHabitToggle'
 import { useTaskActions } from '../tasks/useTaskActions'
 import ui from '../components/ui.module.css'
@@ -57,6 +58,7 @@ export function DashboardPage() {
   const today = dayKey(now)
   const [ticked, setTicked] = useState('')
   const [draft, setDraft] = useState('')
+  const listRef = useFlip<HTMLUListElement>()
 
   const loaded = tasks.loaded && habits.loaded && logs.loaded && sessions.loaded
 
@@ -191,8 +193,8 @@ export function DashboardPage() {
         </form>
 
         {items.length ? (
-          <ul className={styles.checklist}>
-            {items.map((item) => {
+          <ul className={styles.checklist} ref={listRef}>
+            {items.map((item, i) => {
               const title = item.kind === 'task' ? item.task.title : item.habit.name
               const meta =
                 item.kind === 'task' && item.overdue
@@ -205,7 +207,9 @@ export function DashboardPage() {
               return (
                 <li
                   key={`${item.kind}-${item.id}`}
-                  className={`${item.done ? styles.done : ''} ${ticked === item.id ? styles.pop : ''}`}
+                  data-flip={`${item.kind}-${item.id}`}
+                  className={`${item.done ? styles.done : ''} ${ticked === item.id ? styles.pop : ''} enter`}
+                  style={{ '--i': i } as CSSProperties}
                 >
                   <button
                     type="button"
@@ -217,7 +221,7 @@ export function DashboardPage() {
                     <Check size={14} strokeWidth={3} aria-hidden="true" />
                   </button>
                   <span className={styles.itemText}>
-                    {title}
+                    <span className={styles.title}>{title}</span>
                     {item.kind === 'habit' && (
                       <Repeat size={13} className={styles.habitIcon} aria-label="Habit" role="img" />
                     )}

@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Check, Flame } from 'lucide-react'
 import { clock, parseClock } from '../lib/dates'
 import { completionRate, doneLine, streak, weekProgress, type Habit, type HabitLog } from '../lib/habits'
@@ -12,9 +13,11 @@ type Props = {
   pop: boolean
   onToggle: () => void
   onOpen: () => void
+  /** Position in the list, for the staggered entrance. */
+  index?: number
 }
 
-export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onOpen }: Props) {
+export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onOpen, index = 0 }: Props) {
   const run = streak(habit, keys, today).current
   const rate = Math.round(completionRate(habit, keys, today) * 100)
 
@@ -31,7 +34,10 @@ export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onO
   }
 
   return (
-    <li className={`${styles.card} ${log ? styles.done : ''} ${pop ? styles.pop : ''}`}>
+    <li
+      className={`${styles.card} ${log ? styles.done : ''} ${pop ? styles.pop : ''} enter`}
+      style={{ '--i': index } as CSSProperties}
+    >
       <button
         type="button"
         className={styles.tick}

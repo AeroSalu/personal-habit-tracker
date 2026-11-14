@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState, type FormEvent } from 'react'
+import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Award, CheckCircle2, Flame, Repeat, Search, TrendingUp, UserMinus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -248,12 +248,12 @@ export function FriendsPage() {
               <p className={styles.muted}>Search for a friend’s @username to add them. They’ll see your level, streak and weekly focus.</p>
             ) : (
               <ul className={styles.list}>
-                {friendIds.map((uid) => {
+                {friendIds.map((uid, i) => {
                   const p = profiles.get(`profiles/${uid}`)
                   const s = stats.get(`stats/${uid}`)
                   const focusing = s ? isFocusingNow(s, now.getTime()) : false
                   return (
-                    <li key={uid} className={styles.friend}>
+                    <li key={uid} className={`${styles.friend} enter`} style={{ '--i': i } as CSSProperties}>
                       <div className={styles.person}>
                         <span className={styles.avatarWrap}>
                           <Avatar name={p?.displayName ?? '?'} />
@@ -334,10 +334,10 @@ export function FriendsPage() {
             </p>
           ) : (
             <ul className={styles.feed}>
-              {feed.map((a) => {
+              {feed.map((a, i) => {
                 const Icon = ICONS[a.kind]
                 return (
-                  <li key={a.id}>
+                  <li key={a.id} className="enter" style={{ '--i': i } as CSSProperties}>
                     <span className={`${styles.feedIcon} ${styles[a.kind]}`} aria-hidden="true">
                       <Icon size={15} />
                     </span>

@@ -63,6 +63,14 @@
   --radius: 12px;
   --radius-lg: 16px;
 
+  /* Motion: calm, never bouncy. Hovers and presses use --dur-1, items --dur-2, pages and
+     sheets --dur-3. Reduced motion cuts every duration to nothing (bottom of this file). */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-1: 160ms;
+  --dur-2: 260ms;
+  --dur-3: 400ms;
+
   --sidebar-width: 248px;
   --bottom-bar-height: 64px;
 }
@@ -214,10 +222,36 @@ button {
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
+  transition: outline-offset var(--dur-1) var(--ease-out);
 }
 
 .num {
   font-variant-numeric: tabular-nums;
+}
+
+/* Shared entrances. .page-enter wraps each screen; .enter rows rise in turn, with --i set
+   to the row's index (capped at 8 here) so long lists never feel slow. */
+.page-enter {
+  animation: page-in var(--dur-3) var(--ease-out) backwards;
+}
+
+.enter {
+  animation: rise-in var(--dur-2) var(--ease-out) backwards;
+  animation-delay: calc(min(var(--i, 0), 8) * 35ms);
+}
+
+@keyframes page-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -225,6 +259,8 @@ button {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
   }
 }

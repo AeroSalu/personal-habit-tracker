@@ -12,7 +12,12 @@
   font-size: 14px;
   font-weight: 600;
   transform: translateX(-50%);
-  animation: up 0.2s ease-out;
+  box-shadow: var(--shadow-3);
+  animation: up var(--dur-3) var(--ease-out);
+}
+
+.leaving {
+  animation: down var(--dur-2) var(--ease-in-out) forwards;
 }
 
 @media (min-width: 1024px) {
@@ -24,7 +29,14 @@
 
 @keyframes up {
   from {
-    transform: translate(-50%, 8px);
+    transform: translate(-50%, 10px);
+    opacity: 0;
+  }
+}
+
+@keyframes down {
+  to {
+    transform: translate(-50%, 6px);
     opacity: 0;
   }
 }

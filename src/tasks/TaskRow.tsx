@@ -1,3 +1,4 @@
+import type { CSSProperties } from 'react'
 import { Check, Clock3, ListChecks, Repeat } from 'lucide-react'
 import { clock, parseClock } from '../lib/dates'
 import { formatMinutes } from '../lib/profile'
@@ -14,16 +15,18 @@ type Props = {
   hideDate?: boolean
   /** Minutes of focus sessions spent on this task. */
   focusMinutes?: number
+  /** Position in the list, for the staggered entrance. */
+  index?: number
 }
 
-export function TaskRow({ task, now, today, onToggle, onOpen, hideDate, focusMinutes = 0 }: Props) {
+export function TaskRow({ task, now, today, onToggle, onOpen, hideDate, focusMinutes = 0, index = 0 }: Props) {
   const done = task.status === 'done'
   const late = isOverdue(task, now)
   const steps = subtaskProgress(task)
   const due = hideDate ? (task.dueTime ? clock(parseClock(task.dueTime)) : '') : dueLabel(task, today)
 
   return (
-    <li className={`${styles.row} ${done ? styles.done : ''}`}>
+    <li className={`${styles.row} ${done ? styles.done : ''} enter`} style={{ '--i': index } as CSSProperties}>
       <button
         type="button"
         className={styles.check}

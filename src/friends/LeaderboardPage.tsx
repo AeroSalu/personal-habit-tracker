@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useState, type FormEvent, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Copy, Crown, Medal, Target, Users } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -49,8 +49,8 @@ function Board({ entries, metric, today, me }: { entries: Entry[]; metric: Metri
   }
   return (
     <ol className={styles.board}>
-      {ranked.map((e) => (
-        <li key={e.uid} className={e.uid === me ? styles.me : ''}>
+      {ranked.map((e, i) => (
+        <li key={e.uid} className={`${e.uid === me ? styles.me : ''} enter`} style={{ '--i': i } as CSSProperties}>
           <span className={`${styles.rank} num`} aria-label={`Rank ${e.rank}`}>
             {e.rank === 1 && e.value > 0 ? <Crown size={16} aria-hidden="true" /> : e.rank}
           </span>
