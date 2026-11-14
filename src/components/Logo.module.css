@@ -1,0 +1,112 @@
+/* The 3D mark. Every layer shares one preserve-3d chain; nothing on that chain may use
+   `filter`, `opacity` below 1 or `overflow: hidden`, which would flatten it. */
+.logo {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  width: var(--size);
+  height: var(--size);
+  perspective: calc(var(--size) * 5);
+}
+
+.float,
+.spin {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+}
+
+.spin {
+  transform: rotateX(16deg) rotateY(-24deg);
+}
+
+.layer {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.edge {
+  fill: none;
+  stroke: var(--accent-deep);
+  stroke-width: 11;
+}
+
+.face {
+  fill: none;
+  stroke-width: 11;
+}
+
+.check {
+  fill: none;
+  stroke: var(--text);
+  stroke-width: 9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* A soft pool of light under the floating mark. */
+.shadow {
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: -14%;
+  height: 12%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--accent-soft), transparent);
+  animation: pool 4.5s ease-in-out infinite alternate;
+}
+
+.animated .spin {
+  animation: orbit 9s cubic-bezier(0.65, 0, 0.35, 1) infinite alternate;
+}
+
+.animated .float {
+  animation: float 4.5s ease-in-out infinite alternate;
+}
+
+.animated .check {
+  stroke-dasharray: 1;
+  animation: draw 0.9s cubic-bezier(0.22, 1, 0.36, 1) 0.35s both;
+}
+
+@keyframes orbit {
+  0% {
+    transform: rotateX(20deg) rotateY(-34deg) rotateZ(-3deg);
+  }
+  50% {
+    transform: rotateX(8deg) rotateY(0deg) rotateZ(0deg);
+  }
+  100% {
+    transform: rotateX(22deg) rotateY(34deg) rotateZ(3deg);
+  }
+}
+
+@keyframes float {
+  from {
+    transform: translateY(-4%);
+  }
+  to {
+    transform: translateY(4%);
+  }
+}
+
+@keyframes pool {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(1.05);
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}

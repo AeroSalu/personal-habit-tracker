@@ -1,3 +1,4 @@
+import { useCallback, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import { AuthPage } from '../auth/AuthPage'
 import { AuthProvider } from '../auth/AuthProvider'
@@ -54,12 +55,25 @@ function SignedInRoutes() {
   )
 }
 
-function Gate() {
+function Screen() {
   const state = useAuth()
-  if (state.status === 'loading') return <Splash />
+  if (state.status === 'loading') return null
   if (state.status === 'signedOut') return <AuthPage />
   if (state.status === 'needsProfile') return <ProfileSetup user={state.user} />
   return <SignedInRoutes />
+}
+
+/** The app with the loading screen on top, which fades away once loading ends. */
+function Gate() {
+  const loading = useAuth().status === 'loading'
+  const [splash, setSplash] = useState(true)
+  const gone = useCallback(() => setSplash(false), [])
+  return (
+    <>
+      <Screen />
+      {splash && <Splash leaving={!loading} onGone={gone} />}
+    </>
+  )
 }
 
 export function App() {

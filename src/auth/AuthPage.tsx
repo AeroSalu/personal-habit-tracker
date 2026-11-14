@@ -1,5 +1,4 @@
 import { useEffect, useState, type FormEvent } from 'react'
-import { CircleCheck } from 'lucide-react'
 import {
   authMessage,
   redirectError,
@@ -9,6 +8,7 @@ import {
   signUpWithEmail,
 } from './authActions'
 import ui from '../components/ui.module.css'
+import { Logo } from '../components/Logo'
 import styles from './AuthPage.module.css'
 
 type Mode = 'signin' | 'signup' | 'reset'
@@ -88,7 +88,7 @@ export function AuthPage() {
     <div className={styles.page}>
       <section className={styles.intro}>
         <p className={styles.brand}>
-          <CircleCheck size={22} aria-hidden="true" />
+          <Logo size={44} animated />
           CADENCE
         </p>
         <h1 className={styles.tagline}>
