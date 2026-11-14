@@ -1,13 +1,13 @@
 // Draws a badge as an image card and hands it to the phone's share sheet, or downloads it
-// where sharing files isn't supported. Colours match the design tokens in global.css.
+// where sharing files isn't supported. Colours match the dark design tokens in global.css.
 
 const W = 1080
 const H = 1080
-const BG = '#111318'
-const CARD = '#1d222b'
-const ACCENT = '#a3e635'
-const TEXT = '#f4f4f5'
-const MUTED = '#9aa3b2'
+const BG = '#0e0f12'
+const CARD = '#16181d'
+const ACCENT = '#7c83ff'
+const TEXT = '#ecedef'
+const MUTED = '#8b8f99'
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const words = text.split(/\s+/)
@@ -42,7 +42,7 @@ export async function drawBadgeCard(badge: { name: string; description: string }
   ctx.fill()
 
   // Badge medallion
-  ctx.fillStyle = 'rgba(163, 230, 53, 0.14)'
+  ctx.fillStyle = 'rgba(124, 131, 255, 0.14)'
   ctx.beginPath()
   ctx.arc(W / 2, 380, 150, 0, Math.PI * 2)
   ctx.fill()

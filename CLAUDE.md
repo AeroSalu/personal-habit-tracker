@@ -14,7 +14,7 @@ The app was renamed from LOCKIN to Cadence on 2026-11-14. Only what people see c
 - XP, levels, streaks and scores are derived from stored records in pure functions, never stored, so they stay testable and can't be double-claimed.
 - Writes are not awaited by screens: Firestore's offline cache updates listeners at once and syncs later, so awaiting would hang without signal. Only attach `.catch` to report failures.
 - Firebase's sign-in handler lives under `/__/`; the service worker must never serve the app shell there (`navigateFallbackDenylist` in `vite.config.ts`).
-- Use the design tokens in `src/styles/global.css`, never raw colors; light theme will come by redefining those tokens.
+- Use the design tokens in `src/styles/global.css`, never raw colors (tints come from the `--*-soft` tokens or `color-mix` on a token). Colours are graphite neutrals plus one indigo `--accent`, used only for primary actions, progress, ticks and the active item; status colours only carry meaning. Dark is the default; light comes from `prefers-color-scheme` or the per-device Theme setting (`src/app/theme.ts`, `data-theme` on <html>, mirrored by an inline script in `index.html` so there is no flash). Any token change goes in all three blocks (dark, media light, `[data-theme=light]`).
 
 ## Commands
 

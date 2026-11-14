@@ -132,7 +132,7 @@ export function DashboardPage() {
             <div className={styles.focusActions}>
               <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => focus.start(quickPlan)}>
                 <Play size={16} aria-hidden="true" />
-                Start focus · {quickPlan.focusMinutes} min
+                Start focus<span className={styles.minutes}> · {quickPlan.focusMinutes} min</span>
               </button>
               <Link to="/focus" className={`${ui.button} ${ui.ghost} ${styles.iconButton}`} aria-label="Focus options" title="Focus options">
                 <SlidersHorizontal size={18} aria-hidden="true" />

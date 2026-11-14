@@ -6,12 +6,20 @@ import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
 import { setBadgeAlerts } from '../data/social'
 import { SocialSettings } from './SocialSettings'
+import { loadTheme, saveTheme, type ThemeChoice } from './theme'
 import ui from '../components/ui.module.css'
 import styles from './ProfilePage.module.css'
+
+const THEMES: [ThemeChoice, string][] = [
+  ['system', 'Match device'],
+  ['light', 'Light'],
+  ['dark', 'Dark'],
+]
 
 export function ProfilePage() {
   const { user, profile } = useSignedIn()
   const [status, setStatus] = useState('')
+  const [theme, setTheme] = useState(loadTheme)
   const method = user.providerData.some((p) => p.providerId === 'google.com') ? 'Google' : 'Email and password'
 
   return (
@@ -35,6 +43,28 @@ export function ProfilePage() {
 
       <div className={`${ui.card} ${styles.section}`}>
         <h2>Preferences</h2>
+        <div className={styles.themeRow}>
+          <span id="theme-label">
+            <strong>Theme</strong>
+            <small>Saved on this device.</small>
+          </span>
+          <div className={ui.chips} role="group" aria-labelledby="theme-label">
+            {THEMES.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                className={ui.chip}
+                aria-pressed={theme === value}
+                onClick={() => {
+                  setTheme(value)
+                  saveTheme(value)
+                }}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </div>
         <label className={styles.toggle}>
           <input
             id="badge-alerts"

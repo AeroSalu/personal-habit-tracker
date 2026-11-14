@@ -166,6 +166,13 @@
   white-space: nowrap;
 }
 
+/* Small phones: drop the length from the label so the options button still fits. */
+@media (max-width: 420px) {
+  .minutes {
+    display: none;
+  }
+}
+
 .iconButton {
   flex: none;
   width: 44px;

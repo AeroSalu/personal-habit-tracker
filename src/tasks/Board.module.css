@@ -72,7 +72,7 @@
 }
 
 .lifted {
-  box-shadow: 0 12px 28px rgb(0 0 0 / 0.45);
+  box-shadow: var(--shadow-3);
   cursor: grabbing;
 }
 
@@ -141,12 +141,12 @@
 }
 
 .urgent {
-  background: rgb(248 113 113 / 0.15);
+  background: var(--urgent-soft);
   color: var(--urgent);
 }
 
 .high {
-  background: rgb(251 191 36 / 0.14);
+  background: var(--warning-soft);
   color: var(--warning);
 }
 

@@ -1,36 +1,51 @@
-/* Cadence design tokens, from the product blueprint. Dark only for now: light comes later
-   by redefining these tokens, so components must use them and never raw colors. */
+/* Cadence design tokens: graphite neutrals with one indigo accent, in dark and light.
+   Dark is the default; light applies when the device prefers it (unless the user picked
+   dark) or when the user picks it. Components use these tokens and never raw colors.
+   Indigo is for primary actions, progress, ticks and the active item only; status colors
+   (urgent, warning, success) only ever mean something. */
 :root {
-  --bg: #111318;
-  --bg-calm: #0f1a1c;
-  --card: #1d222b;
-  --card-raised: #252b36;
-  --border: #2c3340;
-  --accent: #a3e635;
-  --accent-ink: #172204;
-  --accent-soft: rgb(163 230 53 / 0.12);
-  --text: #f4f4f5;
-  --muted: #9aa3b2;
-  --faint: #6b7385;
-  --urgent: #f87171;
-  --on-urgent: #2a0b0b;
-  --warning: #fbbf24;
-  --success: #4ade80;
+  --bg: #0e0f12;
+  --bg-calm: #0c0d15;
+  --card: #16181d;
+  --card-raised: #1d2026;
+  --border: #24272f;
+  --accent: #7c83ff;
+  --accent-ink: #0e0f12;
+  --accent-soft: rgb(124 131 255 / 0.14);
+  --text: #ecedef;
+  --muted: #8b8f99;
+  --faint: #5e626c;
+  --urgent: #e5484d;
+  --urgent-soft: rgb(229 72 77 / 0.14);
+  --on-urgent: #ffffff;
+  --warning: #d9a13b;
+  --warning-soft: rgb(217 161 59 / 0.14);
+  --success: #46a758;
+  --success-soft: rgb(70 167 88 / 0.15);
+  --overlay: rgb(5 6 8 / 0.62);
 
-  /* Charts. Category hues are the dataviz reference dark steps, validated against --card
-     (adjacent CVD ΔE ≥ 8.4, contrast ≥ 3:1). The heat ramp is one hue, dark to light. */
-  --chart-grid: #2a313d;
-  --chart-axis: #3a4250;
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.35);
+  --shadow-2: 0 2px 6px rgb(0 0 0 / 0.35), 0 1px 2px rgb(0 0 0 / 0.3);
+  --shadow-3: 0 12px 32px rgb(0 0 0 / 0.45), 0 2px 6px rgb(0 0 0 / 0.3);
+
+  /* Charts. Category hues are the dataviz reference steps for each mode, validated against
+     --card (dark: adjacent CVD ΔE ≥ 8.4, contrast ≥ 3:1; light: CVD ΔE ≥ 9.1, two hues under
+     3:1 so charts keep labels and a table). The heat ramp is one indigo hue whose lowest
+     filled step clears 2:1 against --card. */
+  --chart-grid: #23262d;
+  --chart-axis: #343842;
   --cat-study: #3987e5;
   --cat-work: #d95926;
   --cat-fitness: #199e70;
   --cat-personal: #c98500;
-  --cat-none: #5d6575;
-  --heat-0: #232934;
-  --heat-1: #36481f;
-  --heat-2: #557a25;
-  --heat-3: #7eb12d;
-  --heat-4: #a3e635;
+  --cat-none: #5e626c;
+  --heat-0: #1f2229;
+  --heat-1: #3a40a0;
+  --heat-2: #4f56cc;
+  --heat-3: #6d74ef;
+  --heat-4: #9ca1ff;
+
+  color-scheme: dark;
 
   --font: 'Inter Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
 
@@ -47,8 +62,83 @@
 
   --sidebar-width: 248px;
   --bottom-bar-height: 64px;
+}
 
-  color-scheme: dark;
+/* Light: written twice because CSS can't share a block between a media query and a selector. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme='dark']) {
+    --bg: #f7f7f8;
+    --bg-calm: #eef0fa;
+    --card: #ffffff;
+    --card-raised: #f1f1f3;
+    --border: #e4e4e8;
+    --accent: #4f56e8;
+    --accent-ink: #ffffff;
+    --accent-soft: rgb(79 86 232 / 0.1);
+    --text: #17181c;
+    --muted: #5f636d;
+    --faint: #8e929b;
+    --urgent: #d13438;
+    --urgent-soft: rgb(209 52 56 / 0.1);
+    --warning: #b57d14;
+    --warning-soft: rgb(181 125 20 / 0.12);
+    --success: #2f8a43;
+    --success-soft: rgb(47 138 67 / 0.12);
+    --overlay: rgb(23 24 28 / 0.32);
+    --shadow-1: 0 1px 2px rgb(16 18 27 / 0.06), 0 1px 3px rgb(16 18 27 / 0.04);
+    --shadow-2: 0 2px 8px rgb(16 18 27 / 0.08), 0 1px 2px rgb(16 18 27 / 0.06);
+    --shadow-3: 0 16px 40px rgb(16 18 27 / 0.14), 0 2px 8px rgb(16 18 27 / 0.06);
+    --chart-grid: #ececef;
+    --chart-axis: #d4d5da;
+    --cat-study: #2a78d6;
+    --cat-work: #eb6834;
+    --cat-fitness: #1baf7a;
+    --cat-personal: #eda100;
+    --cat-none: #a3a6ae;
+    --heat-0: #efeff2;
+    --heat-1: #a4a8f5;
+    --heat-2: #7c82ee;
+    --heat-3: #5a61e3;
+    --heat-4: #363dbd;
+    color-scheme: light;
+  }
+}
+
+:root[data-theme='light'] {
+  --bg: #f7f7f8;
+  --bg-calm: #eef0fa;
+  --card: #ffffff;
+  --card-raised: #f1f1f3;
+  --border: #e4e4e8;
+  --accent: #4f56e8;
+  --accent-ink: #ffffff;
+  --accent-soft: rgb(79 86 232 / 0.1);
+  --text: #17181c;
+  --muted: #5f636d;
+  --faint: #8e929b;
+  --urgent: #d13438;
+  --urgent-soft: rgb(209 52 56 / 0.1);
+  --warning: #b57d14;
+  --warning-soft: rgb(181 125 20 / 0.12);
+  --success: #2f8a43;
+  --success-soft: rgb(47 138 67 / 0.12);
+  --overlay: rgb(23 24 28 / 0.32);
+  --shadow-1: 0 1px 2px rgb(16 18 27 / 0.06), 0 1px 3px rgb(16 18 27 / 0.04);
+  --shadow-2: 0 2px 8px rgb(16 18 27 / 0.08), 0 1px 2px rgb(16 18 27 / 0.06);
+  --shadow-3: 0 16px 40px rgb(16 18 27 / 0.14), 0 2px 8px rgb(16 18 27 / 0.06);
+  --chart-grid: #ececef;
+  --chart-axis: #d4d5da;
+  --cat-study: #2a78d6;
+  --cat-work: #eb6834;
+  --cat-fitness: #1baf7a;
+  --cat-personal: #eda100;
+  --cat-none: #a3a6ae;
+  --heat-0: #efeff2;
+  --heat-1: #a4a8f5;
+  --heat-2: #7c82ee;
+  --heat-3: #5a61e3;
+  --heat-4: #363dbd;
+  color-scheme: light;
 }
 
 *,

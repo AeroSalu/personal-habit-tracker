@@ -237,7 +237,7 @@
 
 .focusing {
   background: var(--success);
-  box-shadow: 0 0 0 4px rgb(74 222 128 / 0.15);
+  box-shadow: 0 0 0 4px var(--success-soft);
 }
 
 .break {

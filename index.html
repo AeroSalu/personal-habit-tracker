@@ -5,7 +5,16 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Cadence</title>
     <meta name="description" content="Stop planning. Start executing." />
-    <meta name="theme-color" content="#111318" />
+    <meta name="theme-color" content="#0e0f12" />
+    <script>
+      // Matches src/app/theme.ts: stamp the saved theme before first paint so it never flashes.
+      try {
+        var t = localStorage.getItem('lockin.theme')
+        var light = t === 'light' || (t !== 'dark' && matchMedia('(prefers-color-scheme: light)').matches)
+        if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t)
+        document.querySelector('meta[name="theme-color"]').setAttribute('content', light ? '#f7f7f8' : '#0e0f12')
+      } catch (e) {}
+    </script>
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />

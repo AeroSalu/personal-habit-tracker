@@ -181,3 +181,21 @@
   margin: 0;
   overflow-wrap: anywhere;
 }
+
+.themeRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.themeRow > span {
+  display: flex;
+  flex-direction: column;
+}
+
+.themeRow small {
+  color: var(--muted);
+  font-size: 13px;
+}
