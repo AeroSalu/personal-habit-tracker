@@ -7,7 +7,7 @@ const BG = '#0e0f12'
 const CARD = '#16181d'
 const ACCENT = '#7c83ff'
 const TEXT = '#ecedef'
-const MUTED = '#8b8f99'
+const MUTED = '#a0a4ad'
 
 function wrap(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
   const words = text.split(/\s+/)

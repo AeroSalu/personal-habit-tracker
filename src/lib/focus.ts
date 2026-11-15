@@ -81,9 +81,13 @@ export function startFocus(uid: string, plan: Plan, sessionNumber: number, now: 
   }
 }
 
+/** Time left, never more than the session or break is long, even if the device clock jumps back. */
 export function remainingMs(state: FocusState, now: number): number {
-  if (state.phase === 'focus') return Math.max(0, state.endsAt - (state.pausedAt ?? now))
-  if (state.phase === 'break') return Math.max(0, state.endsAt - now)
+  if (state.phase === 'focus') {
+    const length = state.endsAt - state.startedAt - state.pausedMs
+    return Math.min(length, Math.max(0, state.endsAt - (state.pausedAt ?? now)))
+  }
+  if (state.phase === 'break') return Math.min(state.minutes * MINUTE, Math.max(0, state.endsAt - now))
   return 0
 }
 

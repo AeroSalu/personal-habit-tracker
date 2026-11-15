@@ -194,3 +194,68 @@ describe('formatting and validation', () => {
     expect(planError({ focusMinutes: Number.NaN, shortBreak: 5, longBreak: 15 })).not.toBe('')
   })
 })
+
+// The device can sleep, the app can be frozen in the background, and timers stop firing.
+// The state only ever looks at timestamps, so whenever the app next looks, it's right.
+describe('sleep and backgrounding', () => {
+  it('a session that ended while the device slept completes at its planned end, with full minutes', () => {
+    const s = start()
+    const woke = advance(s, T0 + 8 * 60 * MIN)
+    const done = summary(woke)
+    expect(done.outcome).toBe('completed')
+    expect(done.endedAt).toBe(T0 + 25 * MIN)
+    expect(done.minutes).toBe(25)
+  })
+
+  it('a session still running after a short sleep shows the true time left', () => {
+    const s = start()
+    const woke = advance(s, T0 + 17 * MIN)
+    expect(woke.phase).toBe('focus')
+    expect(remainingMs(woke, T0 + 17 * MIN)).toBe(8 * MIN)
+  })
+
+  it('a break that ran out in the background is over when the app returns', () => {
+    const done = summary(advance(start(), T0 + 25 * MIN))
+    const resting = startBreak(done, 'short', T0 + 26 * MIN)
+    expect(advance(resting, T0 + 2 * 60 * MIN).phase).toBe('breakOver')
+  })
+
+  it('sleeping while paused leaves the time left untouched', () => {
+    const s = pause(start(), T0 + 10 * MIN)
+    const later = advance(s, T0 + 9 * 60 * MIN)
+    expect(later.phase).toBe('focus')
+    expect(remainingMs(resume(later, T0 + 9 * 60 * MIN), T0 + 9 * 60 * MIN)).toBe(15 * MIN)
+  })
+
+  it('a normal session left in the background through its end completes, recording the leave until the end', () => {
+    const away = leaveApp(start(), T0 + 20 * MIN)
+    const back = summary(returnToApp(away, T0 + 50 * MIN))
+    expect(back.outcome).toBe('completed')
+    expect(back.minutes).toBe(25)
+    expect(back.leaves).toEqual([{ at: T0 + 20 * MIN, ms: 5 * MIN }])
+  })
+
+  it('a strict session left for a long sleep stops at the moment it was left', () => {
+    const away = leaveApp(start({ strict: true }), T0 + 12 * MIN)
+    const back = summary(returnToApp(away, T0 + 3 * 60 * MIN))
+    expect(back.outcome).toBe('stopped')
+    expect(back.strictStop).toBe(true)
+    expect(back.endedAt).toBe(T0 + 12 * MIN)
+    expect(back.minutes).toBe(12)
+  })
+
+  it('never shows more time left than the session has, even if the device clock jumps back', () => {
+    const s = start()
+    expect(remainingMs(s, T0 - 10 * MIN)).toBe(25 * MIN)
+  })
+})
+
+describe('clock jumps', () => {
+  it('caps a paused session and a break at their own length too', () => {
+    const paused = resume(pause(start(), T0 + 5 * MIN), T0 + 9 * MIN)
+    expect(remainingMs(paused, T0 - 60 * MIN)).toBe(25 * MIN)
+    const done = summary(advance(start(), T0 + 25 * MIN))
+    const resting = startBreak(done, 'short', T0 + 26 * MIN)
+    expect(remainingMs(resting, T0)).toBe(5 * MIN)
+  })
+})

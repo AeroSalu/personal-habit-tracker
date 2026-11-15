@@ -16,8 +16,8 @@
   --accent-deep: #343a94;
   --highlight: rgb(255 255 255 / 0.65);
   --text: #ecedef;
-  --muted: #8b8f99;
-  --faint: #5e626c;
+  --muted: #a0a4ad;
+  --faint: #80848e;
   --urgent: #e5484d;
   --urgent-soft: rgb(229 72 77 / 0.14);
   --on-urgent: #ffffff;
@@ -144,14 +144,14 @@
     --accent-bright: #8c92f5;
     --accent-deep: #2a2f9e;
     --text: #1d1d1f;
-    --muted: #6e6e73;
-    --faint: #8e8e93;
+    --muted: #56565b;
+    --faint: #6a6a70;
     --urgent: #d13438;
     --urgent-soft: rgb(209 52 56 / 0.1);
-    --warning: #b57d14;
-    --warning-soft: rgb(181 125 20 / 0.12);
-    --success: #2f8a43;
-    --success-soft: rgb(47 138 67 / 0.12);
+    --warning: #8a5e0e;
+    --warning-soft: rgb(138 94 14 / 0.12);
+    --success: #237536;
+    --success-soft: rgb(35 117 54 / 0.12);
     --overlay: rgb(23 24 28 / 0.32);
     --ring-focus: #4f56e8;
     --ring-tasks: #e0602b;
@@ -191,14 +191,14 @@
   --accent-bright: #8c92f5;
   --accent-deep: #2a2f9e;
   --text: #1d1d1f;
-  --muted: #6e6e73;
-  --faint: #8e8e93;
+  --muted: #56565b;
+  --faint: #6a6a70;
   --urgent: #d13438;
   --urgent-soft: rgb(209 52 56 / 0.1);
-  --warning: #b57d14;
-  --warning-soft: rgb(181 125 20 / 0.12);
-  --success: #2f8a43;
-  --success-soft: rgb(47 138 67 / 0.12);
+  --warning: #8a5e0e;
+  --warning-soft: rgb(138 94 14 / 0.12);
+  --success: #237536;
+  --success-soft: rgb(35 117 54 / 0.12);
   --overlay: rgb(23 24 28 / 0.32);
   --ring-focus: #4f56e8;
   --ring-tasks: #e0602b;
@@ -375,6 +375,8 @@ button {
   *::before,
   *::after {
     animation-duration: 0.01ms !important;
+    /* Endless animations (spinners, shimmer) run once and stop, rather than flicker. */
+    animation-iteration-count: 1 !important;
     animation-delay: 0ms !important;
     transition-duration: 0.01ms !important;
     transition-delay: 0ms !important;
