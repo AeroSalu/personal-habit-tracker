@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest'
 import { assertFails, assertSucceeds, initializeTestEnvironment, type RulesTestEnvironment } from '@firebase/rules-unit-testing'
-import { collection, deleteDoc, doc, getDocs, query, setDoc, where } from 'firebase/firestore'
+import { collection, deleteDoc, doc, getDoc, getDocs, query, setDoc, where } from 'firebase/firestore'
 
 // Deleting an account removes everything about the person. These check the owner can find
 // and delete every document `deleteAccount` (src/data/account.ts) touches, and others can't.
@@ -81,5 +81,34 @@ describe('deleting an account', () => {
     }
     // Cheers someone else gave are not readable by a stranger asking by giver.
     await assertFails(getDocs(query(collection(db, 'cheers'), where('uid', '==', 'ana'))))
+  })
+})
+
+describe('reminder plans', () => {
+  const plan = (over: Record<string, unknown> = {}) => ({
+    tokens: ['device-token'],
+    slots: ['2026-11-04T12:30Z'],
+    items: { '2026-11-04T12:30Z': [{ title: 'Gym', body: 'Tap to tick it off.', url: '/habits', tag: 'habit-gym' }] },
+    tz: 'Asia/Kolkata',
+    updatedAt: now,
+    ...over,
+  })
+
+  it('belongs to its owner alone', async () => {
+    await assertSucceeds(setDoc(doc(as('ana'), 'pushPlans/ana'), plan()))
+    await assertFails(setDoc(doc(as('ben'), 'pushPlans/ana'), plan()))
+    await seed('pushPlans/ana', plan())
+    await assertSucceeds(getDoc(doc(as('ana'), 'pushPlans/ana')))
+    await assertFails(getDoc(doc(as('ben'), 'pushPlans/ana')))
+    await assertFails(getDocs(collection(as('ben'), 'pushPlans')))
+    await assertSucceeds(deleteDoc(doc(as('ana'), 'pushPlans/ana')))
+  })
+
+  it('refuses oversized or unexpected plans', async () => {
+    const ana = doc(as('ana'), 'pushPlans/ana')
+    await assertFails(setDoc(ana, plan({ tokens: Array.from({ length: 11 }, (_, i) => `t${i}`) })))
+    await assertFails(setDoc(ana, plan({ slots: Array.from({ length: 121 }, (_, i) => `s${i}`) })))
+    await assertFails(setDoc(ana, plan({ email: 'a@b.c' })))
+    await assertFails(setDoc(ana, plan({ items: 'nope' })))
   })
 })

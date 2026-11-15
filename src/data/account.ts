@@ -42,6 +42,7 @@ export async function exportData(uid: string, username: string) {
   const shared: Record<string, unknown> = {
     publicProfile: await one(`profiles/${uid}`),
     statsFriendsSee: await one(`stats/${uid}`),
+    reminderPlan: await one(`pushPlans/${uid}`),
   }
   for (const [name, q] of Object.entries(sharedQueries(uid))) shared[name] = await rows(q)
   return {
@@ -87,7 +88,7 @@ export async function deleteAccount(user: User, username: string) {
 
   const shared: DocumentReference[] = []
   for (const q of Object.values(sharedQueries(uid))) shared.push(...(await getDocsFromServer(q)).docs.map((d) => d.ref))
-  shared.push(doc(db, 'stats', uid), doc(db, 'profiles', uid))
+  shared.push(doc(db, 'stats', uid), doc(db, 'profiles', uid), doc(db, 'pushPlans', uid))
   if (username) shared.push(doc(db, 'usernames', username))
   // A cheer I gave on my own friendship's item can show up twice; delete each once.
   const seen = new Set<string>()

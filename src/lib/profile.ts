@@ -1,3 +1,5 @@
+import { toReminderPrefs, type ReminderPrefs } from './reminders'
+
 export type Profile = {
   displayName: string
   dailyFocusGoalMinutes: number
@@ -14,6 +16,8 @@ export type Profile = {
   bio: string
   /** Up to 3 earned badge IDs, shown to friends. */
   pinned: string[]
+  /** Reminder settings, shared by all your devices. */
+  reminders: ReminderPrefs
 }
 
 export type ProfileFields = Pick<Profile, 'displayName' | 'dailyFocusGoalMinutes'>
@@ -54,6 +58,7 @@ export function toProfile(data: Record<string, unknown>): Profile {
     pinned: Array.isArray(data.pinned)
       ? data.pinned.filter((b): b is string => typeof b === 'string').slice(0, 3)
       : [],
+    reminders: toReminderPrefs(data.reminders),
   }
 }
 

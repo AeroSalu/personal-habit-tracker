@@ -158,6 +158,21 @@ service cloud.firestore {
         && (resource.data.uid == request.auth.uid || resource.data.owner == request.auth.uid);
     }
 
+    // The next 48 hours of reminders for one person, and their devices' push tokens. Only
+    // the owner reads or writes it; the scheduled sender reads it with admin access.
+    match /pushPlans/{uid} {
+      allow read, delete: if isMe(uid);
+      allow create, update: if isMe(uid)
+        && request.resource.data.keys().hasOnly(['tokens', 'slots', 'items', 'tz', 'updatedAt'])
+        && (!('tokens' in request.resource.data)
+          || (request.resource.data.tokens is list && request.resource.data.tokens.size() <= 10))
+        && (!('slots' in request.resource.data)
+          || (request.resource.data.slots is list && request.resource.data.slots.size() <= 120))
+        && (!('items' in request.resource.data) || request.resource.data.items is map)
+        && (!('tz' in request.resource.data) || (request.resource.data.tz is string && request.resource.data.tz.size() <= 64))
+        && request.resource.data.updatedAt is string;
+    }
+
     // ---- Groups ----
 
     function groupPath(gid) {

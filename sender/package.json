@@ -1,0 +1,17 @@
+{
+  "name": "cadence-reminders",
+  "private": true,
+  "description": "Sends Cadence reminders every 15 minutes from GitHub Actions.",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "send": "node send.mjs",
+    "dry-run": "node send.mjs --dry-run",
+    "test": "node --test send.test.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "14.5.0"
+  }
+}

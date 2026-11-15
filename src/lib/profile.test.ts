@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { DEFAULT_REMINDERS } from './reminders'
 import { firstName, formatMinutes, profileError, toProfile } from './profile'
 
 describe('profileError', () => {
@@ -43,6 +44,7 @@ describe('toProfile', () => {
       photo: '',
       bio: '',
       pinned: [],
+      reminders: DEFAULT_REMINDERS,
     })
     expect(toProfile({ displayName: 'A', dailyFocusGoalMinutes: 60, createdAt: 'x' }).dailyFocusGoalMinutes).toBe(60)
   })

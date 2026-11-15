@@ -8,6 +8,10 @@ export default defineConfig({
     react(),
     VitePWA({
       registerType: 'autoUpdate',
+      // Our own service worker (src/sw.ts) so it can show reminders; workbox still precaches.
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       includeAssets: ['icons/icon-180.png'],
       manifest: {
         name: 'Cadence',
@@ -32,9 +36,8 @@ export default defineConfig({
         // Share text or a link from another app (Android and desktop Chrome/Edge) into /share.
         share_target: { action: '/share', method: 'GET', params: { title: 'title', text: 'text', url: 'url' } },
       },
-      workbox: {
-        // Firebase's sign-in handler lives under /__/ and must never get the app shell.
-        navigateFallbackDenylist: [/^\/__\//],
+      // The /__/ denylist for Firebase's sign-in handler now lives in src/sw.ts.
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,png,svg,woff2}'],
       },
     }),

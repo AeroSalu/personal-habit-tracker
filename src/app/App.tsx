@@ -27,6 +27,7 @@ import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
 import { ProfilePage } from './ProfilePage'
+import { ReminderPlanner } from './ReminderPlanner'
 import { SharePage } from './SharePage'
 import { Splash } from './Splash'
 
@@ -37,6 +38,7 @@ function SignedInRoutes() {
       <StatsPublisher />
       <AchievementPoster />
       <RoomPresence />
+      <ReminderPlanner />
       <Routes>
       <Route element={<AppLayout />}>
         <Route index element={<DashboardPage />} />

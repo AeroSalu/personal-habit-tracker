@@ -6,6 +6,7 @@ import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
 import { setBadgeAlerts } from '../data/social'
 import { AccountData } from './AccountData'
+import { NotificationSettings } from './NotificationSettings'
 import { PersonalSettings } from './PersonalSettings'
 import { SocialSettings } from './SocialSettings'
 import { loadTheme, saveTheme, type ThemeChoice } from './theme'
@@ -82,6 +83,8 @@ export function ProfilePage() {
           </span>
         </label>
       </div>
+
+      <NotificationSettings />
 
       <SocialSettings />
 
