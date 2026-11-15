@@ -89,10 +89,10 @@ export const useProfiles = (uids: string[]) => useLiveDocs(uids.map((u) => `prof
 export const useStats = (uids: string[]) => useLiveDocs(uids.map((u) => `stats/${u}`), toStats)
 
 /** One listener per person, which is what the rules can check: only friends' items are readable. */
-export function useActivityOf(uid: string) {
+export function useActivityOf(uid: string | null) {
   return useLiveQuery(
-    `activity:${uid}`,
-    () => query(collection(db, 'activity'), where('uid', '==', uid), orderBy('at', 'desc'), limit(20)),
+    uid ? `activity:${uid}` : null,
+    () => query(collection(db, 'activity'), where('uid', '==', uid ?? ''), orderBy('at', 'desc'), limit(20)),
     toActivity,
   )
 }

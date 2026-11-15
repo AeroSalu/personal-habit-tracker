@@ -12,6 +12,7 @@ import {
   normalizeUsername,
   publicStats,
   usernameError,
+  weekColumns,
   xpBetween,
 } from './social'
 import type { Task } from './tasks'
@@ -145,5 +146,16 @@ describe('stale totals', () => {
     expect(currentWeekMinutes(s, TODAY)).toBe(0)
     expect(currentSeasonXp(s, TODAY)).toBe(0)
     expect(currentWeekXp({ ...s, weekKey: '2026-11-02' }, TODAY)).toBe(300)
+  })
+})
+
+describe('weekColumns', () => {
+  it('labels this week Monday first and zeroes a stale week', () => {
+    const s = { weekKey: '2026-11-02', weekFocusByDay: [45, 0, 30, 0, 0, 0, 0] }
+    const cols = weekColumns(s, TODAY)
+    expect(cols.map((c) => c.label)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    expect(cols.map((c) => c.minutes)).toEqual([45, 0, 30, 0, 0, 0, 0])
+    expect(cols[0].key).toBe('2026-11-02')
+    expect(weekColumns({ ...s, weekKey: '2026-10-26' }, TODAY).every((c) => c.minutes === 0)).toBe(true)
   })
 })

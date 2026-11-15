@@ -132,6 +132,31 @@ service cloud.firestore {
         && (resource == null ? id.matches(request.auth.uid + '_.+') : resource.data.uid == request.auth.uid);
     }
 
+    // One reaction per person per activity item, from a friend of its owner. The owner and
+    // their friends can read them; the cheerer can change or take theirs back, and the owner
+    // can clear any on their own items.
+    function validCheer(c, id) {
+      return c.keys().hasOnly(['activityId', 'owner', 'uid', 'emoji', 'at'])
+        && c.uid == request.auth.uid
+        && id == c.activityId + '_' + request.auth.uid
+        && c.emoji in ['👏', '🔥', '💪', '🎉']
+        && c.at is string
+        && c.owner != request.auth.uid
+        && isFriend(c.owner)
+        && exists(/databases/$(database)/documents/activity/$(c.activityId))
+        && get(/databases/$(database)/documents/activity/$(c.activityId)).data.uid == c.owner;
+    }
+
+    match /cheers/{id} {
+      allow read: if signedIn()
+        && (resource.data.owner == request.auth.uid || isFriend(resource.data.owner));
+      allow create: if signedIn() && validCheer(request.resource.data, id);
+      allow update: if signedIn() && resource.data.uid == request.auth.uid
+        && validCheer(request.resource.data, id);
+      allow delete: if signedIn()
+        && (resource.data.uid == request.auth.uid || resource.data.owner == request.auth.uid);
+    }
+
     // ---- Groups ----
 
     function groupPath(gid) {

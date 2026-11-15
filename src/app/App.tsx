@@ -9,6 +9,7 @@ import { AnalyticsPage } from '../analytics/AnalyticsPage'
 import { CalendarPage } from '../calendar/CalendarPage'
 import { DashboardPage } from '../dashboard/DashboardPage'
 import { FocusPage } from '../focus/FocusPage'
+import { FriendPage } from '../friends/FriendPage'
 import { FriendsPage } from '../friends/FriendsPage'
 import { LeaderboardPage } from '../friends/LeaderboardPage'
 import { FocusProvider } from '../focus/FocusProvider'
@@ -43,6 +44,7 @@ function SignedInRoutes() {
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="challenges" element={<ChallengesPage />} />
         <Route path="friends" element={<FriendsPage />} />
+        <Route path="friends/:uid" element={<FriendPage />} />
         <Route path="leaderboard" element={<LeaderboardPage />} />
         <Route path="rooms" element={<RoomsPage />} />
         <Route path="rooms/:id" element={<RoomPage />} />

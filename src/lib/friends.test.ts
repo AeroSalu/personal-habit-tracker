@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { activityIds, friendOf, mergeFeed, pairId, relation, requestId, timeAgo, type Activity, type FriendRequest } from './friends'
+import { activityIds, friendOf, mergeFeed, pairId, relation, requestId, timeAgo, type Activity, type FriendRequest, cheerId, cheerSummary, namesLine, type Cheer } from './friends'
 
 const req = (from: string, to: string, status: FriendRequest['status'] = 'pending'): FriendRequest => ({
   id: requestId(from, to),
@@ -60,5 +60,39 @@ describe('feed', () => {
     expect(timeAgo('2026-11-04T09:00:00Z', now)).toBe('3h ago')
     expect(timeAgo('2026-11-03T10:00:00Z', now)).toBe('yesterday')
     expect(timeAgo('2026-11-01T10:00:00Z', now)).toBe('3d ago')
+  })
+})
+
+describe('cheers', () => {
+  const c = (uid: string, emoji: Cheer['emoji'], at: string, activityId = 'ana_task_t1'): Cheer => ({
+    id: cheerId(activityId, uid),
+    activityId,
+    owner: 'ana',
+    uid,
+    emoji,
+    at,
+  })
+
+  it('counts each emoji in a fixed order and finds mine', () => {
+    const s = cheerSummary([c('cat', '🔥', '2'), c('ben', '👏', '1'), c('dan', '🔥', '3'), c('ben', '🎉', '1', 'ana_task_t2')], 'ben')
+    expect(s.get('ana_task_t1')).toEqual({
+      counts: [
+        { emoji: '👏', count: 1 },
+        { emoji: '🔥', count: 2 },
+      ],
+      from: ['ben', 'cat', 'dan'],
+      mine: '👏',
+    })
+    expect(s.get('ana_task_t2')?.mine).toBe('🎉')
+    expect(s.get('missing')).toBeUndefined()
+  })
+})
+
+describe('namesLine', () => {
+  it('lists up to two names, then counts the rest', () => {
+    expect(namesLine(['Ben'])).toBe('Ben')
+    expect(namesLine(['Ben', 'Cat'])).toBe('Ben and Cat')
+    expect(namesLine(['Ben', 'Cat', 'Dan'])).toBe('Ben, Cat and 1 other')
+    expect(namesLine(['Ben', 'Cat', 'Dan', 'Eve'])).toBe('Ben, Cat and 2 others')
   })
 })

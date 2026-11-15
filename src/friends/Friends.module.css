@@ -288,3 +288,181 @@
   font-size: 12px;
   white-space: nowrap;
 }
+
+/* Cheers under a feed item: quiet emoji chips that fill softly when they're yours. */
+.feedBody {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.cheers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.cheer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  transition:
+    background var(--dur-1) var(--ease-out),
+    border-color var(--dur-1) var(--ease-out),
+    transform var(--dur-1) var(--ease-out);
+}
+
+.cheer:hover {
+  border-color: var(--faint);
+}
+
+.cheer:active {
+  transform: scale(0.94);
+}
+
+.cheerOn {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.feed .cheeredBy {
+  color: var(--text);
+  font-size: 13px;
+  white-space: pre-wrap;
+}
+
+.cheeredBy span {
+  color: var(--faint);
+  white-space: normal;
+}
+
+/* Friend cards open the friend's page. */
+.friendLink {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin: calc(var(--space-2) * -1);
+  padding: var(--space-2);
+  border-radius: var(--radius);
+  color: inherit;
+  transition: background var(--dur-1) var(--ease-out);
+}
+
+.friendLink:hover {
+  background: var(--card-raised);
+}
+
+.friendLink .personText {
+  flex: 1;
+}
+
+.chevron {
+  flex: none;
+  color: var(--faint);
+}
+
+/* Friend page */
+.friendPage {
+  max-width: 720px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  width: fit-content;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.profileHead {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.profileHead h1 {
+  font-size: 24px;
+  overflow-wrap: anywhere;
+}
+
+.profileText {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.bio {
+  margin-top: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.profileStats {
+  grid-column: 1 / -1;
+}
+
+.liveBig {
+  width: 18px;
+  height: 18px;
+  border-width: 3px;
+}
+
+.pinnedList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.pinnedList li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.pinnedList li > span:last-child {
+  display: flex;
+  flex-direction: column;
+}
+
+.pinnedList small {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.pinIcon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.unfriend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  color: var(--muted);
+  font-size: 14px;
+}

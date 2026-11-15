@@ -2,7 +2,8 @@
 // usernames. XP for a week or a month follows the same rules as the total in `dashboard.ts`.
 
 import { allDoneDays, XP } from './dashboard'
-import { addDays, weekStart } from './dates'
+import type { Point } from './analytics'
+import { addDays, WEEK, weekday, weekStart } from './dates'
 import type { GameIndex } from './game'
 import { goalXp } from './missions'
 
@@ -105,4 +106,18 @@ export function currentSeasonXp(s: Pick<PublicStats, 'seasonKey' | 'seasonXp'>, 
 
 export function isFocusingNow(s: Pick<PublicStats, 'focusing'>, now: number): boolean {
   return Boolean(s.focusing && new Date(s.focusing.until).getTime() > now)
+}
+
+/** A friend's focus this week as chart columns, Monday first; an older week reads as zeros. */
+export function weekColumns(s: Pick<PublicStats, 'weekKey' | 'weekFocusByDay'>, today: string): Point[] {
+  const week = weekStart(today)
+  const current = s.weekKey === week && s.weekFocusByDay.length === 7
+  return Array.from({ length: 7 }, (_, i) => {
+    const key = addDays(week, i)
+    return {
+      key,
+      label: WEEK.find((w) => w.day === weekday(key))!.short,
+      minutes: current ? s.weekFocusByDay[i] : 0,
+    }
+  })
 }

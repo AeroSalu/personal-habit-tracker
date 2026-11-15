@@ -9,7 +9,7 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "test": "vitest run",
-    "test:rules": "firebase emulators:exec --config firebase.rules-test.json --only firestore --project demo-lockin-rules \"vitest run --config vitest.rules.config.ts\"",
+    "test:rules": "node tools/test-rules.cjs",
     "preview": "vite preview"
   },
   "dependencies": {

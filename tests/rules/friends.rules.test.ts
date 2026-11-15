@@ -157,3 +157,51 @@ describe('activity', () => {
     await assertFails(deleteDoc(doc(as('ben'), 'activity/ana_task_never')))
   })
 })
+
+describe('cheers', () => {
+  const cheer = (by: string, over: Record<string, unknown> = {}) => ({
+    activityId: 'ana_task_t1',
+    owner: 'ana',
+    uid: by,
+    emoji: '👏',
+    at: now,
+    ...over,
+  })
+
+  beforeEach(async () => {
+    await seed('activity/ana_task_t1', activity('ana'))
+    await seed('friendships/ana_ben', friendship('ana', 'ben'))
+  })
+
+  it('lets a friend cheer an item once, change it, and take it back', async () => {
+    const ref = doc(as('ben'), 'cheers/ana_task_t1_ben')
+    await assertSucceeds(setDoc(ref, cheer('ben')))
+    await assertSucceeds(setDoc(ref, cheer('ben', { emoji: '🔥' })))
+    await assertSucceeds(deleteDoc(ref))
+  })
+
+  it('refuses strangers, cheering as someone else, odd emoji, your own items and missing items', async () => {
+    await assertFails(setDoc(doc(as('cat'), 'cheers/ana_task_t1_cat'), cheer('cat')))
+    await assertFails(setDoc(doc(as('ben'), 'cheers/ana_task_t1_cat'), cheer('cat')))
+    await assertFails(setDoc(doc(as('ben'), 'cheers/ana_task_t1_ben'), cheer('ben', { emoji: '💩' })))
+    await assertFails(setDoc(doc(as('ben'), 'cheers/ana_task_t1_ben'), cheer('ben', { note: 'hi' })))
+    await assertFails(setDoc(doc(as('ana'), 'cheers/ana_task_t1_ana'), cheer('ana')))
+    await assertFails(setDoc(doc(as('ben'), 'cheers/ana_task_gone_ben'), cheer('ben', { activityId: 'ana_task_gone' })))
+    await assertFails(setDoc(doc(as('ben'), 'cheers/ana_task_t1_ben'), cheer('ben', { owner: 'ben' })))
+  })
+
+  it('is readable by the owner and their friends, not strangers', async () => {
+    await seed('cheers/ana_task_t1_ben', cheer('ben'))
+    const of = (uid: string) => getDocs(query(collection(as(uid), 'cheers'), where('owner', '==', 'ana'), limit(100)))
+    await assertSucceeds(of('ana'))
+    await assertSucceeds(of('ben'))
+    await assertFails(of('cat'))
+  })
+
+  it('lets the owner clear cheers on their items, but not change them', async () => {
+    await seed('cheers/ana_task_t1_ben', cheer('ben'))
+    await assertFails(setDoc(doc(as('ana'), 'cheers/ana_task_t1_ben'), cheer('ben', { emoji: '🎉' })))
+    await assertFails(deleteDoc(doc(as('cat'), 'cheers/ana_task_t1_ben')))
+    await assertSucceeds(deleteDoc(doc(as('ana'), 'cheers/ana_task_t1_ben')))
+  })
+})

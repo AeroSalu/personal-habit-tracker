@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { Award, CheckCircle2, Flame, Repeat, Search, TrendingUp, UserMinus } from 'lucide-react'
+import { ChevronRight, Flame, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { Avatar } from '../components/Avatar'
 import { useToast } from '../components/toast'
@@ -9,7 +9,6 @@ import {
   declineRequest,
   findByUsername,
   sendRequest,
-  unfriend,
   useActivityOf,
   useFriendships,
   useIncomingRequests,
@@ -20,14 +19,14 @@ import {
   type PublicProfile,
 } from '../data/friends'
 import { dayKey } from '../lib/dates'
-import { activityVerb, friendOf, mergeFeed, relation, timeAgo, type Activity } from '../lib/friends'
+import { cheer, uncheer, useCheersOf } from '../data/cheers'
+import { cheerSummary, friendOf, mergeFeed, relation, type Activity, type Cheer } from '../lib/friends'
+import { FeedRow } from './FeedRow'
 import { formatMinutes } from '../lib/profile'
 import { currentWeekMinutes, currentWeekXp, isFocusingNow, normalizeUsername, usernameError } from '../lib/social'
 import { useNow } from '../lib/useNow'
 import ui from '../components/ui.module.css'
 import styles from './Friends.module.css'
-
-const ICONS = { task: CheckCircle2, habit: Repeat, badge: Award, level: TrendingUp }
 
 /** One activity listener per person, reporting up; the rules only allow per-person queries. */
 function ActivitySource({ uid, onData }: { uid: string; onData: (uid: string, items: Activity[]) => void }) {
@@ -41,6 +40,17 @@ function ActivitySource({ uid, onData }: { uid: string; onData: (uid: string, it
   return null
 }
 
+/** One cheers listener per person whose items are in the feed, reporting up. */
+function CheerSource({ uid, onData }: { uid: string; onData: (uid: string, items: Cheer[]) => void }) {
+  const { data, loaded } = useCheersOf(uid)
+  const key = data.map((c) => c.id + c.emoji).join()
+  useEffect(() => {
+    if (loaded) onData(uid, data)
+    // Reports when the cheers change, which `key` captures.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loaded, key, uid, onData])
+  return null
+}
 
 export function FriendsPage() {
   const { user, profile } = useSignedIn()
@@ -60,8 +70,8 @@ export function FriendsPage() {
   const [found, setFound] = useState<PublicProfile | null>(null)
   const [searchNote, setSearchNote] = useState('')
   const [searching, setSearching] = useState(false)
-  const [confirmUnfriend, setConfirmUnfriend] = useState('')
   const [feeds, setFeeds] = useState<Record<string, Activity[]>>({})
+  const [cheerLists, setCheerLists] = useState<Record<string, Cheer[]>>({})
 
   const onData = useCallback((uid: string, items: Activity[]) => {
     setFeeds((f) => {
@@ -71,6 +81,8 @@ export function FriendsPage() {
     })
   }, [])
 
+  const onCheers = useCallback((uid: string, items: Cheer[]) => setCheerLists((c) => ({ ...c, [uid]: items })), [])
+
   const failed = () => toast('That didn’t go through. Check your connection.')
   const pendingIn = incoming.data.filter((r) => r.status === 'pending')
   const state = { friends: friendIds, incoming: incoming.data, outgoing: outgoing.data }
@@ -79,6 +91,8 @@ export function FriendsPage() {
     [me, ...friendIds].map((uid) => feeds[uid] ?? []),
     40,
   )
+  const cheers = cheerSummary(Object.values(cheerLists).flat(), me)
+  const nameFor = (uid: string) => (uid === me ? 'You' : profiles.get(`profiles/${uid}`)?.displayName ?? 'Someone')
 
   async function search(e: FormEvent) {
     e.preventDefault()
@@ -124,6 +138,9 @@ export function FriendsPage() {
     <section className={styles.page}>
       {[me, ...friendIds].map((uid) => (
         <ActivitySource key={uid} uid={uid} onData={onData} />
+      ))}
+      {[me, ...friendIds].map((uid) => (
+        <CheerSource key={uid} uid={uid} onData={onCheers} />
       ))}
 
       <header className={styles.head}>
@@ -248,69 +265,46 @@ export function FriendsPage() {
                   const focusing = s ? isFocusingNow(s, now.getTime()) : false
                   return (
                     <li key={uid} className={`${styles.friend} enter`} style={{ '--i': i } as CSSProperties}>
-                      <div className={styles.person}>
-                        <span className={styles.avatarWrap}>
-                          <Avatar name={p?.displayName ?? '?'} photo={p?.photo} size={38} />
-                          {focusing && <span className={styles.live} title="Focusing now" />}
-                        </span>
-                        <div className={styles.personText}>
-                          <strong>{p?.displayName ?? 'Loading…'}</strong>
-                          <span>
-                            {p ? `@${p.username}` : ''}
-                            {focusing ? ' · focusing now' : ''}
+                      <Link to={`/friends/${uid}`} className={styles.friendLink} aria-label={`Open ${p?.displayName ?? 'friend'}’s profile`}>
+                        <div className={styles.person}>
+                          <span className={styles.avatarWrap}>
+                            <Avatar name={p?.displayName ?? '?'} photo={p?.photo} size={38} />
+                            {focusing && <span className={styles.live} title="Focusing now" />}
                           </span>
+                          <div className={styles.personText}>
+                            <strong>{p?.displayName ?? 'Loading…'}</strong>
+                            <span>
+                              {p ? `@${p.username}` : ''}
+                              {focusing ? ' · focusing now' : ''}
+                            </span>
+                          </div>
+                          <ChevronRight size={16} className={styles.chevron} aria-hidden="true" />
                         </div>
-                        {confirmUnfriend === uid ? (
-                          <div className={styles.actions}>
-                            <button
-                              type="button"
-                              className={`${ui.button} ${styles.danger}`}
-                              onClick={() => {
-                                unfriend(me, uid).catch(failed)
-                                setConfirmUnfriend('')
-                              }}
-                            >
-                              Remove
-                            </button>
-                            <button type="button" className={`${ui.button} ${ui.ghost}`} onClick={() => setConfirmUnfriend('')}>
-                              Keep
-                            </button>
-                          </div>
+                        {s ? (
+                          <dl className={styles.friendStats}>
+                            <div>
+                              <dt>Level</dt>
+                              <dd className="num">{s.level}</dd>
+                            </div>
+                            <div>
+                              <dt>Streak</dt>
+                              <dd className="num">
+                                <Flame size={13} aria-hidden="true" /> {s.streak}
+                              </dd>
+                            </div>
+                            <div>
+                              <dt>This week</dt>
+                              <dd className="num">{formatMinutes(currentWeekMinutes(s, today))}</dd>
+                            </div>
+                            <div>
+                              <dt>Week XP</dt>
+                              <dd className="num">{currentWeekXp(s, today)}</dd>
+                            </div>
+                          </dl>
                         ) : (
-                          <button
-                            type="button"
-                            className={styles.iconButton}
-                            aria-label={`Remove ${p?.displayName ?? 'friend'}`}
-                            onClick={() => setConfirmUnfriend(uid)}
-                          >
-                            <UserMinus size={16} aria-hidden="true" />
-                          </button>
+                          <p className={styles.muted}>No stats yet.</p>
                         )}
-                      </div>
-                      {s ? (
-                        <dl className={styles.friendStats}>
-                          <div>
-                            <dt>Level</dt>
-                            <dd className="num">{s.level}</dd>
-                          </div>
-                          <div>
-                            <dt>Streak</dt>
-                            <dd className="num">
-                              <Flame size={13} aria-hidden="true" /> {s.streak}
-                            </dd>
-                          </div>
-                          <div>
-                            <dt>This week</dt>
-                            <dd className="num">{formatMinutes(currentWeekMinutes(s, today))}</dd>
-                          </div>
-                          <div>
-                            <dt>Week XP</dt>
-                            <dd className="num">{currentWeekXp(s, today)}</dd>
-                          </div>
-                        </dl>
-                      ) : (
-                        <p className={styles.muted}>No stats yet.</p>
-                      )}
+                      </Link>
                     </li>
                   )
                 })}
@@ -328,23 +322,19 @@ export function FriendsPage() {
             </p>
           ) : (
             <ul className={styles.feed}>
-              {feed.map((a, i) => {
-                const Icon = ICONS[a.kind]
-                return (
-                  <li key={a.id} className="enter" style={{ '--i': i } as CSSProperties}>
-                    <span className={`${styles.feedIcon} ${styles[a.kind]}`} aria-hidden="true">
-                      <Icon size={15} />
-                    </span>
-                    <p>
-                      <strong>{nameOf(a.uid)}</strong> {activityVerb(a)} <strong>{a.title}</strong>
-                      {a.kind === 'badge' ? ' badge' : ''}
-                    </p>
-                    <time className={styles.when} dateTime={a.at}>
-                      {timeAgo(a.at, now.getTime())}
-                    </time>
-                  </li>
-                )
-              })}
+              {feed.map((a, i) => (
+                <FeedRow
+                  key={a.id}
+                  item={a}
+                  who={nameOf(a.uid)}
+                  mine={a.uid === me}
+                  index={i}
+                  now={now.getTime()}
+                  summary={cheers.get(a.id)}
+                  nameOf={nameFor}
+                  onCheer={(e) => (e ? cheer(me, a, e) : uncheer(me, a.id)).catch(failed)}
+                />
+              ))}
             </ul>
           )}
         </article>

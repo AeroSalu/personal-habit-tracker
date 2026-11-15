@@ -81,3 +81,34 @@ export function timeAgo(iso: string, now: number): string {
   if (d < 7) return `${d}d ago`
   return new Date(iso).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })
 }
+
+// ---- Cheers ----
+
+export const CHEERS = ['👏', '🔥', '💪', '🎉'] as const
+export type CheerEmoji = (typeof CHEERS)[number]
+export type Cheer = { id: string; activityId: string; owner: string; uid: string; emoji: CheerEmoji; at: string }
+
+/** One person's cheer on one item has a fixed ID, so cheering again replaces it. */
+export const cheerId = (activityId: string, uid: string) => `${activityId}_${uid}`
+
+/** Per item: how many of each emoji (in the fixed order, used ones only), who gave them, and mine. */
+export function cheerSummary(cheers: Cheer[], me: string) {
+  const byItem = new Map<string, { counts: { emoji: CheerEmoji; count: number }[]; from: string[]; mine: CheerEmoji | null }>()
+  const grouped = new Map<string, Cheer[]>()
+  for (const c of cheers) grouped.set(c.activityId, [...(grouped.get(c.activityId) ?? []), c])
+  for (const [id, list] of grouped) {
+    const sorted = [...list].sort((a, b) => a.at.localeCompare(b.at))
+    byItem.set(id, {
+      counts: CHEERS.map((emoji) => ({ emoji, count: list.filter((c) => c.emoji === emoji).length })).filter((c) => c.count),
+      from: sorted.map((c) => c.uid),
+      mine: list.find((c) => c.uid === me)?.emoji ?? null,
+    })
+  }
+  return byItem
+}
+
+/** "Ben", "Ben and Cat", "Ben, Cat and 2 others" */
+export function namesLine(names: string[]): string {
+  if (names.length <= 2) return names.join(' and ')
+  return `${names[0]}, ${names[1]} and ${names.length - 2} other${names.length === 3 ? '' : 's'}`
+}
