@@ -21,7 +21,9 @@ import { loadPrefs, planFromPrefs } from '../focus/prefs'
 import { useFlip } from '../components/useFlip'
 import { useHabitToggle } from '../habits/useHabitToggle'
 import { useTaskActions } from '../tasks/useTaskActions'
+import * as m from 'motion/react-m'
 import { Ring } from '../components/Ring'
+import { spring } from '../design/motion'
 import { Tick } from '../components/Tick'
 import ui from '../components/ui.module.css'
 import styles from './Dashboard.module.css'
@@ -159,12 +161,15 @@ export function DashboardPage() {
       <article className={`${ui.card} ${styles.focus}`}>
         <div className={styles.focusMain}>
           <div className={styles.ringWrap}>
-            <Ring rings={[{ value: minutes / goal, color: 'var(--ring-focus)', label: 'Focus goal' }]} size={112} stroke={9}>
-              <span className={styles.ringLabel}>
-                <strong className="num">{formatMinutes(minutes)}</strong>
-                <span className="num">of {formatMinutes(goal)}</span>
-              </span>
-            </Ring>
+            {/* While a session runs, focus mode owns the ring; starting from here expands it there. */}
+            <m.div layoutId={focus.state ? undefined : 'focus-ring'} transition={spring}>
+              <Ring rings={[{ value: minutes / goal, color: 'var(--ring-focus)', label: 'Focus goal' }]} size={112} stroke={9}>
+                <span className={styles.ringLabel}>
+                  <strong className="num">{formatMinutes(minutes)}</strong>
+                  <span className="num">of {formatMinutes(goal)}</span>
+                </span>
+              </Ring>
+              </m.div>
           </div>
           <div className={styles.focusBody}>
             <p className={styles.toGo}>

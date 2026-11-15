@@ -354,22 +354,11 @@ button {
   }
 }
 
-/* Shared entrances. .page-enter wraps each screen; .enter rows rise in turn, with --i set
-   to the row's index (capped at 8 here) so long lists never feel slow. */
-.page-enter {
-  animation: page-in var(--dur-3) var(--ease-out) backwards;
-}
-
+/* Shared entrance: .enter rows rise in turn, with --i set to the row's index (capped at 8
+   here) so long lists never feel slow. Screens change through PageTransition (Motion). */
 .enter {
   animation: rise-in var(--dur-2) var(--ease-out) backwards;
   animation-delay: calc(min(var(--i, 0), 8) * 35ms);
-}
-
-@keyframes page-in {
-  from {
-    opacity: 0;
-    transform: translateY(8px);
-  }
 }
 
 @keyframes rise-in {

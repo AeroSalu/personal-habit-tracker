@@ -1,5 +1,6 @@
 import { useCallback, useState } from 'react'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { LazyMotion, MotionConfig } from 'motion/react'
 import { AuthPage } from '../auth/AuthPage'
 import { AuthProvider } from '../auth/AuthProvider'
 import { ProfileSetup } from '../auth/ProfileSetup'
@@ -86,14 +87,22 @@ function Gate() {
   )
 }
 
+const loadMotion = () => import('../design/motionFeatures').then((r) => r.default)
+
 export function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <ToastProvider>
-          <Gate />
-        </ToastProvider>
-      </AuthProvider>
-    </BrowserRouter>
+    // Motion follows the device's reduced-motion setting, like the CSS animations do, and loads
+    // its animation features as a separate chunk after the first paint.
+    <MotionConfig reducedMotion="user">
+      <LazyMotion features={loadMotion} strict>
+        <BrowserRouter>
+          <AuthProvider>
+            <ToastProvider>
+              <Gate />
+            </ToastProvider>
+          </AuthProvider>
+        </BrowserRouter>
+      </LazyMotion>
+    </MotionConfig>
   )
 }

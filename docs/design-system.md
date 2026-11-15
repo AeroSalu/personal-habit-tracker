@@ -49,7 +49,13 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
    - **Toasts:** can carry an action; completing a task or habit, or deleting a task, offers Undo.
    - **`PageSkeleton`:** replaces blank pages while data loads.
    - **Not done yet:** a separate success state for buttons (saving already confirms with a toast), and the remaining off-scale spacings. Both are left for the screen work in Phase 5.
-4. **Navigation and motion:** add `motion` (Motion for React) for springs, exit animations and shared-element transitions: tab crossfades, pushes for detail pages, sheets with drag-to-dismiss, habit card → habit detail, focus card → focus mode. A glass bottom bar and sidebar.
+4. **Navigation and motion:** done.
+   - **Library:** `motion` 14.9 (Motion for React), loaded as slim `m` components under `LazyMotion`. Its animation features (34 KB gzipped) arrive as their own chunk after the first paint, so the first load grows by about 17 KB. `MotionConfig reducedMotion="user"` respects the device setting. Tokens are in `src/design/motion.ts`.
+   - **Screen changes (`PageTransition`):** tabs crossfade with a 6px rise; detail pages push in from the right and Back slides the other way. The old screen leaves while the new one arrives. New screens start at the top; Back and Forward restore the scroll position.
+   - **Phone tab bar:** a floating glass bar with a highlight that slides to the chosen tab.
+   - **Phone sheets:** drag the handle or header down to close; a short pull springs back.
+   - **Shared element:** the focus ring on Today expands into focus mode's ring, and returns from the session summary, which now shows the completed ring.
+   - **Moved to Phase 5:** habit card → habit detail needs a detail page first.
 5. **Screens:** Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
 6. **Polish:** micro-interactions, achievement feedback kept subtle, considered empty and loading states, Android haptics.
 7. **QA:** every flow in both themes, phone, tablet and desktop, reduced motion, timer accuracy across sleep and backgrounding, and the existing tests.

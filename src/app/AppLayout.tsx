@@ -1,11 +1,14 @@
 import { useLayoutEffect, useMemo, useRef, useState } from 'react'
-import { NavLink, Outlet, useLocation } from 'react-router-dom'
+import { NavLink, useLocation } from 'react-router-dom'
 import { ChevronDown, Ellipsis, Search } from 'lucide-react'
+import * as m from 'motion/react-m'
 import { useSignedIn } from '../auth/authContext'
 import { Avatar } from '../components/Avatar'
 import { Logo } from '../components/Logo'
+import { snappy } from '../design/motion'
 import { CommandPalette } from './CommandPalette'
 import { OfflineBar } from './OfflineBar'
+import { PageTransition } from './PageTransition'
 import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
 import { ShortcutsHelp } from './ShortcutsHelp'
 import { useLaunch } from './useLaunch'
@@ -125,13 +128,11 @@ export function AppLayout() {
       </aside>
 
       <main className={styles.main}>
-        {/* Keyed by path so each screen fades and rises in as you move between them. */}
-        <div key={pathname} className="page-enter">
-          <Outlet />
-        </div>
+        <PageTransition />
       </main>
 
-      <nav className={styles.bottomBar} aria-label="Main">
+      {/* Phones: a floating glass tab bar; the highlight glides to the chosen tab. */}
+      <nav className={`${styles.bottomBar} glass`} aria-label="Main">
         {[...BOTTOM_BAR, { label: 'More', icon: Ellipsis, path: '/more' }].map((item) => {
           const Icon = item.icon
           return (
@@ -141,8 +142,13 @@ export function AppLayout() {
               end={item.path === '/'}
               className={({ isActive }) => `${styles.tab} ${isActive ? styles.active : ''}`}
             >
-              <Icon size={20} aria-hidden="true" />
-              <span>{item.label}</span>
+              {({ isActive }) => (
+                <>
+                  {isActive && <m.span layoutId="tab-pill" className={styles.tabPill} transition={snappy} />}
+                  <Icon size={20} aria-hidden="true" />
+                  <span>{item.label}</span>
+                </>
+              )}
             </NavLink>
           )
         })}

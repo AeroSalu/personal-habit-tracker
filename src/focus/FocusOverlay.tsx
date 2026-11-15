@@ -1,8 +1,11 @@
 import { useState } from 'react'
+import * as m from 'motion/react-m'
 import { CheckCircle2, Coffee, Pause, Play, Square, Volume2 } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useTasks } from '../data/tasks'
 import { MIN_SAVED_MINUTES, remainingMs, suggestedBreak, timerText, type Summary } from '../lib/focus'
+import { Ring } from '../components/Ring'
+import { spring } from '../design/motion'
 import { useFocus } from './focusContext'
 import { SOUND_LABEL, SOUNDS, type Sound } from './sound'
 import ui from '../components/ui.module.css'
@@ -46,7 +49,22 @@ function SummaryView({ summary }: { summary: Summary }) {
 
   return (
     <div className={styles.panel}>
-      <CheckCircle2 size={40} className={summary.outcome === 'completed' ? styles.good : styles.muted} aria-hidden="true" />
+      {/* The session ring, completed (or as far as it got), keeps its identity so closing returns it to Today. */}
+      <m.div layoutId="focus-ring" className={styles.summaryRing} transition={spring}>
+        <Ring
+          rings={[
+            {
+              value: summary.outcome === 'completed' ? 1 : summary.minutes / Math.max(1, summary.plan.focusMinutes),
+              color: 'var(--ring-focus)',
+              label: 'Session',
+            },
+          ]}
+          size={136}
+          stroke={10}
+        >
+          <CheckCircle2 size={40} className={summary.outcome === 'completed' ? styles.good : styles.muted} aria-hidden="true" />
+        </Ring>
+      </m.div>
       <h1 className={styles.heading}>{heading}</h1>
       <p className={styles.lead}>
         {saved ? (
@@ -181,19 +199,14 @@ export function FocusOverlay() {
       <div className={styles.panel}>
         <p className={styles.label}>{paused ? 'Paused' : 'Focusing on'}</p>
         <h1 className={styles.title}>{state.plan.link?.title ?? 'Deep focus'}</h1>
-        <p className={`${styles.timer} ${paused ? styles.pausedTimer : ''} num`} aria-live="off">
-          {timerText(left)}
-        </p>
-        <div
-          className={styles.bar}
-          role="progressbar"
-          aria-label="Session progress"
-          aria-valuemin={0}
-          aria-valuemax={100}
-          aria-valuenow={Math.round(progress * 100)}
-        >
-          <span style={{ width: `${progress * 100}%` }} />
-        </div>
+        {/* Shares its identity with Today's focus ring, so starting from Today expands it here. */}
+        <m.div layoutId="focus-ring" className={styles.ringWrap} transition={spring}>
+          <Ring rings={[{ value: progress, color: 'var(--ring-focus)', label: 'Session progress' }]} size={300} stroke={12}>
+            <p className={`${styles.ringTimer} ${paused ? styles.pausedTimer : ''} num`} aria-live="off">
+              {timerText(left)}
+            </p>
+          </Ring>
+        </m.div>
         <p className={styles.meta}>
           Session {state.sessionNumber} · {state.plan.focusMinutes} min
           {state.plan.strict && <span className={styles.strict}>Strict</span>}

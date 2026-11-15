@@ -40,6 +40,37 @@
   }
 }
 
+/* The handle at the top of a phone sheet; drag it (or the header) down to close. */
+.grabber {
+  display: none;
+}
+
+@media (max-width: 639px) {
+  .grabber {
+    display: block;
+    width: 100%;
+    height: 22px;
+    margin-bottom: -10px;
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .grabber::before {
+    content: '';
+    display: block;
+    width: 38px;
+    height: 5px;
+    margin: 9px auto 0;
+    border-radius: var(--radius-pill);
+    background: var(--faint);
+    opacity: 0.6;
+  }
+
+  .header {
+    touch-action: none;
+  }
+}
+
 .body {
   display: flex;
   flex-direction: column;

@@ -1,5 +1,7 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type PointerEvent, type ReactNode } from 'react'
 import { X } from 'lucide-react'
+import { useDragControls, type PanInfo } from 'motion/react'
+import * as m from 'motion/react-m'
 import styles from './Dialog.module.css'
 
 type Props = {
@@ -11,15 +13,25 @@ type Props = {
 /**
  * A native modal dialog: a bottom sheet on phones, a centred panel on desktop. Escape, the
  * backdrop and the close button play the exit animation before calling `onClose`; a parent
- * that unmounts it directly (after saving, say) closes it at once.
+ * that unmounts it directly (after saving, say) closes it at once. On phones the sheet can be
+ * dragged down by its handle or header to close, like a native sheet.
  */
 export function Dialog({ title, onClose, children }: Props) {
   const ref = useRef<HTMLDialogElement>(null)
   const [closing, setClosing] = useState(false)
+  const drag = useDragControls()
 
   const close = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) onClose()
     else setClosing(true)
+  }
+
+  // A firm pull or a quick flick closes it; anything less springs back.
+  const dragEnd = (_: unknown, info: PanInfo) => {
+    if (info.offset.y > 110 || info.velocity.y > 700) close()
+  }
+  const startDrag = (e: PointerEvent) => {
+    if (window.matchMedia('(max-width: 639px)').matches && !(e.target as HTMLElement).closest('button')) drag.start(e)
   }
 
   useEffect(() => {
@@ -39,8 +51,15 @@ export function Dialog({ title, onClose, children }: Props) {
   }, [])
 
   return (
-    <dialog
+    <m.dialog
       ref={ref}
+      drag="y"
+      dragControls={drag}
+      dragListener={false}
+      dragConstraints={{ top: 0, bottom: 0 }}
+      dragElastic={{ top: 0, bottom: 0.8 }}
+      dragSnapToOrigin
+      onDragEnd={dragEnd}
       className={`${styles.dialog} ${closing ? styles.closing : ''}`}
       aria-label={title}
       onCancel={(e) => {
@@ -55,8 +74,9 @@ export function Dialog({ title, onClose, children }: Props) {
         if (e.target === e.currentTarget) close()
       }}
     >
+      <div className={styles.grabber} onPointerDown={startDrag} aria-hidden="true" />
       <div className={styles.body}>
-        <header className={styles.header}>
+        <header className={styles.header} onPointerDown={startDrag}>
           <h2>{title}</h2>
           <button type="button" className={styles.close} onClick={close} aria-label="Close">
             <X size={18} aria-hidden="true" />
@@ -64,6 +84,6 @@ export function Dialog({ title, onClose, children }: Props) {
         </header>
         {children}
       </div>
-    </dialog>
+    </m.dialog>
   )
 }
