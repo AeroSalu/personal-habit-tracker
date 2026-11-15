@@ -395,3 +395,60 @@
 .comingUp li:last-child {
   border-bottom: 0;
 }
+
+/* The one gentle prompt: plan, wrap up, or review the week. */
+.page > .prompt {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-5);
+  border-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+  background: color-mix(in srgb, var(--accent) 6%, var(--card));
+  color: inherit;
+  transition: box-shadow var(--dur-2) var(--ease-out);
+}
+
+.page > .prompt:hover {
+  box-shadow: var(--shadow-2);
+}
+
+.promptIcon {
+  flex: none;
+  color: var(--accent);
+}
+
+.promptText {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.promptText span {
+  color: var(--muted);
+  font-size: 13.5px;
+}
+
+.promptCta {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  color: var(--accent);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.page > .weekFocus {
+  gap: var(--space-2);
+}
+
+.weekFocus h2 {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.weekFocus h2 svg {
+  color: var(--accent);
+}

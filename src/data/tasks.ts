@@ -167,3 +167,8 @@ export function moveTask(uid: string, task: Task, status: Status, order: number,
 export function deleteTask(uid: string, id: string) {
   return deleteDoc(doc(tasksRef(uid), id))
 }
+
+/** Reschedules without touching anything else, for planning and the evening review. */
+export function setDue(uid: string, id: string, dueDate: string, dueTime: string) {
+  return updateDoc(doc(tasksRef(uid), id), { dueDate, dueTime: dueDate ? dueTime : '' })
+}

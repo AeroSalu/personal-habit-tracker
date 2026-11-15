@@ -1,0 +1,347 @@
+/* Planning and reviews: one calm column, like Today. */
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.head {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.head h1 {
+  font-size: clamp(24px, 5vw, 30px);
+}
+
+.date {
+  color: var(--faint);
+  font-size: 13px;
+  font-weight: 550;
+}
+
+.switch {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 2px;
+  margin-top: var(--space-3);
+  padding: 3px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--card);
+}
+
+.switch button {
+  min-height: 32px;
+  padding: 0 var(--space-4);
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 600;
+  transition: background var(--dur-1) var(--ease-out), color var(--dur-1) var(--ease-out);
+}
+
+.switch button[aria-pressed='true'] {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-5);
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: var(--space-4);
+  }
+}
+
+.card h2 {
+  font-size: 16px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.faint {
+  flex: none;
+  color: var(--faint);
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.group h3 {
+  margin-top: var(--space-2);
+  color: var(--faint);
+  font-size: 12px;
+  font-weight: 650;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.rows li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  min-height: 46px;
+  border-bottom: 1px solid var(--border);
+}
+
+.rows li:last-child {
+  border-bottom: 0;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.inline {
+  margin-left: 6px;
+  color: var(--faint);
+  vertical-align: -1px;
+}
+
+.meta {
+  flex: none;
+  color: var(--faint);
+  font-size: 13px;
+}
+
+/* The pick toggle: an empty circle that fills softly when the task is in today. */
+.pick {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 2px solid var(--faint);
+  border-radius: 6px;
+  background: transparent;
+  color: transparent;
+  transition: background var(--dur-1) var(--ease-out), border-color var(--dur-1) var(--ease-out);
+}
+
+.pick::after {
+  content: '';
+  position: absolute;
+  inset: -11px;
+}
+
+.picked {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.load {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.over {
+  color: var(--warning);
+}
+
+.warn {
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--warning-soft);
+  color: var(--text);
+  font-size: 13.5px;
+}
+
+/* Timeline: time on the left, a dot on a thin line, then the item. */
+.timeline {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.timeline li {
+  position: relative;
+  display: grid;
+  grid-template-columns: 72px 14px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 46px;
+}
+
+.timeline li::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(72px + var(--space-2) + 6px);
+  width: 2px;
+  background: var(--border);
+}
+
+.timeline li:first-child::before {
+  top: 50%;
+}
+
+.timeline li:last-child::before {
+  bottom: 50%;
+}
+
+.time {
+  color: var(--muted);
+  font-size: 13px;
+  text-align: right;
+}
+
+.dot {
+  position: relative;
+  z-index: 1;
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  background: var(--card);
+}
+
+.done .title {
+  color: var(--faint);
+  text-decoration: line-through;
+}
+
+.done .dot {
+  background: var(--accent);
+}
+
+.timeInput,
+.dateInput {
+  flex: none;
+  min-height: 34px;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--muted);
+  font: inherit;
+  font-size: 13px;
+  color-scheme: inherit;
+}
+
+.carryRow {
+  flex-wrap: wrap;
+  padding: var(--space-2) 0;
+}
+
+.carry {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.doneList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.doneList li {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--muted);
+}
+
+.doneList svg {
+  flex: none;
+  color: var(--success);
+}
+
+.note {
+  min-height: 84px;
+  padding: var(--space-2) var(--space-3);
+  resize: vertical;
+}
+
+/* Weekly review */
+.numbers {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: var(--space-2);
+  margin: 0;
+}
+
+.numbers div {
+  padding: var(--space-3);
+  border-radius: var(--radius-sm);
+  background: var(--card-raised);
+}
+
+.numbers dt {
+  color: var(--faint);
+  font-size: 12.5px;
+}
+
+.numbers dd {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 700;
+}
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-left: 1.1em;
+  color: var(--muted);
+  list-style: disc;
+}
+
+.dayNotes li {
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr);
+  gap: var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.dayNotes li:last-child {
+  border-bottom: 0;
+}
+
+.dayNotes strong {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.dayNotes p {
+  overflow-wrap: anywhere;
+}
+
+.dayNotes small {
+  color: var(--faint);
+}

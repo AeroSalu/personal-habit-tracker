@@ -1,13 +1,15 @@
 import { useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ChevronDown, ChevronRight, Play, Repeat, SlidersHorizontal } from 'lucide-react'
+import { CalendarCheck, Check, ChevronDown, ChevronRight, Moon, Play, Repeat, SlidersHorizontal, Sunrise, Target } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
+import { useDays, useWeeks } from '../data/days'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
 import { greeting, productivityScore, todayList, upcomingDeadlines, type TodayItem } from '../lib/dashboard'
-import { dayKey } from '../lib/dates'
+import { dayKey, weekStart } from '../lib/dates'
+import { reviewWeekStart, todayPrompt } from '../lib/plan'
 import { minutesOn } from '../lib/focus'
 import { byUsualTime, isDue, keysFor, type Habit } from '../lib/habits'
 import { firstName, formatMinutes } from '../lib/profile'
@@ -53,6 +55,8 @@ export function DashboardPage() {
   const habits = useHabits(uid)
   const logs = useHabitLogs(uid)
   const sessions = useSessions(uid)
+  const days = useDays(uid)
+  const weeks = useWeeks(uid)
   const focus = useFocus()
   const taskActions = useTaskActions(uid, tasks.data)
   const toggleHabit = useHabitToggle(uid)
@@ -63,6 +67,23 @@ export function DashboardPage() {
   const listRef = useFlip<HTMLUListElement>()
 
   const loaded = tasks.loaded && habits.loaded && logs.loaded && sessions.loaded
+
+  // One gentle prompt at a time: plan in the morning, wrap up in the evening, review on Sunday.
+  const prompt =
+    days.loaded && weeks.loaded
+      ? todayPrompt(
+          now,
+          days.data.find((d) => d.key === today) ?? null,
+          Boolean(weeks.data.find((w) => w.key === reviewWeekStart(today))?.reviewedAt),
+        )
+      : null
+  const PROMPTS = {
+    plan: { icon: Sunrise, title: 'Plan your day', text: 'Pick today’s tasks and give them a time.', to: '/plan', cta: 'Plan' },
+    review: { icon: Moon, title: 'Wrap up your day', text: 'Move what’s left and note how it went.', to: '/plan', cta: 'Review' },
+    week: { icon: CalendarCheck, title: 'Review your week', text: 'Look back and pick next week’s focus.', to: '/review', cta: 'Review' },
+  }
+  const focusIds = weeks.data.find((w) => w.key === weekStart(today))?.focus ?? []
+  const weekFocus = focusIds.map((id) => tasks.data.find((t) => t.id === id)).filter((t) => t !== undefined)
 
   const minutes = minutesOn(sessions.data, today)
   const goal = profile.dailyFocusGoalMinutes
@@ -108,6 +129,49 @@ export function DashboardPage() {
           {greeting(now.getHours())}, {firstName(profile)}
         </h1>
       </header>
+
+      {prompt && (
+        <Link to={PROMPTS[prompt].to} className={`${ui.card} ${styles.prompt}`}>
+          {(() => {
+            const Icon = PROMPTS[prompt].icon
+            return <Icon size={20} className={styles.promptIcon} aria-hidden="true" />
+          })()}
+          <span className={styles.promptText}>
+            <strong>{PROMPTS[prompt].title}</strong>
+            <span>{PROMPTS[prompt].text}</span>
+          </span>
+          <span className={styles.promptCta}>
+            {PROMPTS[prompt].cta} <ChevronRight size={14} aria-hidden="true" />
+          </span>
+        </Link>
+      )}
+
+      {weekFocus.length > 0 && (
+        <article className={`${ui.card} ${styles.weekFocus}`}>
+          <h2>
+            <Target size={16} aria-hidden="true" /> This week’s focus
+          </h2>
+          <ul className={styles.checklist}>
+            {weekFocus.map((t) => (
+              <li key={t.id} className={t.status === 'done' ? styles.done : ''}>
+                <button
+                  type="button"
+                  className={styles.check}
+                  aria-pressed={t.status === 'done'}
+                  aria-label={`${t.status === 'done' ? 'Undo' : 'Complete'} ${t.title}`}
+                  onClick={() => taskActions.toggle(t)}
+                >
+                  <Check size={14} strokeWidth={3} aria-hidden="true" />
+                </button>
+                <span className={styles.itemText}>
+                  <span className={styles.title}>{t.title}</span>
+                </span>
+                {t.dueDate && t.status !== 'done' && <span className={`${styles.faint} num`}>{dueLabel(t, today)}</span>}
+              </li>
+            ))}
+          </ul>
+        </article>
+      )}
 
       <article className={`${ui.card} ${styles.focus}`}>
         <div className={styles.focusMain}>

@@ -18,6 +18,8 @@ import { BadgeWatcher } from '../game/BadgeWatcher'
 import { ChallengesPage } from '../game/ChallengesPage'
 import { StatsPublisher } from '../game/StatsPublisher'
 import { HabitsPage } from '../habits/HabitsPage'
+import { PlanPage } from '../plan/PlanPage'
+import { ReviewPage } from '../plan/ReviewPage'
 import { RoomPage } from '../rooms/RoomPage'
 import { RoomPresence } from '../rooms/RoomPresence'
 import { RoomsPage } from '../rooms/RoomsPage'
@@ -49,6 +51,8 @@ function SignedInRoutes() {
         <Route path="rooms" element={<RoomsPage />} />
         <Route path="rooms/:id" element={<RoomPage />} />
         <Route path="profile" element={<ProfilePage />} />
+        <Route path="plan" element={<PlanPage />} />
+        <Route path="review" element={<ReviewPage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

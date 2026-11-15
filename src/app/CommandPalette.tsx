@@ -1,6 +1,6 @@
 import { useState, type KeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle2, Keyboard, Play, Plus, Repeat, type LucideIcon } from 'lucide-react'
+import { CalendarCheck, CheckCircle2, Keyboard, Play, Plus, Repeat, type LucideIcon } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { Dialog } from '../components/Dialog'
 import { useHabits } from '../data/habits'
@@ -80,6 +80,7 @@ export function CommandPalette({ onClose, onShortcuts }: { onClose: () => void; 
       }),
     },
     { id: 'new', icon: Plus, label: 'New task', hint: 'N', run: done(() => navigate('/tasks?new=1')) },
+    { id: 'week', icon: CalendarCheck, label: 'Weekly review', run: done(() => navigate('/review')) },
     { id: 'keys', icon: Keyboard, label: 'Keyboard shortcuts', hint: '?', run: done(onShortcuts) },
     ...[...PRIMARY, ...SECONDARY, SETTINGS]
       .filter((n) => n.path)

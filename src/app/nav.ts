@@ -1,4 +1,5 @@
 import {
+  CalendarCheck,
   CalendarDays,
   ChartColumn,
   DoorOpen,
@@ -33,6 +34,7 @@ export const PRIMARY: NavItem[] = [
 
 /** Everything else, folded under "More" so the sidebar stays short. */
 export const SECONDARY: NavItem[] = [
+  { label: 'Plan & review', icon: CalendarCheck, path: '/plan' },
   { label: 'Analytics', icon: ChartColumn, path: '/analytics' },
   { label: 'Focus Rooms', icon: DoorOpen, path: '/rooms' },
   { label: 'Leaderboard', icon: Trophy, path: '/leaderboard' },
