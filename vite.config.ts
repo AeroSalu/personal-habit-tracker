@@ -24,6 +24,13 @@ export default defineConfig({
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any' },
           { src: 'icons/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'maskable' },
         ],
+        // Long-press the home-screen icon for these (handled by useLaunch).
+        shortcuts: [
+          { name: 'Start focus', short_name: 'Focus', url: '/focus?start=1', icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }] },
+          { name: 'Add task', short_name: 'Add', url: '/?add=1', icons: [{ src: 'icons/icon-192.png', sizes: '192x192', type: 'image/png' }] },
+        ],
+        // Share text or a link from another app (Android and desktop Chrome/Edge) into /share.
+        share_target: { action: '/share', method: 'GET', params: { title: 'title', text: 'text', url: 'url' } },
       },
       workbox: {
         // Firebase's sign-in handler lives under /__/ and must never get the app shell.

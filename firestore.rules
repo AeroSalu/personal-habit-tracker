@@ -149,7 +149,8 @@ service cloud.firestore {
 
     match /cheers/{id} {
       allow read: if signedIn()
-        && (resource.data.owner == request.auth.uid || isFriend(resource.data.owner));
+        && (resource.data.owner == request.auth.uid || resource.data.uid == request.auth.uid
+          || isFriend(resource.data.owner));
       allow create: if signedIn() && validCheer(request.resource.data, id);
       allow update: if signedIn() && resource.data.uid == request.auth.uid
         && validCheer(request.resource.data, id);

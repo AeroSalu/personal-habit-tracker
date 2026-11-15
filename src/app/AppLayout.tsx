@@ -5,8 +5,10 @@ import { useSignedIn } from '../auth/authContext'
 import { Avatar } from '../components/Avatar'
 import { Logo } from '../components/Logo'
 import { CommandPalette } from './CommandPalette'
+import { OfflineBar } from './OfflineBar'
 import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
 import { ShortcutsHelp } from './ShortcutsHelp'
+import { useLaunch } from './useLaunch'
 import { useShortcuts } from './useShortcuts'
 import styles from './AppLayout.module.css'
 
@@ -45,6 +47,7 @@ export function AppLayout() {
   const [overlay, setOverlay] = useState<'palette' | 'help' | null>(null)
   const open = useMemo(() => ({ palette: () => setOverlay('palette'), help: () => setOverlay('help') }), [])
   useShortcuts(open)
+  useLaunch()
   // Opening a page that lives under More unfolds it; the user can still fold it again.
   const [wasInMore, setWasInMore] = useState(inMore)
   if (inMore !== wasInMore) {
@@ -144,6 +147,7 @@ export function AppLayout() {
           )
         })}
       </nav>
+      <OfflineBar />
       {overlay === 'palette' && <CommandPalette onClose={() => setOverlay(null)} onShortcuts={open.help} />}
       {overlay === 'help' && <ShortcutsHelp onClose={() => setOverlay(null)} />}
     </div>

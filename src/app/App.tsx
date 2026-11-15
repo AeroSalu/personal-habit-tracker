@@ -27,6 +27,7 @@ import { TasksPage } from '../tasks/TasksPage'
 import { AppLayout } from './AppLayout'
 import { MorePage } from './MorePage'
 import { ProfilePage } from './ProfilePage'
+import { SharePage } from './SharePage'
 import { Splash } from './Splash'
 
 function SignedInRoutes() {
@@ -53,6 +54,7 @@ function SignedInRoutes() {
         <Route path="profile" element={<ProfilePage />} />
         <Route path="plan" element={<PlanPage />} />
         <Route path="review" element={<ReviewPage />} />
+        <Route path="share" element={<SharePage />} />
         <Route path="more" element={<MorePage />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Route>

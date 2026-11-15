@@ -5,6 +5,7 @@ import { useSignedIn } from '../auth/authContext'
 import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
 import { setBadgeAlerts } from '../data/social'
+import { AccountData } from './AccountData'
 import { PersonalSettings } from './PersonalSettings'
 import { SocialSettings } from './SocialSettings'
 import { loadTheme, saveTheme, type ThemeChoice } from './theme'
@@ -101,6 +102,8 @@ export function ProfilePage() {
           Sign out
         </button>
       </div>
+
+      <AccountData />
     </section>
   )
 }

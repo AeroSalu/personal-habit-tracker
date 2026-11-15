@@ -1,12 +1,16 @@
 import {
+  EmailAuthProvider,
   GoogleAuthProvider,
   createUserWithEmailAndPassword,
   getRedirectResult,
+  reauthenticateWithCredential,
+  reauthenticateWithPopup,
   sendPasswordResetEmail,
   signInWithEmailAndPassword,
   signInWithPopup,
   signInWithRedirect,
   signOut as firebaseSignOut,
+  type User,
 } from 'firebase/auth'
 import { auth } from '../firebase'
 
@@ -66,3 +70,15 @@ export const signUpWithEmail = (email: string, password: string) =>
 export const resetPassword = (email: string) => sendPasswordResetEmail(auth, email)
 
 export const signOut = () => firebaseSignOut(auth)
+
+/**
+ * Signs in again before something sensitive, such as deleting the account, which Firebase
+ * only allows shortly after a sign-in. Google accounts get a popup; others type their password.
+ */
+export async function confirmIdentity(user: User, password: string) {
+  if (user.providerData.some((p) => p.providerId === 'google.com')) {
+    await reauthenticateWithPopup(user, new GoogleAuthProvider())
+  } else {
+    await reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email ?? '', password))
+  }
+}
