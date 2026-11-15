@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { BellRing, Plus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
@@ -49,6 +50,15 @@ export function HabitsPage() {
   const [form, setForm] = useState<Habit | 'new' | null>(null)
   const [openId, setOpenId] = useState<string | null>(null)
   const [justDone, setJustDone] = useState('')
+
+  // The command box links here with ?open=<habit id>.
+  const [params, setParams] = useSearchParams()
+  useEffect(() => {
+    const id = params.get('open')
+    if (!id) return
+    setOpenId(id)
+    setParams({}, { replace: true })
+  }, [params, setParams])
 
   const logsByHabit = useMemo(() => {
     const map = new Map<string, HabitLog[]>()

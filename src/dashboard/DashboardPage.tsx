@@ -1,7 +1,8 @@
-import { useState, type CSSProperties, type FormEvent } from 'react'
+import { useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { Check, ChevronDown, ChevronRight, Play, Plus, Repeat, SlidersHorizontal } from 'lucide-react'
+import { Check, ChevronDown, ChevronRight, Play, Repeat, SlidersHorizontal } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { useToast } from '../components/toast'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
@@ -10,7 +11,8 @@ import { dayKey } from '../lib/dates'
 import { minutesOn } from '../lib/focus'
 import { byUsualTime, isDue, keysFor, type Habit } from '../lib/habits'
 import { firstName, formatMinutes } from '../lib/profile'
-import { compareTasks, dueLabel, quickTask } from '../lib/tasks'
+import { compareTasks, dueLabel } from '../lib/tasks'
+import { QuickAdd } from '../tasks/QuickAdd'
 import { useNow } from '../lib/useNow'
 import { useFocus } from '../focus/focusContext'
 import { loadPrefs, planFromPrefs } from '../focus/prefs'
@@ -55,9 +57,9 @@ export function DashboardPage() {
   const taskActions = useTaskActions(uid, tasks.data)
   const toggleHabit = useHabitToggle(uid)
   const now = useNow()
+  const toast = useToast()
   const today = dayKey(now)
   const [ticked, setTicked] = useState('')
-  const [draft, setDraft] = useState('')
   const listRef = useFlip<HTMLUListElement>()
 
   const loaded = tasks.loaded && habits.loaded && logs.loaded && sessions.loaded
@@ -91,12 +93,6 @@ export function DashboardPage() {
 
   const date = now.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 
-  function add(e: FormEvent) {
-    e.preventDefault()
-    if (!draft.trim()) return
-    taskActions.save(null, quickTask(draft, today))
-    setDraft('')
-  }
 
   function toggle(item: TodayItem) {
     setTicked(item.done ? '' : item.id)
@@ -175,22 +171,14 @@ export function DashboardPage() {
           )}
         </div>
 
-        <form className={styles.quickAdd} onSubmit={add}>
-          <Plus size={18} aria-hidden="true" />
-          <input
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            placeholder="Add a task for today"
-            aria-label="Add a task for today"
-            maxLength={120}
-            enterKeyHint="done"
-          />
-          {draft.trim() && (
-            <button type="submit" className={`${ui.button} ${ui.primary} ${styles.addButton}`}>
-              Add
-            </button>
-          )}
-        </form>
+        <QuickAdd
+          defaultToday
+          placeholder="Add a task for today"
+          onAdd={(fields, summary) => {
+            taskActions.save(null, fields)
+            if (fields.dueDate !== today) toast(`Added for ${summary || 'later'}`)
+          }}
+        />
 
         {items.length ? (
           <ul className={styles.checklist} ref={listRef}>

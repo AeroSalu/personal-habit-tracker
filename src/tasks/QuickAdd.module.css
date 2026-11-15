@@ -1,0 +1,76 @@
+.wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.box {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-height: 46px;
+  padding: 0 4px 0 var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--faint);
+  transition: border-color var(--dur-1) var(--ease-out);
+}
+
+.box:focus-within {
+  border-color: var(--accent);
+}
+
+.box input {
+  flex: 1;
+  min-width: 0;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+}
+
+.add {
+  min-height: 36px;
+  padding: 0 var(--space-3);
+  font-size: 13.5px;
+}
+
+/* What the text was read as, shown under the box. Neutral chips; priority keeps its colour. */
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 24px;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  min-height: 24px;
+  padding: 0 8px;
+  border-radius: 999px;
+  background: var(--card-raised);
+  color: var(--muted);
+  font-size: 12.5px;
+  font-weight: 600;
+  animation: rise-in var(--dur-2) var(--ease-out) backwards;
+}
+
+.date {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.priority {
+  background: var(--warning-soft);
+  color: var(--warning);
+}
+
+.hint {
+  color: var(--faint);
+  font-size: 12.5px;
+}

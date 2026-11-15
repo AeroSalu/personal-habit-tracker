@@ -1,10 +1,13 @@
-import { useLayoutEffect, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
-import { ChevronDown, Ellipsis } from 'lucide-react'
+import { ChevronDown, Ellipsis, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { Avatar } from '../components/Avatar'
 import { Logo } from '../components/Logo'
+import { CommandPalette } from './CommandPalette'
 import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
+import { ShortcutsHelp } from './ShortcutsHelp'
+import { useShortcuts } from './useShortcuts'
 import styles from './AppLayout.module.css'
 
 function SidebarItem({ item }: { item: NavItem }) {
@@ -39,6 +42,9 @@ export function AppLayout() {
   const { pathname } = useLocation()
   const inMore = SECONDARY.some((item) => item.path && pathname.startsWith(item.path))
   const [showMore, setMoreOpen] = useState(inMore)
+  const [overlay, setOverlay] = useState<'palette' | 'help' | null>(null)
+  const open = useMemo(() => ({ palette: () => setOverlay('palette'), help: () => setOverlay('help') }), [])
+  useShortcuts(open)
   // Opening a page that lives under More unfolds it; the user can still fold it again.
   const [wasInMore, setWasInMore] = useState(inMore)
   if (inMore !== wasInMore) {
@@ -77,6 +83,11 @@ export function AppLayout() {
           <Logo size={22} />
           CADENCE
         </p>
+        <button type="button" className={styles.searchButton} onClick={open.palette}>
+          <Search size={16} aria-hidden="true" />
+          <span className={styles.label}>Search or add</span>
+          <kbd className={styles.kbd}>{/Mac/.test(navigator.platform) ? '⌘K' : 'Ctrl K'}</kbd>
+        </button>
         <nav aria-label="Main" className={styles.nav} ref={navRef}>
           <span className={styles.pill} ref={pillRef} aria-hidden="true" />
           <ul>
@@ -133,6 +144,8 @@ export function AppLayout() {
           )
         })}
       </nav>
+      {overlay === 'palette' && <CommandPalette onClose={() => setOverlay(null)} onShortcuts={open.help} />}
+      {overlay === 'help' && <ShortcutsHelp onClose={() => setOverlay(null)} />}
     </div>
   )
 }

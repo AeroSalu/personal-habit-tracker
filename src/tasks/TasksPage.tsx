@@ -1,13 +1,15 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowDownUp, Columns3, LayoutTemplate, List, Plus, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { useToast } from '../components/toast'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
 import { useTemplates } from '../data/templates'
 import { byOrder } from '../lib/board'
 import { minutesByTask } from '../lib/focus'
 import { fieldsFromTemplate } from '../lib/templates'
+import { QuickAdd } from './QuickAdd'
 import { dayKey } from '../lib/dates'
 import { CATEGORIES } from '../lib/habits'
 import {
@@ -61,6 +63,18 @@ export function TasksPage() {
   const [editing, setEditing] = useState<Editing>(null)
   const [picking, setPicking] = useState(false)
   const [{ view, sort }, setLayout] = useState(loadView)
+  const toast = useToast()
+
+  // Links from the command box and shortcuts: ?q= searches, ?new opens a blank task.
+  const [params, setParams] = useSearchParams()
+  useEffect(() => {
+    const q = params.get('q')
+    const fresh = params.has('new')
+    if (q === null && !fresh) return
+    if (q !== null) setFilter({ ...DEFAULT_FILTER, query: q })
+    if (fresh) setEditing({})
+    setParams({}, { replace: true })
+  }, [params, setParams])
 
   function changeLayout(change: Partial<{ view: View; sort: Sort }>) {
     setLayout((l) => {
@@ -120,6 +134,15 @@ export function TasksPage() {
           </button>
         </div>
       </header>
+
+      <QuickAdd
+        defaultToday={false}
+        placeholder="Add a task — dates, times and #tags work"
+        onAdd={(fields, summary) => {
+          actions.save(null, fields)
+          toast(summary ? `Added · ${summary}` : 'Added to your tasks')
+        }}
+      />
 
       {tasks.data.length > 0 && (
         <div className={styles.layoutBar}>

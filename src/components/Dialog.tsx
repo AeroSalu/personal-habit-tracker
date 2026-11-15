@@ -31,7 +31,11 @@ export function Dialog({ title, onClose, children }: Props) {
 
   useEffect(() => {
     const dialog = ref.current
-    if (dialog && !dialog.open) dialog.showModal()
+    if (dialog && !dialog.open) {
+      dialog.showModal()
+      // showModal focuses the first control, the close button; a field can ask to go first.
+      dialog.querySelector<HTMLElement>('[data-autofocus]')?.focus()
+    }
   }, [])
 
   return (
