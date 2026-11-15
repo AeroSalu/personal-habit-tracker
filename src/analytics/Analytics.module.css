@@ -34,6 +34,7 @@
 }
 
 .segmented button {
+  position: relative;
   min-height: 34px;
   padding: 0 var(--space-3);
   border: 0;
@@ -44,9 +45,100 @@
   font-weight: var(--weight-semibold);
 }
 
+.segmented button > span:not(.segmentPill) {
+  position: relative;
+}
+
 .segmented [aria-pressed='true'] {
-  background: var(--card-raised);
   color: var(--text);
+}
+
+/* The chosen period: a raised pill that glides to the next choice. */
+.segmentPill {
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-xs);
+  background: var(--card-raised);
+}
+
+/* A new period's numbers crossfade in; charts never animate their values, so they read at once. */
+.swap {
+  animation: swap-in var(--dur-3) var(--ease-out) backwards;
+}
+
+@keyframes swap-in {
+  from {
+    opacity: 0;
+  }
+}
+
+.charts {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.overviewBody {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-6);
+}
+
+@media (max-width: 760px) {
+  .overviewBody {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-4);
+  }
+}
+
+.overviewRings {
+  display: flex;
+  align-items: center;
+  gap: var(--space-5);
+}
+
+@media (max-width: 400px) {
+  .overviewRings {
+    gap: var(--space-4);
+  }
+
+  .overviewRings > [role='img'] {
+    width: 116px !important;
+  }
+}
+
+.legend {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.legend li {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: var(--space-2);
+  align-items: center;
+}
+
+.swatch {
+  width: var(--space-2);
+  height: var(--space-2);
+  border-radius: var(--radius-pill);
+}
+
+.legendLabel {
+  color: var(--muted);
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-medium);
+}
+
+.legendValue {
+  grid-column: 2;
+  font-size: var(--text-headline);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.01em;
 }
 
 .stepper {

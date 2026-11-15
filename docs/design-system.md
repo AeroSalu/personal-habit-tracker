@@ -56,10 +56,13 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
    - **Phone sheets:** drag the handle or header down to close; a short pull springs back.
    - **Shared element:** the focus ring on Today expands into focus mode's ring, and returns from the session summary, which now shows the completed ring.
    - **Habit card → habit page:** moved to Phase 5 and done there.
-5. **Screens:** in progress.
+5. **Screens:** done.
    - **Today (done):** one overview card with three concentric rings (focus, tasks, habits) and a legend naming each with its numbers, Next and Start focus, and this week as seven small ring sets, Monday first, with future days faint. Streaks and XP stay off Today.
    - **Habits (done):** each habit has its own page (`/habits/:id`); its card or row grows into the page header and shrinks back on Back. The page has the tick (only when due), stats, the month calendar, today's note and history; editing and archiving open from the pencil.
-   - **Still to do:** Focus, Calendar, Analytics, the button success state and the remaining off-scale spacings.
+   - **Focus (done):** the idle screen is one calm ring showing the session length over today's progress, a segmented length picker whose selection glides, what you're working on, and Start; sound and strict mode fold away. The ring grows into the running timer, which has a slow breathing glow behind it that rests while paused (none with reduced motion).
+   - **Calendar (done):** the month sits on one card, with days as plain numbers rather than boxes. A soft ring marks the chosen day and glides to the next one; months and weeks slide in the direction you move, and a sideways swipe changes them on phones.
+   - **Analytics (done):** the report card leads with the period's three rings (focus against the goal for the days so far, tasks on time, habits as planned) and its sentences. A new period's numbers and charts crossfade in, and the charts themselves never animate their values. Segmented controls on Calendar and Analytics have a gliding selection.
+   - **Not done:** a separate success state for buttons (saving already confirms with a toast) and the remaining off-scale spacings. Both move to Phase 6.
 
    The goal: Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
 6. **Polish:** micro-interactions, achievement feedback kept subtle, considered empty and loading states, Android haptics.

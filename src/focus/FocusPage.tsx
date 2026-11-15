@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { Play } from 'lucide-react'
+import * as m from 'motion/react-m'
+import { ChevronDown, Play } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
@@ -11,6 +12,8 @@ import { byUsualTime, isDue, keysFor } from '../lib/habits'
 import { formatMinutes } from '../lib/profile'
 import { compareTasks } from '../lib/tasks'
 import { useNow } from '../lib/useNow'
+import { Ring } from '../components/Ring'
+import { spring } from '../design/motion'
 import { useFocus } from './focusContext'
 import { loadPrefs, savePrefs } from './prefs'
 import { SOUND_LABEL, SOUNDS, type Sound } from './sound'
@@ -92,11 +95,13 @@ export function FocusPage() {
     return null
   }
 
+  const chosen = PRESETS.find((p) => p.id === preset)
+  const lengths = chosen
+    ? { focusMinutes: chosen.focus, shortBreak: chosen.short, longBreak: chosen.long }
+    : { focusMinutes: custom.focus, shortBreak: custom.short, longBreak: custom.long }
+  const faceMinutes = Number.isFinite(lengths.focusMinutes) && lengths.focusMinutes > 0 ? lengths.focusMinutes : 0
+
   function start() {
-    const chosen = PRESETS.find((p) => p.id === preset)
-    const lengths = chosen
-      ? { focusMinutes: chosen.focus, shortBreak: chosen.short, longBreak: chosen.long }
-      : { focusMinutes: custom.focus, shortBreak: custom.short, longBreak: custom.long }
     const problem = planError(lengths)
     setError(problem)
     if (problem) return
@@ -123,20 +128,43 @@ export function FocusPage() {
   return (
     <section className={styles.page}>
       <header className={styles.head}>
-        <h1>Focus Mode</h1>
-        <div className={styles.today}>
-          <div className={styles.todayBar} role="img" aria-label={`${minutesToday} of ${goal} minutes today`}>
-            <span style={{ width: `${share * 100}%` }} />
-          </div>
-          <p className="num">
-            <strong>{formatMinutes(minutesToday)}</strong> of {formatMinutes(goal)} today ·{' '}
-            {completedOn(sessions.data, today)} session{completedOn(sessions.data, today) === 1 ? '' : 's'}
-          </p>
-        </div>
+        <h1>Focus</h1>
       </header>
 
-      <div className={`${ui.card} ${styles.setup}`}>
-        <label className={ui.field}>
+      <div className={styles.stage}>
+        {/* The ring that grows into focus mode when the session starts. */}
+        <m.div layoutId={focus.state ? undefined : 'focus-ring'} transition={spring} className={styles.stageRing}>
+          <Ring rings={[{ value: share, color: 'var(--ring-focus)', label: 'Today’s focus goal' }]} size={260} stroke={10}>
+            <p className={`${styles.stageTime} num`}>{faceMinutes}:00</p>
+            <p className={`${styles.stageSub} num`}>
+              {formatMinutes(minutesToday)} of {formatMinutes(goal)} today
+            </p>
+          </Ring>
+        </m.div>
+        <p className={`${styles.stageMeta} num`}>
+          {completedOn(sessions.data, today)} session{completedOn(sessions.data, today) === 1 ? '' : 's'} completed today
+        </p>
+
+        <div className={styles.segmented} role="group" aria-label="Focus and break length">
+          {[...PRESETS.map((p) => ({ id: p.id as PresetId, top: `${p.focus}`, sub: `${p.short} break` })), { id: 'custom' as PresetId, top: 'Custom', sub: 'your lengths' }].map(
+            (p) => (
+              <button key={p.id} type="button" aria-pressed={preset === p.id} onClick={() => setPreset(p.id)}>
+                {preset === p.id && <m.span layoutId="preset-pill" className={styles.segmentPill} transition={spring} aria-hidden="true" />}
+                <strong className="num">{p.top}</strong>
+                <span className="num">{p.sub}</span>
+              </button>
+            ),
+          )}
+        </div>
+        {preset === 'custom' && (
+          <div className={styles.custom}>
+            {number(custom.focus, (n) => setCustom((c) => ({ ...c, focus: n })), 'custom-focus', 'Focus (min)', 240)}
+            {number(custom.short, (n) => setCustom((c) => ({ ...c, short: n })), 'custom-short', 'Break', 60)}
+            {number(custom.long, (n) => setCustom((c) => ({ ...c, long: n })), 'custom-long', 'Long break', 90)}
+          </div>
+        )}
+
+        <label className={`${ui.field} ${styles.target}`}>
           <span className={ui.label}>What are you working on?</span>
           <select id="focus-target" className={ui.input} value={target} onChange={(e) => setTarget(e.target.value)}>
             <option value="">Nothing specific</option>
@@ -161,54 +189,6 @@ export function FocusPage() {
           </select>
         </label>
 
-        <fieldset className={styles.fieldset}>
-          <legend className={ui.label}>Focus / break</legend>
-          <div className={styles.presets}>
-            {PRESETS.map((p) => (
-              <button key={p.id} type="button" aria-pressed={preset === p.id} onClick={() => setPreset(p.id)}>
-                <strong className="num">{p.focus}</strong>
-                <span className="num">min · {p.short} break</span>
-              </button>
-            ))}
-            <button type="button" aria-pressed={preset === 'custom'} onClick={() => setPreset('custom')}>
-              <strong>Custom</strong>
-              <span>your lengths</span>
-            </button>
-          </div>
-          {preset === 'custom' && (
-            <div className={styles.custom}>
-              {number(custom.focus, (n) => setCustom((c) => ({ ...c, focus: n })), 'custom-focus', 'Focus (min)', 240)}
-              {number(custom.short, (n) => setCustom((c) => ({ ...c, short: n })), 'custom-short', 'Break', 60)}
-              {number(custom.long, (n) => setCustom((c) => ({ ...c, long: n })), 'custom-long', 'Long break', 90)}
-            </div>
-          )}
-        </fieldset>
-
-        <div className={styles.options}>
-          <label className={styles.toggle}>
-            <input id="focus-strict" type="checkbox" role="switch" className={ui.switch} checked={strict} onChange={(e) => setStrict(e.target.checked)} />
-            <span>
-              <strong>Strict mode</strong>
-              <small>Leaving the app for over 30 seconds ends the session.</small>
-            </span>
-          </label>
-          <label className={ui.field}>
-            <span className={ui.label}>Ambient sound</span>
-            <select
-              id="focus-sound-setup"
-              className={ui.input}
-              value={focus.sound}
-              onChange={(e) => focus.setSound(e.target.value as Sound)}
-            >
-              {SOUNDS.map((s) => (
-                <option key={s} value={s}>
-                  {SOUND_LABEL[s]}
-                </option>
-              ))}
-            </select>
-          </label>
-        </div>
-
         <p className={ui.error} role="alert">
           {error}
         </p>
@@ -216,6 +196,37 @@ export function FocusPage() {
           <Play size={18} aria-hidden="true" />
           Start focus
         </button>
+
+        <details className={styles.more}>
+          <summary>
+            Sound and strict mode
+            <ChevronDown size={16} className={styles.chevron} aria-hidden="true" />
+          </summary>
+          <div className={styles.options}>
+            <label className={styles.toggle}>
+              <input id="focus-strict" type="checkbox" role="switch" className={ui.switch} checked={strict} onChange={(e) => setStrict(e.target.checked)} />
+              <span>
+                <strong>Strict mode</strong>
+                <small>Leaving the app for over 30 seconds ends the session.</small>
+              </span>
+            </label>
+            <label className={ui.field}>
+              <span className={ui.label}>Ambient sound</span>
+              <select
+                id="focus-sound-setup"
+                className={ui.input}
+                value={focus.sound}
+                onChange={(e) => focus.setSound(e.target.value as Sound)}
+              >
+                {SOUNDS.map((s) => (
+                  <option key={s} value={s}>
+                    {SOUND_LABEL[s]}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+        </details>
       </div>
 
       <div className={styles.history}>

@@ -16,106 +16,129 @@
   font-size: var(--text-title1);
 }
 
-.today {
+/* The idle screen: one calm ring with the session length, then the few choices. */
+.stage {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  color: var(--muted);
-  font-size: var(--text-subhead);
+  align-items: center;
+  gap: var(--space-4);
+  width: min(440px, 100%);
+  margin: 0 auto;
 }
 
-.today strong {
+.stageRing {
+  width: min(260px, 70vw);
+}
+
+.stageTime {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(44px, 13vw, 60px);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.03em;
+  line-height: 1;
+}
+
+.stageSub {
+  margin-top: var(--space-2);
+  color: var(--muted);
+  font-size: var(--text-footnote);
+}
+
+.stageMeta {
+  margin-top: calc(var(--space-2) * -1);
+  color: var(--faint);
+  font-size: var(--text-footnote);
+}
+
+/* Session lengths as one segmented control; the selection glides between choices. */
+.segmented {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-1);
+  width: 100%;
+  padding: var(--space-1);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+
+.segmented button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  padding: var(--space-2) var(--space-1);
+  border: 0;
+  border-radius: var(--radius);
+  background: none;
   color: var(--text);
 }
 
-.todayBar {
-  height: 8px;
-  overflow: hidden;
-  border-radius: 4px;
-  background: var(--card-raised);
+.segmented strong,
+.segmented span:not(.segmentPill) {
+  position: relative;
 }
 
-.todayBar span {
-  display: block;
-  height: 100%;
-  border-radius: 4px;
-  background: var(--accent);
-  transition: width var(--dur-3) var(--ease-out);
+.segmented strong {
+  font-size: var(--text-headline);
+  font-weight: var(--weight-semibold);
 }
 
-.setup {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-  padding: var(--space-5);
-}
-
-@media (max-width: 480px) {
-  .setup {
-    padding: var(--space-4);
-  }
-}
-
-.fieldset {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-  margin: 0;
-  padding: 0;
-  border: 0;
-}
-
-.fieldset legend {
-  padding: 0 0 var(--space-2);
-}
-
-.presets {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: var(--space-2);
-}
-
-@media (max-width: 480px) {
-  .presets {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.presets button {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
-  min-width: 0;
-  padding: var(--space-3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--bg);
-  text-align: left;
-}
-
-.presets strong {
-  font-size: var(--text-title2);
-  font-weight: var(--weight-bold);
-  line-height: 1.1;
-}
-
-.presets span {
+.segmented span:not(.segmentPill) {
   color: var(--muted);
-  font-size: var(--text-caption);
+  font-size: var(--text-caption2);
 }
 
-.presets [aria-pressed='true'] {
-  border-color: var(--accent);
+.segmented [aria-pressed='true'] strong {
+  color: var(--accent);
+}
+
+.segmentPill {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
   background: var(--accent-soft);
 }
 
-.presets [aria-pressed='true'] strong {
-  color: var(--accent);
+.target {
+  width: 100%;
+}
+
+.more {
+  width: 100%;
+  border-top: 1px solid var(--separator);
+}
+
+.more summary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-1);
+  padding: var(--space-3) 0;
+  color: var(--muted);
+  font-size: var(--text-subhead);
+  list-style: none;
+  cursor: pointer;
+}
+
+.more summary::-webkit-details-marker {
+  display: none;
+}
+
+.chevron {
+  transition: transform var(--dur-2) var(--ease-standard);
+}
+
+.more[open] .chevron {
+  transform: rotate(180deg);
 }
 
 .custom {
   display: grid;
+  width: 100%;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: var(--space-2);
 }
@@ -125,6 +148,7 @@
   grid-template-columns: 1fr 200px;
   align-items: end;
   gap: var(--space-4);
+  padding-bottom: var(--space-3);
 }
 
 @media (max-width: 560px) {
@@ -157,6 +181,7 @@
 }
 
 .start {
+  width: 100%;
   min-height: 52px;
   font-size: var(--text-headline);
 }
@@ -321,8 +346,43 @@
 
 /* The session ring: up to 300px, never wider than the screen allows. */
 .ringWrap {
+  position: relative;
+  isolation: isolate;
   width: min(300px, 78vw);
   margin: var(--space-3) 0;
+}
+
+.glow {
+  position: absolute;
+  inset: -16%;
+  z-index: -1;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, color-mix(in srgb, var(--ring-focus) 22%, transparent), transparent);
+  /* Ten of the slowest motion step: about one calm breath every 8 seconds. */
+  animation: breathe calc(var(--dur-5) * 10) var(--ease-in-out) infinite alternate;
+  transition: opacity var(--dur-4) var(--ease-standard);
+}
+
+.glowPaused {
+  opacity: 0.3;
+  animation-play-state: paused;
+}
+
+@keyframes breathe {
+  from {
+    transform: scale(0.88);
+    opacity: 0.55;
+  }
+  to {
+    transform: scale(1.04);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glow {
+    animation: none;
+  }
 }
 
 .ringTimer {

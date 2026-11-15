@@ -201,6 +201,8 @@ export function FocusOverlay() {
         <h1 className={styles.title}>{state.plan.link?.title ?? 'Deep focus'}</h1>
         {/* Shares its identity with Today's focus ring, so starting from Today expands it here. */}
         <m.div layoutId="focus-ring" className={styles.ringWrap} transition={spring}>
+          {/* A slow breath of light behind the ring; it rests while paused. */}
+          <div className={`${styles.glow} ${paused ? styles.glowPaused : ''}`} aria-hidden="true" />
           <Ring rings={[{ value: progress, color: 'var(--ring-focus)', label: 'Session progress' }]} size={300} stroke={12}>
             <p className={`${styles.ringTimer} ${paused ? styles.pausedTimer : ''} num`} aria-live="off">
               {timerText(left)}

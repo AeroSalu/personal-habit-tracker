@@ -1,6 +1,9 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AnimatePresence, type Variants } from 'motion/react'
+import * as m from 'motion/react-m'
 import { ChevronLeft, ChevronRight, Plus } from 'lucide-react'
+import { dur, ease, spring } from '../design/motion'
 import { useSignedIn } from '../auth/authContext'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
@@ -15,6 +18,13 @@ import ui from '../components/ui.module.css'
 import styles from './Calendar.module.css'
 
 type View = 'month' | 'week'
+
+/** Months and weeks slide the way you move: forward comes in from the right. */
+const slide: Variants = {
+  enter: (dir: number) => ({ opacity: 0, x: dir * 24 }),
+  center: { opacity: 1, x: 0, transition: { duration: dur.standard, ease: ease.enter } },
+  exit: (dir: number) => ({ opacity: 0, x: dir * -24, transition: { duration: dur.quick, ease: ease.exit } }),
+}
 
 function monthStart(key: string) {
   return `${key.slice(0, 7)}-01`
@@ -44,7 +54,13 @@ export function CalendarPage() {
   const today = dayKey(now)
 
   const [view, setView] = useState<View>('month')
-  const [selected, setSelected] = useState(today)
+  const [selected, setSelectedKey] = useState(today)
+  // Which way the last move went, so the next period slides in from that side.
+  const [dir, setDir] = useState(0)
+  const setSelected = (k: string) => {
+    setDir(k > selected ? 1 : k < selected ? -1 : 0)
+    setSelectedKey(k)
+  }
   const [editing, setEditing] = useState<Task | 'new' | null>(null)
 
   const cells = view === 'month' ? monthCells(selected) : Array.from({ length: 7 }, (_, i) => addDays(weekStart(selected), i))
@@ -59,6 +75,8 @@ export function CalendarPage() {
     setSelected(view === 'month' ? shiftMonth(selected, n) : addDays(selected, 7 * n))
   }
 
+  const period = view === 'month' ? selected.slice(0, 7) : weekStart(selected)
+
   return (
     <section className={styles.page}>
       <header className={styles.head}>
@@ -66,7 +84,8 @@ export function CalendarPage() {
         <div className={styles.segmented} role="group" aria-label="View">
           {(['month', 'week'] as const).map((v) => (
             <button key={v} type="button" aria-pressed={view === v} onClick={() => setView(v)}>
-              {v === 'month' ? 'Month' : 'Week'}
+              {view === v && <m.span layoutId="calendar-view" className={styles.segmentPill} transition={spring} aria-hidden="true" />}
+              <span>{v === 'month' ? 'Month' : 'Week'}</span>
             </button>
           ))}
         </div>
@@ -87,12 +106,29 @@ export function CalendarPage() {
         )}
       </div>
 
-      <div className={`${styles.grid} ${view === 'week' ? styles.week : ''}`} aria-busy={!tasks.loaded}>
-        {WEEK.map((w) => (
-          <span key={w.day} className={styles.weekday}>
-            {w.short}
-          </span>
-        ))}
+      <div className={`${ui.card} ${styles.board}`}>
+        <div className={`${styles.grid} ${styles.weekdays} ${view === 'week' ? styles.week : ''}`} aria-hidden="true">
+          {WEEK.map((w) => (
+            <span key={w.day} className={styles.weekday}>
+              {w.short}
+            </span>
+          ))}
+        </div>
+        <AnimatePresence mode="popLayout" initial={false} custom={dir}>
+        <m.div
+          key={`${view}-${period}`}
+          custom={dir}
+          variants={slide}
+          initial="enter"
+          animate="center"
+          exit="exit"
+          className={`${styles.grid} ${view === 'week' ? styles.week : ''}`}
+          aria-busy={!tasks.loaded}
+          // A sideways swipe moves a month or week; vertical scrolling is left alone.
+          onPanEnd={(_, info) => {
+            if (Math.abs(info.offset.x) > 60 && Math.abs(info.offset.x) > Math.abs(info.offset.y) * 1.5) move(info.offset.x < 0 ? 1 : -1)
+          }}
+        >
         {cells.map((k) => {
           const list = tasksOn(tasks.data, k)
           const open = list.filter((t) => t.status !== 'done')
@@ -113,7 +149,12 @@ export function CalendarPage() {
               aria-label={`${parseDay(k).toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}, ${open.length} open task${open.length === 1 ? '' : 's'}`}
               onClick={() => setSelected(k)}
             >
-              <span className={`${styles.date} num`}>{Number(k.slice(8))}</span>
+              <span className={styles.dateWrap}>
+                {k === selected && (
+                  <m.span layoutId={`calendar-selection-${period}`} className={styles.selection} transition={spring} aria-hidden="true" />
+                )}
+                <span className={`${styles.date} num`}>{Number(k.slice(8))}</span>
+              </span>
               {list.length > 0 && (
                 <>
                   <span className={styles.dots} aria-hidden="true">
@@ -137,6 +178,8 @@ export function CalendarPage() {
             </button>
           )
         })}
+        </m.div>
+        </AnimatePresence>
       </div>
 
       <div className={styles.day}>

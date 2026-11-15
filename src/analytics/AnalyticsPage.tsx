@@ -1,4 +1,5 @@
 import { useMemo, useState } from 'react'
+import * as m from 'motion/react-m'
 import { ArrowDownRight, ArrowUpRight, ChevronLeft, ChevronRight, Minus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useHabitLogs, useHabits } from '../data/habits'
@@ -20,7 +21,9 @@ import {
   type Range,
 } from '../lib/analytics'
 import { lockInDays } from '../lib/dashboard'
-import { dayKey } from '../lib/dates'
+import { dayKey, daysBetween } from '../lib/dates'
+import { Ring } from '../components/Ring'
+import { spring } from '../design/motion'
 import { formatMinutes } from '../lib/profile'
 import { useNow } from '../lib/useNow'
 import { ColumnChart } from './charts/ColumnChart'
@@ -51,7 +54,7 @@ function Delta({ value, period }: { value: number | null; period: Period }) {
 }
 
 export function AnalyticsPage() {
-  const { user } = useSignedIn()
+  const { user, profile } = useSignedIn()
   const uid = user.uid
   const tasks = useTasks(uid)
   const habits = useHabits(uid)
@@ -71,6 +74,35 @@ export function AnalyticsPage() {
   const now = summarize(data, range)
   const before = summarize(data, shiftRange(range, -1))
   const lines = report(data, range)
+
+  // The period's three rings: focus against the daily goal for the days so far, tasks finished
+  // on time, and habits done as planned. A part with nothing to measure shows an empty ring.
+  const daysSoFar = Math.max(1, daysBetween(range.start, range.end < today ? range.end : today) + 1)
+  const focusGoal = profile.dailyFocusGoalMinutes * daysSoFar
+  const rings = [
+    {
+      id: 'focus',
+      label: 'Focus',
+      value: now.focusMinutes / Math.max(1, focusGoal),
+      color: 'var(--ring-focus)',
+      detail: `${formatMinutes(now.focusMinutes)} of ${formatMinutes(focusGoal)}`,
+    },
+    {
+      id: 'tasks',
+      label: 'Tasks on time',
+      value: now.onTimeRate ?? 0,
+      color: 'var(--ring-tasks)',
+      detail: now.onTimeRate === null ? 'No deadlines' : pct(now.onTimeRate),
+    },
+    {
+      id: 'habits',
+      label: 'Habits as planned',
+      value: now.habitRate ?? 0,
+      color: 'var(--ring-habits)',
+      detail: now.habitRate === null ? 'None due' : pct(now.habitRate),
+    },
+  ]
+  const swap = `${period}-${range.start}`
 
   const trend = focusTrend(sessions.data, range)
   const blocks = focusByBlock(sessions.data, range)
@@ -98,7 +130,8 @@ export function AnalyticsPage() {
                   setAnchor(today)
                 }}
               >
-                {p.label}
+                {period === p.id && <m.span layoutId="analytics-period" className={styles.segmentPill} transition={spring} aria-hidden="true" />}
+                <span>{p.label}</span>
               </button>
             ))}
           </div>
@@ -123,7 +156,30 @@ export function AnalyticsPage() {
         </div>
       </header>
 
-      <div className={styles.tiles}>
+      <article className={`${ui.card} ${styles.card}`}>
+        <h2>{period === 'day' ? 'Daily' : period === 'week' ? 'Weekly' : 'Monthly'} report</h2>
+        <div className={styles.overviewBody}>
+          <div className={styles.overviewRings}>
+            <Ring rings={rings} size={140} stroke={13} gap={3} />
+            <ul className={styles.legend}>
+              {rings.map((r) => (
+                <li key={r.id}>
+                  <span className={styles.swatch} style={{ background: r.color }} aria-hidden="true" />
+                  <span className={styles.legendLabel}>{r.label}</span>
+                  <span className={`${styles.legendValue} num`}>{r.detail}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <ul key={swap} className={`${styles.report} ${styles.swap}`}>
+            {lines.map((l) => (
+              <li key={l}>{l}</li>
+            ))}
+          </ul>
+        </div>
+      </article>
+
+      <div key={swap} className={`${styles.tiles} ${styles.swap}`}>
         <div className={`${ui.card} ${styles.tile}`}>
           <span className={styles.tileLabel}>Focus time</span>
           <strong className={styles.tileValue}>{formatMinutes(now.focusMinutes)}</strong>
@@ -150,15 +206,7 @@ export function AnalyticsPage() {
         </div>
       </div>
 
-      <article className={`${ui.card} ${styles.card}`}>
-        <h2>{period === 'day' ? 'Daily' : period === 'week' ? 'Weekly' : 'Monthly'} report</h2>
-        <ul className={styles.report}>
-          {lines.map((l) => (
-            <li key={l}>{l}</li>
-          ))}
-        </ul>
-      </article>
-
+      <div key={`charts-${swap}`} className={`${styles.charts} ${styles.swap}`}>
       <article className={`${ui.card} ${styles.card}`}>
         <div className={styles.cardHead}>
           <h2>Focus by day</h2>
@@ -190,6 +238,7 @@ export function AnalyticsPage() {
           <p className={styles.muted}>From the task each session was linked to</p>
           <ShareBar shares={shares} />
         </article>
+      </div>
       </div>
 
       <article className={`${ui.card} ${styles.card}`}>
