@@ -9,8 +9,8 @@
   border-radius: var(--radius-sm);
   background: var(--text);
   color: var(--bg);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
   transform: translateX(-50%);
   box-shadow: var(--shadow-3);
   animation: up var(--dur-3) var(--ease-out);

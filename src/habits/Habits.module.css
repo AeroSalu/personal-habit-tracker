@@ -13,12 +13,12 @@
 }
 
 .head h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .sub {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .reminder {
@@ -30,8 +30,8 @@
   border-radius: var(--radius);
   background: var(--warning-soft);
   color: var(--warning);
-  font-size: 14px;
-  font-weight: 550;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-medium);
 }
 
 .group {
@@ -42,8 +42,8 @@
 
 .groupTitle {
   color: var(--faint);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -67,7 +67,7 @@ summary.groupTitle {
 }
 
 .empty h2 {
-  font-size: 19px;
+  font-size: var(--text-title3);
 }
 
 .empty p {
@@ -146,7 +146,7 @@ summary.groupTitle {
 }
 
 .name {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   overflow-wrap: anywhere;
 }
 
@@ -156,7 +156,7 @@ summary.groupTitle {
 
 .meta {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .meta.overdue {
@@ -170,8 +170,8 @@ summary.groupTitle {
   border-radius: 4px;
   background: var(--card-raised);
   color: var(--muted);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.03em;
   text-transform: capitalize;
 }
@@ -189,13 +189,13 @@ summary.groupTitle {
   align-items: center;
   gap: 3px;
   color: var(--accent);
-  font-size: 14px;
-  font-weight: 700;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-bold);
 }
 
 .rate {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 /* Not today and archived rows */
@@ -248,8 +248,8 @@ summary.groupTitle {
 .segmented {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--bg);
 }
@@ -257,10 +257,10 @@ summary.groupTitle {
 .segmented button {
   min-height: 38px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--muted);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .segmented [aria-pressed='true'] {
@@ -281,7 +281,7 @@ summary.groupTitle {
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .dayPicker [aria-pressed='true'] {
@@ -332,14 +332,14 @@ summary.groupTitle {
 
 .shareToggle small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 /* Detail */
 .detailFacts {
   margin-top: calc(var(--space-2) * -1);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .stats {
@@ -364,12 +364,12 @@ summary.groupTitle {
 
 .stats dt {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 .stats dd {
   margin: 0;
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 
 .calendar {
@@ -387,7 +387,7 @@ summary.groupTitle {
 }
 
 .calendarHead p {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .calendarHead button {
@@ -408,13 +408,13 @@ summary.groupTitle {
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .calendarWeekday {
   color: var(--faint);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   text-align: center;
 }
 
@@ -423,16 +423,16 @@ summary.groupTitle {
   place-items: center;
   aspect-ratio: 1;
   max-width: 100%;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
   font-variant-numeric: tabular-nums;
 }
 
 .day.done {
   background: var(--accent);
   color: var(--accent-ink);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .day.missed {
@@ -462,7 +462,7 @@ summary.groupTitle {
   align-items: center;
   gap: 6px;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 .legend span {
@@ -488,7 +488,7 @@ summary.groupTitle {
 
 .subhead {
   margin-bottom: var(--space-2);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .history {
@@ -502,7 +502,7 @@ summary.groupTitle {
   padding: var(--space-2) 0;
   border-bottom: 1px solid var(--border);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .historyNote {

@@ -8,12 +8,12 @@
 
 .head h1,
 .page > h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .muted {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .columns {
@@ -60,12 +60,12 @@
 }
 
 .card h2 {
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .count {
   color: var(--faint);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .search {
@@ -126,7 +126,7 @@
 
 .personText span {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   overflow-wrap: anywhere;
 }
 
@@ -139,7 +139,7 @@
 .actions button {
   min-height: 36px;
   padding: 0 var(--space-3);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 
@@ -161,12 +161,12 @@
 
 .tag {
   flex: none;
-  padding: 2px 8px;
-  border-radius: 999px;
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-pill);
   background: var(--card-raised);
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
 }
 
 .iconButton {
@@ -221,7 +221,7 @@
 
 .friendStats dt {
   color: var(--faint);
-  font-size: 11px;
+  font-size: var(--text-caption2);
 }
 
 .friendStats dd {
@@ -229,7 +229,7 @@
   align-items: center;
   gap: 3px;
   margin: 0;
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 
 /* Feed */
@@ -258,13 +258,13 @@
 .feed p {
   min-width: 0;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
   overflow-wrap: anywhere;
 }
 
 .feed strong {
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .feedIcon {
@@ -285,7 +285,7 @@
 
 .when {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
   white-space: nowrap;
 }
 
@@ -306,14 +306,14 @@
 .cheer {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   min-height: 28px;
-  padding: 0 8px;
+  padding: 0 var(--space-2);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   transition:
     background var(--dur-1) var(--ease-out),
     border-color var(--dur-1) var(--ease-out),
@@ -336,7 +336,7 @@
 
 .feed .cheeredBy {
   color: var(--text);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   white-space: pre-wrap;
 }
 
@@ -380,10 +380,10 @@
 .back {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   width: fit-content;
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .back:hover {
@@ -398,7 +398,7 @@
 }
 
 .profileHead h1 {
-  font-size: 24px;
+  font-size: var(--text-title2);
   overflow-wrap: anywhere;
 }
 
@@ -443,7 +443,7 @@
 
 .pinnedList small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .pinIcon {
@@ -464,5 +464,5 @@
   justify-content: center;
   gap: var(--space-2);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }

@@ -21,8 +21,8 @@
 
 .date {
   color: var(--faint);
-  font-size: 13px;
-  font-weight: 550;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-medium);
 }
 
 .page > article {
@@ -40,7 +40,7 @@
 }
 
 .page h2 {
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .cardHead {
@@ -54,8 +54,8 @@
   display: inline-flex;
   align-items: center;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 550;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-medium);
 }
 
 .more:hover {
@@ -65,7 +65,7 @@
 .faint {
   flex: none;
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 /* Focus */
@@ -122,14 +122,14 @@
 }
 
 .ringLabel strong {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: var(--text-title2);
+  font-weight: var(--weight-bold);
   letter-spacing: -0.02em;
 }
 
 .ringLabel span {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 .focusBody {
@@ -142,18 +142,18 @@
 
 .toGo {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .nextUp {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
   overflow-wrap: anywhere;
 }
 
 .nextUp strong {
   color: var(--text);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .focusActions {
@@ -190,7 +190,7 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
   cursor: pointer;
   list-style: none;
 }
@@ -205,8 +205,8 @@
 
 .score summary strong {
   color: var(--text);
-  font-size: 16px;
-  font-weight: 700;
+  font-size: var(--text-headline);
+  font-weight: var(--weight-bold);
 }
 
 .chevron {
@@ -230,7 +230,7 @@
   grid-template-columns: 90px minmax(0, 1fr) auto;
   align-items: center;
   gap: var(--space-3);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .partBar {
@@ -360,13 +360,13 @@
 .late {
   flex: none;
   color: var(--urgent);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-semibold);
 }
 
 .empty {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 /* Coming up: plain lines, no card. */
@@ -389,7 +389,7 @@
   padding: var(--space-2) 0;
   border-bottom: 1px solid var(--border);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .comingUp li:last-child {
@@ -427,7 +427,7 @@
 
 .promptText span {
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .promptCta {
@@ -435,8 +435,8 @@
   flex: none;
   align-items: center;
   color: var(--accent);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
 }
 
 .page > .weekFocus {

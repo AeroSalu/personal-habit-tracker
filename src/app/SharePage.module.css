@@ -20,7 +20,7 @@
 
 .muted {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .link {
@@ -28,6 +28,6 @@
   align-items: center;
   gap: 6px;
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   overflow-wrap: anywhere;
 }

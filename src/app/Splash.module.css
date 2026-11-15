@@ -22,8 +22,8 @@
 
 .word {
   color: var(--muted);
-  font-size: 15px;
-  font-weight: 600;
+  font-size: var(--text-body);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.18em;
   text-transform: uppercase;
   animation: rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.3s both;

@@ -6,7 +6,7 @@
 }
 
 .page h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .section {
@@ -22,14 +22,14 @@
 }
 
 .section h2 {
-  font-size: 17px;
+  font-size: var(--text-headline);
 }
 
 .status {
   min-height: 1.4em;
   margin-top: calc(var(--space-3) * -1);
   color: var(--accent);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .usernameForm {
@@ -72,7 +72,7 @@
 .help {
   margin-top: calc(var(--space-3) * -1);
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .preview {
@@ -91,8 +91,8 @@
 
 .previewTitle {
   color: var(--faint);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -112,15 +112,15 @@
 
 .previewText span {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .previewStats {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .previewStats li {
@@ -151,7 +151,7 @@
 
 .toggle small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .facts {
@@ -163,7 +163,7 @@
 
 .facts dt {
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .facts dd {
@@ -186,7 +186,7 @@
 
 .themeRow small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .photoRow {
@@ -221,7 +221,7 @@
 
 .previewBio {
   color: var(--text);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
   overflow-wrap: anywhere;
 }
 
@@ -236,7 +236,7 @@
 
 .danger h3 {
   color: var(--urgent);
-  font-size: 15px;
+  font-size: var(--text-body);
 }
 
 .dangerButton {
@@ -275,9 +275,9 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  margin-left: 32px;
+  margin-left: var(--space-6);
   color: var(--muted);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .timeField input {
@@ -293,7 +293,7 @@
 
 .quiet small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .quietTimes {

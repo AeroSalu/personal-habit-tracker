@@ -14,17 +14,17 @@
 }
 
 .head h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .muted {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .footnote {
   color: var(--faint);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .level {
@@ -45,12 +45,12 @@
 
 .level strong {
   color: var(--text);
-  font-size: 17px;
+  font-size: var(--text-headline);
 }
 
 .level span {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .columns {
@@ -81,7 +81,7 @@
 
 .card h2,
 .badges h2 {
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .cardHead {
@@ -136,7 +136,7 @@
 }
 
 .goalTitle {
-  font-weight: 550;
+  font-weight: var(--weight-medium);
   overflow-wrap: anywhere;
 }
 
@@ -147,8 +147,8 @@
 .goalXp {
   flex: none;
   color: var(--accent);
-  font-size: 13px;
-  font-weight: 650;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-semibold);
 }
 
 .goalBar {
@@ -168,7 +168,7 @@
 
 .goalCount {
   color: var(--faint);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 /* Personal bests */
@@ -196,18 +196,18 @@
 
 .bests dt {
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 .bests dd {
   margin: 2px 0 0;
-  font-size: 20px;
-  font-weight: 700;
+  font-size: var(--text-title3);
+  font-weight: var(--weight-bold);
 }
 
 .bests span {
   color: var(--muted);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 /* Badges */
@@ -225,8 +225,8 @@
 
 .groupTitle {
   color: var(--faint);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -274,7 +274,7 @@
 
 .badgeName {
   grid-area: name;
-  font-weight: 650;
+  font-weight: var(--weight-semibold);
 }
 
 .badge:not(.earned) .badgeName {
@@ -284,13 +284,13 @@
 .badgeText {
   grid-area: text;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .badgeStatus {
   grid-area: status;
   color: var(--faint);
-  font-size: 12px;
+  font-size: var(--text-caption);
 }
 
 .earned .badgeStatus {
@@ -304,15 +304,15 @@
 .share {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: var(--space-1);
   min-height: 28px;
-  padding: 0 8px;
+  padding: 0 var(--space-2);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--muted);
-  font-size: 12px;
-  font-weight: 600;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
 }
 
 .share:hover {

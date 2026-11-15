@@ -13,12 +13,12 @@
 }
 
 .head h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .sub {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .headActions {
@@ -62,8 +62,8 @@
 .viewSwitch {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 4px;
-  padding: 4px;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--card);
 }
@@ -76,11 +76,11 @@
   min-height: 34px;
   padding: 0 var(--space-3);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
 }
 
 .viewSwitch [aria-pressed='true'] {
@@ -102,7 +102,7 @@
   border-radius: var(--radius-sm);
   background: var(--card);
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .templateItem {
@@ -137,7 +137,7 @@
 .inlineConfirm button {
   min-height: 34px;
   padding: 0 var(--space-3);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .toolbar {
@@ -184,7 +184,7 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--card);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .group {
@@ -195,8 +195,8 @@
 
 .groupTitle {
   color: var(--faint);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -220,7 +220,7 @@
 }
 
 .empty h2 {
-  font-size: 19px;
+  font-size: var(--text-title3);
 }
 
 .empty p {
@@ -284,7 +284,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
   padding: 0;
   border: 0;
@@ -293,7 +293,7 @@
 }
 
 .title {
-  font-weight: 550;
+  font-weight: var(--weight-medium);
   overflow-wrap: anywhere;
 }
 
@@ -306,9 +306,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 4px 10px;
+  gap: var(--space-1) 10px;
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .metaIcon {
@@ -323,7 +323,7 @@
 
 .late {
   color: var(--urgent);
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
 }
 
 .categoryText {
@@ -334,8 +334,8 @@
 .priority {
   padding: 0 6px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 650;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.03em;
   text-transform: capitalize;
 }
@@ -366,8 +366,8 @@
   border-radius: 4px;
   background: var(--accent-soft);
   color: var(--accent);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
 }
 
 /* Form */
@@ -411,8 +411,8 @@
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 4px;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--bg);
 }
@@ -420,11 +420,11 @@
 .segmented button {
   min-height: 38px;
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
 }
 
 .segmented [aria-pressed='true'] {
@@ -456,7 +456,7 @@
   border-radius: 50%;
   background: transparent;
   color: var(--muted);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .dayPicker [aria-pressed='true'] {
@@ -543,7 +543,7 @@
 
 .shareToggle small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   overflow-wrap: anywhere;
 }
 
@@ -564,8 +564,8 @@
 
 .saved {
   color: var(--accent);
-  font-size: 14px;
-  font-weight: 550;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-medium);
 }
 
 .deleteButton {
@@ -582,8 +582,8 @@
   border-radius: var(--radius-sm);
   background: var(--urgent-soft);
   color: var(--urgent);
-  font-size: 14px;
-  font-weight: 550;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-medium);
 }
 
 .confirm span {

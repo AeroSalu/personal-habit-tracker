@@ -14,7 +14,7 @@
 }
 
 .head h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .controls {
@@ -27,8 +27,8 @@
 .segmented {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 4px;
-  padding: 4px;
+  gap: var(--space-1);
+  padding: var(--space-1);
   border-radius: var(--radius-sm);
   background: var(--card);
 }
@@ -37,11 +37,11 @@
   min-height: 34px;
   padding: 0 var(--space-3);
   border: 0;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: transparent;
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
 }
 
 .segmented [aria-pressed='true'] {
@@ -73,8 +73,8 @@
 
 .rangeLabel {
   min-width: 118px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
   text-align: center;
 }
 
@@ -93,19 +93,19 @@
 .tile {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-1);
   min-width: 0;
   padding: var(--space-4);
 }
 
 .tileLabel {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .tileValue {
-  font-size: 28px;
-  font-weight: 700;
+  font-size: var(--text-title1);
+  font-weight: var(--weight-bold);
   letter-spacing: -0.02em;
   line-height: 1.15;
 }
@@ -113,7 +113,7 @@
 .tileNote,
 .deltaNone {
   color: var(--faint);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .delta {
@@ -122,13 +122,13 @@
   align-items: center;
   gap: 3px;
   color: var(--muted);
-  font-size: 12.5px;
-  font-weight: 600;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
 }
 
 .deltaWord {
   color: var(--faint);
-  font-weight: 400;
+  font-weight: var(--weight-regular);
 }
 
 .up {
@@ -154,7 +154,7 @@
 }
 
 .card h2 {
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .card h2 + .muted {
@@ -170,7 +170,7 @@
 
 .muted {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .report {

@@ -8,18 +8,18 @@
 
 .head h1,
 .page > h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .muted {
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .good {
   color: var(--accent);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-semibold);
 }
 
 .columns {
@@ -53,7 +53,7 @@
   display: flex;
   align-items: center;
   gap: var(--space-2);
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .card > a {
@@ -75,11 +75,11 @@
   min-height: 34px;
   padding: 0 var(--space-3);
   border: 1px solid var(--border);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: transparent;
   color: var(--muted);
-  font-size: 13.5px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
   overflow-wrap: anywhere;
 }
 
@@ -91,8 +91,8 @@
 
 .metrics button {
   min-height: 30px;
-  border-radius: 6px;
-  font-size: 12.5px;
+  border-radius: var(--radius-xs);
+  font-size: var(--text-caption);
 }
 
 .metrics [aria-pressed='true'] {
@@ -130,7 +130,7 @@
   display: grid;
   place-items: center;
   color: var(--faint);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
 }
 
 .board li:first-child .rank {
@@ -150,11 +150,11 @@
 
 .who span {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .value {
-  font-weight: 700;
+  font-weight: var(--weight-bold);
   white-space: nowrap;
 }
 
@@ -173,7 +173,7 @@
   flex-wrap: wrap;
   justify-content: space-between;
   gap: var(--space-2);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .challengeHead span {
@@ -210,12 +210,12 @@
 .groupTools button {
   min-height: 36px;
   padding: 0 var(--space-3);
-  font-size: 13.5px;
+  font-size: var(--text-subhead);
 }
 
 .code {
   color: var(--text);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
   letter-spacing: 0.08em;
 }
 
@@ -224,16 +224,16 @@
   align-items: center;
   gap: 6px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .targetPick select {
   min-height: 34px;
   padding: 0 var(--space-2);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: var(--card);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .confirm {
@@ -242,8 +242,8 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--urgent);
-  font-size: 13.5px;
-  font-weight: 550;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-medium);
 }
 
 .danger {
@@ -255,7 +255,7 @@
 .manage summary {
   width: fit-content;
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
   cursor: pointer;
 }
 
@@ -271,13 +271,13 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .manage li button {
   min-height: 32px;
   padding: 0 var(--space-3);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .gone {

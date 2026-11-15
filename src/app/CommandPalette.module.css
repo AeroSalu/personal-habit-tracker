@@ -55,7 +55,7 @@
   max-width: 45%;
   overflow: hidden;
   color: var(--faint);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -82,7 +82,7 @@
 .keys dt {
   display: flex;
   flex: none;
-  gap: 4px;
+  gap: var(--space-1);
   width: 92px;
 }
 
@@ -100,7 +100,7 @@
   padding: 0 6px;
   border: 1px solid var(--border);
   border-bottom-width: 2px;
-  border-radius: 6px;
+  border-radius: var(--radius-xs);
   background: var(--card-raised);
   color: var(--text);
   font: 600 12px/1 var(--font);
@@ -108,5 +108,5 @@
 
 .note {
   color: var(--faint);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }

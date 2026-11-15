@@ -5,14 +5,14 @@
 }
 
 .page h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .groupTitle {
   padding-bottom: var(--space-2);
   color: var(--faint);
-  font-size: 11px;
-  font-weight: 600;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -34,7 +34,7 @@
   gap: var(--space-3);
   min-height: 52px;
   padding: 0 var(--space-4);
-  font-weight: 500;
+  font-weight: var(--weight-medium);
 }
 
 .disabled {
@@ -48,9 +48,9 @@
 .soon {
   padding: 1px 6px;
   border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 10px;
-  font-weight: 600;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.04em;
   text-transform: uppercase;
 }

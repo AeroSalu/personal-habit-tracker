@@ -6,7 +6,7 @@
   padding: 0;
   border: 1px solid var(--border);
   border-bottom: 0;
-  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  border-radius: var(--radius-sheet) var(--radius-sheet) 0 0;
   background: var(--card);
   color: var(--text);
   animation: sheet-in var(--dur-3) var(--ease-out);
@@ -30,7 +30,7 @@
     width: min(520px, calc(100% - 32px));
     margin: auto;
     border-bottom: 1px solid var(--border);
-    border-radius: var(--radius-lg);
+    border-radius: var(--radius-sheet);
     box-shadow: var(--shadow-3);
     animation-name: pop-in;
   }
@@ -62,7 +62,7 @@
 
 .header h2 {
   min-width: 0;
-  font-size: 19px;
+  font-size: var(--text-title3);
   overflow-wrap: anywhere;
 }
 

@@ -50,9 +50,42 @@
   --heat-3: #6d74ef;
   --heat-4: #9ca1ff;
 
+  /* Progress rings: the same three colours wherever focus, tasks and habits are shown
+     (Today, Analytics, Habits, Focus). Validated all-pairs against --card in both themes
+     (worst colour-blind ΔE 9.4 dark, 9.3 light; contrast ≥ 3:1). Always shown with a label. */
+  --ring-focus: #7c83ff;
+  --ring-tasks: #d95926;
+  --ring-habits: #199e70;
+
+  /* Floating, translucent surfaces (navigation, sheets, toasts): see .glass below. */
+  --glass: rgb(22 24 29 / 0.72);
+  --glass-border: rgb(255 255 255 / 0.08);
+  --separator: rgb(255 255 255 / 0.06);
+
   color-scheme: dark;
 
-  --font: 'Inter Variable', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  /* Type: the platform's own font (SF Pro on Apple devices, Segoe UI Variable on Windows,
+     Roboto on Android), Inter where none of those exist. */
+  --font: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable Text', 'Segoe UI', Roboto,
+    'Inter Variable', system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI Variable Display', 'Segoe UI', Roboto,
+    'Inter Variable', system-ui, sans-serif;
+
+  /* Type scale, after Apple's text styles. Use these, never literal sizes. */
+  --text-caption2: 11px;
+  --text-caption: 12px;
+  --text-footnote: 13px;
+  --text-subhead: 14px;
+  --text-body: 15px;
+  --text-headline: 17px;
+  --text-title3: 20px;
+  --text-title2: 24px;
+  --text-title1: 28px;
+  --text-large: 34px;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
 
   --space-1: 4px;
   --space-2: 8px;
@@ -60,18 +93,34 @@
   --space-4: 16px;
   --space-5: 24px;
   --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --space-9: 64px;
 
-  --radius-sm: 8px;
+  /* Corners: controls, nested boxes, cards, hero cards, sheets, pills. Inner corners are
+     smaller than their container's, so nested shapes stay concentric. */
+  --radius-xs: 6px;
+  --radius-sm: 10px;
   --radius: 12px;
   --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-sheet: 26px;
+  --radius-pill: 999px;
 
-  /* Motion: calm, never bouncy. Hovers and presses use --dur-1, items --dur-2, pages and
-     sheets --dur-3. Reduced motion cuts every duration to nothing (bottom of this file). */
-  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Motion: calm, never bouncy. --dur-instant for presses, --dur-1 hovers and small state
+     changes, --dur-2 items, --dur-3 pages and sheets, --dur-4 expressive moments, --dur-5
+     data visualisations only. Enter with --ease-out, leave with --ease-in, move with
+     --ease-standard. Reduced motion cuts every duration to nothing (bottom of this file). */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-instant: 100ms;
   --dur-1: 160ms;
-  --dur-2: 260ms;
-  --dur-3: 400ms;
+  --dur-2: 250ms;
+  --dur-3: 350ms;
+  --dur-4: 500ms;
+  --dur-5: 800ms;
 
   --sidebar-width: 248px;
   --bottom-bar-height: 64px;
@@ -80,19 +129,19 @@
 /* Light: written twice because CSS can't share a block between a media query and a selector. */
 @media (prefers-color-scheme: light) {
   :root:not([data-theme='dark']) {
-    --bg: #f7f7f8;
+    --bg: #f5f5f7;
     --bg-calm: #eef0fa;
     --card: #ffffff;
-    --card-raised: #f1f1f3;
-    --border: #e4e4e8;
+    --card-raised: #f0f0f3;
+    --border: #e3e3e8;
     --accent: #4f56e8;
     --accent-ink: #ffffff;
     --accent-soft: rgb(79 86 232 / 0.1);
     --accent-bright: #8c92f5;
     --accent-deep: #2a2f9e;
-    --text: #17181c;
-    --muted: #5f636d;
-    --faint: #8e929b;
+    --text: #1d1d1f;
+    --muted: #6e6e73;
+    --faint: #8e8e93;
     --urgent: #d13438;
     --urgent-soft: rgb(209 52 56 / 0.1);
     --warning: #b57d14;
@@ -100,6 +149,12 @@
     --success: #2f8a43;
     --success-soft: rgb(47 138 67 / 0.12);
     --overlay: rgb(23 24 28 / 0.32);
+    --ring-focus: #4f56e8;
+    --ring-tasks: #e0602b;
+    --ring-habits: #13996a;
+    --glass: rgb(255 255 255 / 0.72);
+    --glass-border: rgb(0 0 0 / 0.08);
+    --separator: rgb(0 0 0 / 0.06);
     --statusbar: #17181c;
     --shadow-1: 0 1px 2px rgb(16 18 27 / 0.06), 0 1px 3px rgb(16 18 27 / 0.04);
     --shadow-2: 0 2px 8px rgb(16 18 27 / 0.08), 0 1px 2px rgb(16 18 27 / 0.06);
@@ -121,19 +176,19 @@
 }
 
 :root[data-theme='light'] {
-  --bg: #f7f7f8;
+  --bg: #f5f5f7;
   --bg-calm: #eef0fa;
   --card: #ffffff;
-  --card-raised: #f1f1f3;
-  --border: #e4e4e8;
+  --card-raised: #f0f0f3;
+  --border: #e3e3e8;
   --accent: #4f56e8;
   --accent-ink: #ffffff;
   --accent-soft: rgb(79 86 232 / 0.1);
   --accent-bright: #8c92f5;
   --accent-deep: #2a2f9e;
-  --text: #17181c;
-  --muted: #5f636d;
-  --faint: #8e929b;
+  --text: #1d1d1f;
+  --muted: #6e6e73;
+  --faint: #8e8e93;
   --urgent: #d13438;
   --urgent-soft: rgb(209 52 56 / 0.1);
   --warning: #b57d14;
@@ -141,6 +196,12 @@
   --success: #2f8a43;
   --success-soft: rgb(47 138 67 / 0.12);
   --overlay: rgb(23 24 28 / 0.32);
+  --ring-focus: #4f56e8;
+  --ring-tasks: #e0602b;
+  --ring-habits: #13996a;
+  --glass: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(0 0 0 / 0.08);
+  --separator: rgb(0 0 0 / 0.06);
   --statusbar: #17181c;
   --shadow-1: 0 1px 2px rgb(16 18 27 / 0.06), 0 1px 3px rgb(16 18 27 / 0.04);
   --shadow-2: 0 2px 8px rgb(16 18 27 / 0.08), 0 1px 2px rgb(16 18 27 / 0.06);
@@ -179,9 +240,10 @@ body {
   min-height: 100dvh;
   background: var(--bg);
   color: var(--text);
-  font: 15px/1.5 var(--font);
-  font-feature-settings: 'cv11', 'ss01';
+  font: var(--weight-regular) var(--text-body) / 1.5 var(--font);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   -webkit-tap-highlight-color: transparent;
 }
 
@@ -209,9 +271,31 @@ ul {
 h1,
 h2,
 h3 {
-  font-weight: 650;
-  letter-spacing: -0.02em;
+  font-family: var(--font-display);
+  font-weight: var(--weight-semibold);
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   text-wrap: balance;
+}
+
+h1 {
+  font-weight: var(--weight-bold);
+  letter-spacing: -0.022em;
+}
+
+/* Floating, translucent surfaces: navigation, sheets, toasts and contextual controls only,
+   never ordinary cards. Opaque where the browser can't blur, so text always stays readable. */
+.glass {
+  border: 1px solid var(--glass-border);
+  background: var(--card);
+}
+
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass {
+    background: var(--glass);
+    -webkit-backdrop-filter: saturate(180%) blur(20px);
+    backdrop-filter: saturate(180%) blur(20px);
+  }
 }
 
 ul {

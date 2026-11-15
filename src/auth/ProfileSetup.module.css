@@ -22,13 +22,13 @@
 }
 
 .panel h1 {
-  font-size: 26px;
+  font-size: var(--text-title1);
 }
 
 .step {
   color: var(--accent);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }

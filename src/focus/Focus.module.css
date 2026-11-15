@@ -13,7 +13,7 @@
 }
 
 .head h1 {
-  font-size: 28px;
+  font-size: var(--text-title1);
 }
 
 .today {
@@ -21,7 +21,7 @@
   flex-direction: column;
   gap: 6px;
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .today strong {
@@ -95,14 +95,14 @@
 }
 
 .presets strong {
-  font-size: 22px;
-  font-weight: 700;
+  font-size: var(--text-title2);
+  font-weight: var(--weight-bold);
   line-height: 1.1;
 }
 
 .presets span {
   color: var(--muted);
-  font-size: 12.5px;
+  font-size: var(--text-caption);
 }
 
 .presets [aria-pressed='true'] {
@@ -155,12 +155,12 @@
 
 .toggle small {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .start {
   min-height: 52px;
-  font-size: 16px;
+  font-size: var(--text-headline);
 }
 
 .history {
@@ -171,8 +171,8 @@
 
 .groupTitle {
   color: var(--faint);
-  font-size: 12px;
-  font-weight: 650;
+  font-size: var(--text-caption);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -191,8 +191,8 @@
   display: flex;
   justify-content: space-between;
   color: var(--muted);
-  font-size: 13px;
-  font-weight: 600;
+  font-size: var(--text-footnote);
+  font-weight: var(--weight-semibold);
 }
 
 .sessions {
@@ -220,18 +220,18 @@
 }
 
 .sessionTitle {
-  font-weight: 600;
+  font-weight: var(--weight-semibold);
   overflow-wrap: anywhere;
 }
 
 .sessionMeta {
   color: var(--muted);
-  font-size: 13px;
+  font-size: var(--text-footnote);
 }
 
 .sessionNote {
   margin-top: 2px;
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .sessionSide {
@@ -246,8 +246,8 @@
 .badgeStopped {
   padding: 0 6px;
   border-radius: 4px;
-  font-size: 11px;
-  font-weight: 650;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
 }
 
 .badgeDone {
@@ -292,8 +292,8 @@
 
 .label {
   color: var(--muted);
-  font-size: 14px;
-  font-weight: 600;
+  font-size: var(--text-subhead);
+  font-weight: var(--weight-semibold);
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
@@ -308,7 +308,7 @@
   margin: var(--space-2) 0;
   color: var(--accent);
   font-size: clamp(76px, 22vw, 150px);
-  font-weight: 750;
+  font-weight: var(--weight-bold);
   letter-spacing: -0.04em;
   line-height: 1;
 }
@@ -341,7 +341,7 @@
   align-items: center;
   gap: var(--space-2);
   color: var(--muted);
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .strict {
@@ -349,8 +349,8 @@
   border: 1px solid var(--warning);
   border-radius: 4px;
   color: var(--warning);
-  font-size: 11px;
-  font-weight: 650;
+  font-size: var(--text-caption2);
+  font-weight: var(--weight-semibold);
   text-transform: uppercase;
 }
 
@@ -376,7 +376,7 @@
 .sound select {
   border: 0;
   background: transparent;
-  font-size: 14px;
+  font-size: var(--text-subhead);
 }
 
 .heading {
@@ -394,7 +394,7 @@
 
 .good {
   color: var(--accent);
-  font-weight: 550;
+  font-weight: var(--weight-medium);
 }
 
 .warn {

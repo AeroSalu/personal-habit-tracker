@@ -9,7 +9,7 @@
   background: var(--accent-soft);
   color: var(--accent);
   font-size: calc(var(--size) * 0.42);
-  font-weight: 700;
+  font-weight: var(--weight-bold);
   line-height: 1;
   user-select: none;
 }
