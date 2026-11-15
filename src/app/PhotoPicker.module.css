@@ -1,0 +1,25 @@
+/* The photo sits under a circular window; dragging moves it, the slider zooms it. */
+.window {
+  position: relative;
+  align-self: center;
+  max-width: 100%;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--card-raised);
+  box-shadow: 0 0 0 1px var(--border);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.window:active {
+  cursor: grabbing;
+}
+
+.window img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  max-width: none;
+  pointer-events: none;
+}

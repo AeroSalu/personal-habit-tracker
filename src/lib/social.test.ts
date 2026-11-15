@@ -113,6 +113,7 @@ describe('publicStats', () => {
       focusing: null,
     })
     expect(stats.weekXp).toBe(40)
+    expect(stats.weekFocusByDay).toEqual([45, 0, 30, 0, 0, 0, 0])
     expect(stats.seasonXp).toBe(40)
   })
 
@@ -120,6 +121,12 @@ describe('publicStats', () => {
     const text = JSON.stringify(stats)
     expect(text).not.toContain('secret')
     expect(text).not.toContain('private')
+  })
+
+  it('carries the bio and only pins badges actually earned', () => {
+    const s = publicStats(ix, { level: 1, xp: 0, badges: ['streak-3'], streak: 0, focusingUntil: null, bio: '  Prepping for GATE  ', pinned: ['streak-3', 'streak-100'] })
+    expect(s.bio).toBe('Prepping for GATE')
+    expect(s.pinned).toEqual(['streak-3'])
   })
 
   it('marks focusing until a time', () => {

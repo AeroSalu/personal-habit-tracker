@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef, useState } from 'react'
 import { NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ChevronDown, Ellipsis } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { Avatar } from '../components/Avatar'
 import { Logo } from '../components/Logo'
 import { BOTTOM_BAR, PRIMARY, SECONDARY, type NavItem } from './nav'
 import styles from './AppLayout.module.css'
@@ -104,9 +105,7 @@ export function AppLayout() {
           </div>
         </nav>
         <NavLink to="/profile" className={styles.me}>
-          <span className={styles.avatar} aria-hidden="true">
-            {profile.displayName.trim().charAt(0).toUpperCase()}
-          </span>
+          <Avatar name={profile.displayName} photo={profile.photo} size={30} />
           <span className={styles.label}>{profile.displayName}</span>
         </NavLink>
       </aside>

@@ -13,7 +13,7 @@ export async function claimUsername(
   uid: string,
   name: string,
   previous: string,
-  card: { displayName: string; level: number },
+  card: { displayName: string; level: number; photo: string },
 ) {
   const existing = await getDocFromServer(doc(db, 'usernames', name))
   if (existing.exists() && existing.data().uid !== uid) throw new UsernameTaken()
@@ -25,6 +25,7 @@ export async function claimUsername(
     username: name,
     displayName: card.displayName.trim(),
     level: card.level,
+    photo: card.photo,
     updatedAt: new Date().toISOString(),
   })
   batch.update(doc(db, 'users', uid), { username: name })
@@ -32,12 +33,17 @@ export async function claimUsername(
 }
 
 // Published summaries are not awaited: the cache sends them when there's signal.
-export function publishProfile(uid: string, card: { username: string; displayName: string; level: number }) {
+export function publishProfile(uid: string, card: { username: string; displayName: string; level: number; photo: string }) {
   return setDoc(doc(db, 'profiles', uid), { ...card, displayName: card.displayName.trim(), updatedAt: new Date().toISOString() })
 }
 
 export function publishStats(uid: string, stats: Omit<PublicStats, 'updatedAt'>) {
   return setDoc(doc(db, 'stats', uid), { ...stats, updatedAt: new Date().toISOString() })
+}
+
+/** The private copies; `StatsPublisher` then puts the photo on the public card and the bio and pins in stats. */
+export function setPersonal(uid: string, fields: Partial<{ photo: string; bio: string; pinned: string[] }>) {
+  return updateDoc(doc(db, 'users', uid), fields)
 }
 
 export function setBadgeAlerts(uid: string, on: boolean) {

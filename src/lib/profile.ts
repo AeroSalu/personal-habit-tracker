@@ -8,6 +8,12 @@ export type Profile = {
   shareAchievements: boolean
   /** Pop up a message when a badge is earned. Off unless chosen, to keep the app quiet. */
   badgeAlerts: boolean
+  /** '' for initials, a small data: image, or a Google photo link. Shown on the public card. */
+  photo: string
+  /** Up to 80 characters, shown to friends. */
+  bio: string
+  /** Up to 3 earned badge IDs, shown to friends. */
+  pinned: string[]
 }
 
 export type ProfileFields = Pick<Profile, 'displayName' | 'dailyFocusGoalMinutes'>
@@ -43,8 +49,16 @@ export function toProfile(data: Record<string, unknown>): Profile {
     username: typeof data.username === 'string' ? data.username : '',
     shareAchievements: data.shareAchievements !== false,
     badgeAlerts: data.badgeAlerts === true,
+    photo: typeof data.photo === 'string' ? data.photo : '',
+    bio: typeof data.bio === 'string' ? data.bio.slice(0, 80) : '',
+    pinned: Array.isArray(data.pinned)
+      ? data.pinned.filter((b): b is string => typeof b === 'string').slice(0, 3)
+      : [],
   }
 }
+
+export const MAX_BIO = 80
+export const MAX_PINNED = 3
 
 export function firstName(profile: Profile): string {
   return profile.displayName.trim().split(/\s+/)[0] ?? ''

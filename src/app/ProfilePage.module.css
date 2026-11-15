@@ -103,17 +103,6 @@
   gap: var(--space-3);
 }
 
-.avatar {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-weight: 700;
-}
 
 .previewText {
   display: flex;
@@ -198,4 +187,40 @@
 .themeRow small {
   color: var(--muted);
   font-size: 13px;
+}
+
+.photoRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.photoActions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.bioForm {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--space-2);
+}
+
+.bioForm > label {
+  flex: 1;
+  min-width: 0;
+}
+
+.pins {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.previewBio {
+  color: var(--text);
+  font-size: 13.5px;
+  overflow-wrap: anywhere;
 }

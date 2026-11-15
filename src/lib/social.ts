@@ -43,23 +43,36 @@ export type PublicStats = {
   weekKey: string
   weekXp: number
   weekFocusMinutes: number
+  /** Focus minutes for each day of this week, Monday first. */
+  weekFocusByDay: number[]
   seasonKey: string
   seasonXp: number
   streak: number
   focusing: { until: string } | null
+  bio: string
+  pinned: string[]
   updatedAt: string
 }
 
 /** The summary friends see. Never includes task names, notes or anything else private. */
 export function publicStats(
   ix: GameIndex,
-  input: { level: number; xp: number; badges: string[]; streak: number; focusingUntil: number | null },
+  input: {
+    level: number
+    xp: number
+    badges: string[]
+    streak: number
+    focusingUntil: number | null
+    bio?: string
+    pinned?: string[]
+  },
 ): Omit<PublicStats, 'updatedAt'> {
   const week = weekStart(ix.today)
   const season = ix.today.slice(0, 7)
   const weekEnd = addDays(week, 6)
   let weekFocusMinutes = 0
   for (const [day, minutes] of ix.minutesByDay) if (day >= week && day <= weekEnd) weekFocusMinutes += minutes
+  const weekFocusByDay = Array.from({ length: 7 }, (_, i) => Math.min(ix.minutesByDay.get(addDays(week, i)) ?? 0, 24 * 60))
   return {
     level: input.level,
     xp: input.xp,
@@ -67,10 +80,13 @@ export function publicStats(
     weekKey: week,
     weekXp: xpBetween(ix, week, weekEnd),
     weekFocusMinutes: Math.min(weekFocusMinutes, 7 * 24 * 60),
+    weekFocusByDay,
     seasonKey: season,
     seasonXp: xpBetween(ix, `${season}-01`, `${season}-31`),
     streak: input.streak,
     focusing: input.focusingUntil ? { until: new Date(input.focusingUntil).toISOString() } : null,
+    bio: (input.bio ?? '').trim().slice(0, 80),
+    pinned: (input.pinned ?? []).filter((id) => input.badges.includes(id)).slice(0, 3),
   }
 }
 

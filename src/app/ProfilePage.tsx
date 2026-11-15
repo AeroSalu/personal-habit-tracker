@@ -5,6 +5,7 @@ import { useSignedIn } from '../auth/authContext'
 import { ProfileForm } from '../auth/ProfileForm'
 import { updateProfile } from '../data/profile'
 import { setBadgeAlerts } from '../data/social'
+import { PersonalSettings } from './PersonalSettings'
 import { SocialSettings } from './SocialSettings'
 import { loadTheme, saveTheme, type ThemeChoice } from './theme'
 import ui from '../components/ui.module.css'
@@ -40,6 +41,8 @@ export function ProfilePage() {
           {status}
         </p>
       </div>
+
+      <PersonalSettings />
 
       <div className={`${ui.card} ${styles.section}`}>
         <h2>Preferences</h2>

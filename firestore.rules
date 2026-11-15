@@ -43,12 +43,14 @@ service cloud.firestore {
       allow delete: if signedIn() && resource.data.uid == request.auth.uid;
     }
 
-    // The public card search needs: name, display name and level. Its username must be
-    // one this user holds, checked after the write so claiming and setting can share a batch.
+    // The public card search needs: name, display name, level and an optional photo. Its
+    // username must be one this user holds, checked after the write so claiming and setting
+    // can share a batch.
     match /profiles/{uid} {
       allow read: if signedIn();
       allow create, update: if isMe(uid)
-        && request.resource.data.keys().hasOnly(['username', 'displayName', 'level', 'updatedAt'])
+        && request.resource.data.keys().hasOnly(['username', 'displayName', 'level', 'photo', 'updatedAt'])
+        && validPhoto(request.resource.data)
         && isUsername(request.resource.data.username)
         && getAfter(/databases/$(database)/documents/usernames/$(request.resource.data.username)).data.uid == uid
         && request.resource.data.displayName is string
@@ -279,10 +281,31 @@ service cloud.firestore {
       allow delete: if signedIn() && get(roomPath(resource.data.roomId)).data.hostUid == request.auth.uid;
     }
 
+    // No photo, or a small picture shrunk on the device, or a Google account photo link.
+    function validPhoto(d) {
+      return !('photo' in d) || d.photo == ''
+        || (d.photo is string && d.photo.size() <= 20000
+          && (d.photo.matches('^data:image/(webp|jpeg);base64,[A-Za-z0-9+/=]+$')
+            || d.photo.matches('^https://lh3[.]googleusercontent[.]com/[^ "<>]+$')));
+    }
+
+    // A real day holds at most 1,440 minutes of focus.
+    function validWeek(w) {
+      return w is list && w.size() == 7
+        && intIn(w[0], 0, 1440) && intIn(w[1], 0, 1440) && intIn(w[2], 0, 1440)
+        && intIn(w[3], 0, 1440) && intIn(w[4], 0, 1440) && intIn(w[5], 0, 1440)
+        && intIn(w[6], 0, 1440);
+    }
+
+    // The bio, pinned badges and per-day focus are optional, so older app versions that
+    // don't send them still pass.
     function validStats(s) {
       return s.keys().hasOnly([
-          'level', 'xp', 'badges', 'weekKey', 'weekXp', 'weekFocusMinutes',
-          'seasonKey', 'seasonXp', 'streak', 'focusing', 'updatedAt'])
+          'level', 'xp', 'badges', 'weekKey', 'weekXp', 'weekFocusMinutes', 'weekFocusByDay',
+          'seasonKey', 'seasonXp', 'streak', 'focusing', 'bio', 'pinned', 'updatedAt'])
+        && (!('weekFocusByDay' in s) || validWeek(s.weekFocusByDay))
+        && (!('bio' in s) || (s.bio is string && s.bio.size() <= 80))
+        && (!('pinned' in s) || (s.pinned is list && s.pinned.size() <= 3))
         && intIn(s.level, 1, 1000)
         && intIn(s.xp, 0, 10000000)
         && s.badges is list && s.badges.size() <= 60

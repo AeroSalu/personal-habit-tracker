@@ -137,16 +137,6 @@
   color: var(--warning);
 }
 
-.avatar {
-  display: grid;
-  place-items: center;
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  background: var(--card-raised);
-  color: var(--text);
-  font-weight: 700;
-}
 
 .who {
   display: flex;

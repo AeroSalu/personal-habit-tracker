@@ -37,6 +37,7 @@ The app was renamed from LOCKIN to Cadence on 2026-11-14. Only what people see c
 - Google sign-in uses a redirect on phones and in the installed app, and a popup on desktop (`src/auth/authActions.ts`). `redirectError` is read once at startup.
 - Routes live in `src/app/App.tsx`, all inside `AppLayout`.
 - The mark is `src/components/Logo.tsx`: a 3D ring built from stacked SVG slices with CSS `preserve-3d` (no 3D library). `animated` (splash, sign-in) orbits, floats, sweeps light and draws the check; the sidebar uses the still version, and reduced motion always gets it. Nothing on its 3D chain may use `filter`, `opacity` or `overflow: hidden`, which flatten it. `Splash` sits over the app while auth loads and fades out once it resolves. App icons are drawn by `tools/make-icons.cjs`.
+- People are drawn with `src/components/Avatar.tsx` (photo, or the initial when there's none or it fails to load) everywhere: sidebar, Settings, friends, leaderboard and room members.
 - Shared buttons, inputs and chips are classes in `src/components/ui.module.css`; screens compose them rather than restyling controls. `Dialog` (native `<dialog>`, a bottom sheet on phones) and `useToast` are the shared overlays; the toast provider wraps the whole app.
 - Layering: `src/lib/` holds pure rules with tests (no React, no Firebase); `src/data/` holds Firestore mappers, live hooks (`useUserCollection`) and write functions; feature folders such as `src/habits/` hold screens. Mappers fill gaps in stored documents so older data still loads.
 - Focus: `src/lib/focus.ts` is a pure state machine over timestamps (focus, summary, break, breakOver), with `now` always passed in. `src/focus/FocusProvider.tsx` wraps the signed-in app and owns the running session: it ticks the clock, saves the state to `localStorage` so a reload resumes it (an expired phase resolves to its real end time), turns `visibilitychange` into leaves (strict mode stops a session left for over 30 seconds, at the moment of leaving), holds a wake lock, plays Web Audio ambient sound and the chime, and writes the finished session once (`saveSession` is idempotent and never touches the note). It renders `FocusOverlay` above everything while a session or break runs. Read visibility in the event handler, not inside a state updater.
@@ -46,8 +47,8 @@ The app was renamed from LOCKIN to Cadence on 2026-11-14. Only what people see c
 
 Private data sits under `users/{uid}/…`, which only that signed-in user can reach. Shared collections, each with its own rules and tests:
 - `usernames/{name}`: `{uid}`. Created only if free and only for yourself, never updated, deleted only by its holder. This is what makes names unique.
-- `profiles/{uid}`: `{username, displayName, level, updatedAt}`. Readable by any signed-in user, for search. Its username must be one you hold (checked with `getAfter`, so claiming and setting share one batch in `claimUsername`).
-- `stats/{uid}`: the summary friends see (level, xp, badge IDs, this week's XP and focus minutes, this month's season XP, streak, `focusing.until`). Readable by the owner and friends (a `friendships/{lowerUid_higherUid}` document exists). Written only by the owner, with range checks. `StatsPublisher` writes it at most every 30 s and only once a username exists. Weekly totals come from `xpBetween` in `src/lib/social.ts`, which follows the same rules as the total.
+- `profiles/{uid}`: `{username, displayName, level, photo, updatedAt}`. Readable by any signed-in user, for search. Its username must be one you hold (checked with `getAfter`, so claiming and setting share one batch in `claimUsername`). `photo` is '' or a data: WebP/JPEG of 20,000 characters or fewer (cropped and shrunk to 128 px on the device in `PhotoPicker`, since Cloud Storage needs billing) or a Google `lh3.googleusercontent.com` link; nothing else passes the rules. Writes always send the whole card, so a new field must be added to `publishProfile` and `claimUsername` together.
+- `stats/{uid}`: the summary friends see (level, xp, badge IDs, this week's XP and focus minutes, `weekFocusByDay` Monday first, this month's season XP, streak, `focusing.until`, and the `bio` and up to 3 `pinned` badge IDs). The newer fields are optional in the rules so older installed versions still publish. Readable by the owner and friends (a `friendships/{lowerUid_higherUid}` document exists). Written only by the owner, with range checks. `StatsPublisher` writes it at most every 30 s and only once a username exists. Weekly totals come from `xpBetween` in `src/lib/social.ts`, which follows the same rules as the total.
 
 - `friendRequests/{from_to}`: `{from, to, fromUsername, fromName, toUsername, status: pending|declined, createdAt}`. Only the sender creates it (the recipient needs a profile and they mustn't already be friends). It's visible to both. Only the recipient can decline; either can delete it.
 - `friendships/{lowerUid_higherUid}`: `{members (sorted), since}`. It can only be created by the recipient of a pending request from the other person, in the same batch that deletes the request (`acceptRequest`). Either member can delete it.
@@ -65,7 +66,7 @@ Private data sits under `users/{uid}/…`, which only that signed-in user can re
 
 Everything else is closed by default. `dayKey` is the device's local YYYY-MM-DD date, and timestamps are ISO strings from the device clock so offline actions keep their real time.
 
-- `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`, `username`, `shareAchievements`, `badgeAlerts`)
+- `users/{uid}`: profile (`displayName`, `dailyFocusGoalMinutes`, `createdAt`, `username`, `shareAchievements`, `badgeAlerts`, `photo`, `bio`, `pinned`). The private copies are what Settings edits (`setPersonal`); `StatsPublisher` copies the photo to the public card and the bio and pins (only earned ones) into stats.
 - `habits/{id}`: `name`, `category`, `schedule` (`{type:'days', days}` with `Date.getDay` numbers, or `{type:'count', perWeek}`), `usualTime`, `targetNote`, `archived`, `createdAt`
 - `habitLogs/{habitId_dayKey}`: `habitId`, `dayKey`, `completedAt`, `note`. The ID allows one per habit per day and makes undo a delete.
 - `tasks/{id}`: `title`, `description`, `category`, `priority` (urgent, high, medium, low), `status` (todo, in_progress, done), `dueDate` (day key or ''), `dueTime` ("HH:MM" or ''), `subtasks` (array of `{id, title, done}`), `recurrence` (`{type:'none'|'daily'|'weekly'}` or `{type:'custom', days}`), `estimateMinutes`, `order`, `createdAt`, `completedAt`, `nextTaskId`
@@ -97,7 +98,8 @@ Later phases from the product blueprint, each to be planned and approved before 
   - focus rooms using Firestore for the room and Realtime Database presence with `onDisconnect`
   - rooms show who is focusing without task details
 - **P1 Tasks extras:** Kanban with drag and drop, templates, manual ordering via `order`.
-- **P2 AI coach:** Firebase AI Logic on the Gemini free tier with App Check. It only suggests, and the user approves each change. Check Spark support first.
-- **P2 Distraction blocker:** a Chrome/Edge extension in `extension/`, signalled by the app during a session.
+- **P2 (parked on 2026-11-15 at the user's request):**
+  - **AI coach:** Firebase AI Logic on the Gemini free tier with App Check. It only suggests, and the user approves each change. Check Spark support first.
+  - **Distraction blocker:** a Chrome/Edge extension in `extension/`, signalled by the app during a session.
 
 Free-plan limits that shape these: no push reminders while the app is closed (they need Cloud Functions), a web app can't block other apps or sites, and leaderboards can't be server-verified.

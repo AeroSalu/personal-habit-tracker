@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { AtSign, Flame, Trophy } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { Avatar } from '../components/Avatar'
 import { claimUsername, setShareAchievements, UsernameTaken } from '../data/social'
 import { lockInStreak } from '../lib/dashboard'
 import { formatMinutes } from '../lib/profile'
@@ -24,7 +25,10 @@ export function SocialSettings() {
     badges: badges.filter((b) => b.earnedOn).map((b) => b.id),
     streak: lockInStreak(new Set(ix.lockIn), today).current,
     focusingUntil: null,
+    bio: profile.bio,
+    pinned: profile.pinned,
   })
+  const pinnedNames = preview.pinned.map((id) => badges.find((b) => b.id === id)?.name ?? id)
 
   async function submit(e: FormEvent) {
     e.preventDefault()
@@ -36,7 +40,11 @@ export function SocialSettings() {
     if (problem || name === profile.username) return
     setBusy(true)
     try {
-      await claimUsername(user.uid, name, profile.username, { displayName: profile.displayName, level: level.level })
+      await claimUsername(user.uid, name, profile.username, {
+        displayName: profile.displayName,
+        level: level.level,
+        photo: profile.photo,
+      })
       setNotice(`You're @${name}.`)
     } catch (err) {
       const code = (err as { code?: string })?.code
@@ -92,12 +100,11 @@ export function SocialSettings() {
       <div className={styles.preview} aria-label="What friends see">
         <p className={styles.previewTitle}>What friends see</p>
         <div className={styles.previewCard}>
-          <span className={styles.avatar} aria-hidden="true">
-            {profile.displayName.trim().charAt(0).toUpperCase()}
-          </span>
+          <Avatar name={profile.displayName} photo={profile.photo} />
           <div className={styles.previewText}>
             <strong>{profile.displayName}</strong>
             <span>{profile.username ? `@${profile.username}` : 'No username yet'}</span>
+            {preview.bio && <span className={styles.previewBio}>{preview.bio}</span>}
           </div>
         </div>
         <ul className={styles.previewStats}>
@@ -105,6 +112,7 @@ export function SocialSettings() {
             <Trophy size={14} aria-hidden="true" /> Level {preview.level} · {preview.badges.length} badge
             {preview.badges.length === 1 ? '' : 's'}
           </li>
+          {pinnedNames.length > 0 && <li>Pinned: {pinnedNames.join(' · ')}</li>}
           <li className="num">This week: {preview.weekXp} XP, {formatMinutes(preview.weekFocusMinutes)} focus</li>
           <li>
             <Flame size={14} aria-hidden="true" /> {preview.streak}-day streak · whether you’re focusing right now

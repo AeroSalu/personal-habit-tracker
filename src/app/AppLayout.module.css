@@ -191,18 +191,6 @@ a.item.active:hover {
   background: var(--card-raised);
 }
 
-.avatar {
-  display: grid;
-  flex: none;
-  place-items: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  background: var(--accent-soft);
-  color: var(--accent);
-  font-size: 13px;
-  font-weight: 700;
-}
 
 .soon {
   padding: 1px 6px;

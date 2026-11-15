@@ -27,11 +27,13 @@ export function StatsPublisher() {
         badges: badges.filter((b) => b.earnedOn).map((b) => b.id),
         streak: lockInStreak(new Set(ix.lockIn), today).current,
         focusingUntil: running,
+        bio: profile.bio,
+        pinned: profile.pinned,
       }),
-    [ix, level.level, xp.total, badges, today, running],
+    [ix, level.level, xp.total, badges, today, running, profile.bio, profile.pinned],
   )
   const key = JSON.stringify(stats)
-  const cardKey = `${profile.username}|${profile.displayName}|${level.level}`
+  const cardKey = `${profile.username}|${profile.displayName}|${level.level}|${profile.photo}`
 
   const last = useRef({ key: '', card: '', at: 0 })
   // Each group I'm in keeps its own copy of my weekly numbers, so members can rank everyone.
@@ -52,12 +54,17 @@ export function StatsPublisher() {
       const me = { uid: user.uid, username: profile.username, displayName: profile.displayName }
       for (const g of groups.data) publishMember(me, g, stats).catch(() => {})
       if (last.current.card !== cardKey) {
-        publishProfile(user.uid, { username: profile.username, displayName: profile.displayName, level: level.level }).catch(() => {})
+        publishProfile(user.uid, {
+          username: profile.username,
+          displayName: profile.displayName,
+          level: level.level,
+          photo: profile.photo,
+        }).catch(() => {})
       }
       last.current = { key: allKey, card: cardKey, at: Date.now() }
     }, wait)
     return () => clearTimeout(timer)
-  }, [loaded, groups.loaded, groups.data, groupsKey, key, cardKey, stats, user.uid, profile.username, profile.displayName, level.level])
+  }, [loaded, groups.loaded, groups.data, groupsKey, key, cardKey, stats, user.uid, profile.username, profile.displayName, profile.photo, level.level])
 
   return null
 }

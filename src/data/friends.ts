@@ -20,7 +20,7 @@ import { useLiveDocs, useLiveQuery } from './live'
 const str = (v: unknown) => (typeof v === 'string' ? v : '')
 const num = (v: unknown) => (typeof v === 'number' ? v : 0)
 
-export type PublicProfile = { uid: string; username: string; displayName: string; level: number }
+export type PublicProfile = { uid: string; username: string; displayName: string; level: number; photo: string }
 
 const toRequest = (id: string, d: DocumentData): FriendRequest => ({
   id,
@@ -44,6 +44,7 @@ export const toPublicProfile = (id: string, d: DocumentData): PublicProfile => (
   username: str(d.username),
   displayName: str(d.displayName),
   level: num(d.level) || 1,
+  photo: str(d.photo),
 })
 
 export const toStats = (_id: string, d: DocumentData): PublicStats => ({
@@ -53,10 +54,16 @@ export const toStats = (_id: string, d: DocumentData): PublicStats => ({
   weekKey: str(d.weekKey),
   weekXp: num(d.weekXp),
   weekFocusMinutes: num(d.weekFocusMinutes),
+  weekFocusByDay:
+    Array.isArray(d.weekFocusByDay) && d.weekFocusByDay.length === 7
+      ? d.weekFocusByDay.map((m: unknown) => (typeof m === 'number' ? m : 0))
+      : [0, 0, 0, 0, 0, 0, 0],
   seasonKey: str(d.seasonKey),
   seasonXp: num(d.seasonXp),
   streak: num(d.streak),
   focusing: d.focusing && typeof d.focusing.until === 'string' ? { until: d.focusing.until } : null,
+  bio: str(d.bio),
+  pinned: Array.isArray(d.pinned) ? d.pinned.filter((b: unknown): b is string => typeof b === 'string') : [],
   updatedAt: str(d.updatedAt),
 })
 

@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } 
 import { Link } from 'react-router-dom'
 import { Award, CheckCircle2, Flame, Repeat, Search, TrendingUp, UserMinus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { Avatar } from '../components/Avatar'
 import { useToast } from '../components/toast'
 import {
   acceptRequest,
@@ -40,13 +41,6 @@ function ActivitySource({ uid, onData }: { uid: string; onData: (uid: string, it
   return null
 }
 
-function Avatar({ name }: { name: string }) {
-  return (
-    <span className={styles.avatar} aria-hidden="true">
-      {name.trim().charAt(0).toUpperCase() || '?'}
-    </span>
-  )
-}
 
 export function FriendsPage() {
   const { user, profile } = useSignedIn()
@@ -164,7 +158,7 @@ export function FriendsPage() {
             {searchNote && <p className={styles.muted}>{searchNote}</p>}
             {found && (
               <div className={styles.person}>
-                <Avatar name={found.displayName} />
+                <Avatar name={found.displayName} photo={found.photo} size={38} />
                 <div className={styles.personText}>
                   <strong>{found.displayName}</strong>
                   <span>
@@ -205,7 +199,7 @@ export function FriendsPage() {
               <ul className={styles.list}>
                 {pendingIn.map((r) => (
                   <li key={r.id} className={styles.person}>
-                    <Avatar name={r.fromName} />
+                    <Avatar name={r.fromName} size={38} />
                     <div className={styles.personText}>
                       <strong>{r.fromName}</strong>
                       <span>@{r.fromUsername} wants to be friends</span>
@@ -226,7 +220,7 @@ export function FriendsPage() {
                 ))}
                 {outgoing.data.map((r) => (
                   <li key={r.id} className={styles.person}>
-                    <Avatar name={r.toUsername} />
+                    <Avatar name={r.toUsername} size={38} />
                     <div className={styles.personText}>
                       <strong>@{r.toUsername}</strong>
                       <span>Request sent</span>
@@ -256,7 +250,7 @@ export function FriendsPage() {
                     <li key={uid} className={`${styles.friend} enter`} style={{ '--i': i } as CSSProperties}>
                       <div className={styles.person}>
                         <span className={styles.avatarWrap}>
-                          <Avatar name={p?.displayName ?? '?'} />
+                          <Avatar name={p?.displayName ?? '?'} photo={p?.photo} size={38} />
                           {focusing && <span className={styles.live} title="Focusing now" />}
                         </span>
                         <div className={styles.personText}>

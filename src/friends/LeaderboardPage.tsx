@@ -2,6 +2,7 @@ import { useState, type FormEvent, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
 import { Copy, Crown, Medal, Target, Users } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { Avatar } from '../components/Avatar'
 import { useToast } from '../components/toast'
 import { useFriendships, useProfiles, useStats } from '../data/friends'
 import {
@@ -44,6 +45,7 @@ const show = (metric: Metric, v: number) => (metric === 'weekFocus' ? formatMinu
 
 function Board({ entries, metric, today, me }: { entries: Entry[]; metric: Metric; today: string; me: string }) {
   const ranked = rank(entries, metric, today)
+  const cards = useProfiles(ranked.map((e) => e.uid))
   if (ranked.length < 2) {
     return <p className={styles.muted}>It’s just you so far. Add friends or invite people to a group to compete.</p>
   }
@@ -54,9 +56,7 @@ function Board({ entries, metric, today, me }: { entries: Entry[]; metric: Metri
           <span className={`${styles.rank} num`} aria-label={`Rank ${e.rank}`}>
             {e.rank === 1 && e.value > 0 ? <Crown size={16} aria-hidden="true" /> : e.rank}
           </span>
-          <span className={styles.avatar} aria-hidden="true">
-            {e.name.trim().charAt(0).toUpperCase() || '?'}
-          </span>
+          <Avatar name={e.name} photo={cards.get(`profiles/${e.uid}`)?.photo} size={34} />
           <span className={styles.who}>
             <strong>{e.uid === me ? `${e.name} (you)` : e.name}</strong>
             <span>@{e.username}</span>

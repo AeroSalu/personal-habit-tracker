@@ -1,5 +1,5 @@
 import { readFileSync } from 'node:fs'
-import { afterAll, beforeAll, beforeEach, describe, it } from 'vitest'
+import { afterAll, beforeAll, beforeEach, describe, expect, it } from 'vitest'
 import {
   assertFails,
   assertSucceeds,
@@ -112,6 +112,20 @@ describe('profiles', () => {
     await assertFails(setDoc(doc(as('ana'), 'profiles/ana'), profile('ana_k', { displayName: '' })))
   })
 
+  it('accepts a small device photo or a Google photo link, and nothing else', async () => {
+    await seed('usernames/ana_k', { uid: 'ana' })
+    const ana = doc(as('ana'), 'profiles/ana')
+    await assertSucceeds(setDoc(ana, profile('ana_k', { photo: 'data:image/webp;base64,UklGRiQAAABXRUJQ' })))
+    await assertSucceeds(setDoc(ana, profile('ana_k', { photo: 'data:image/jpeg;base64,/9j/4AAQSkZJRg==' })))
+    await assertSucceeds(setDoc(ana, profile('ana_k', { photo: 'https://lh3.googleusercontent.com/a/abc123=s96-c' })))
+    await assertSucceeds(setDoc(ana, profile('ana_k', { photo: '' })))
+    await assertFails(setDoc(ana, profile('ana_k', { photo: 'data:image/webp;base64,' + 'A'.repeat(20001) })))
+    await assertFails(setDoc(ana, profile('ana_k', { photo: 'https://evil.example/tracker.png' })))
+    await assertFails(setDoc(ana, profile('ana_k', { photo: 'data:image/svg+xml;base64,PHN2Zz4=' })))
+    await assertFails(setDoc(ana, profile('ana_k', { photo: 'data:text/html;base64,PGgxPg==' })))
+    await assertFails(setDoc(ana, profile('ana_k', { photo: 42 })))
+  })
+
   it('is readable by any signed-in user, for search', async () => {
     await seed('profiles/ana', profile('ana_k'))
     await assertSucceeds(getDoc(doc(as('ben'), 'profiles/ana')))
@@ -133,6 +147,27 @@ describe('stats', () => {
     await assertFails(setDoc(doc(as('ana'), 'stats/ana'), stats({ tasks: ['secret'] })))
     await assertFails(setDoc(doc(as('ana'), 'stats/ana'), stats({ focusing: { until: now, task: 'x' } })))
     await assertFails(setDoc(doc(as('ben'), 'stats/ana'), stats()))
+  })
+
+  it('accepts a short bio, up to three pins and a real week of focus by day', async () => {
+    const ana = doc(as('ana'), 'stats/ana')
+    const week = [30, 0, 45, 0, 0, 120, 0]
+    await assertSucceeds(setDoc(ana, stats({ bio: 'Prepping for GATE', pinned: ['streak-3'], weekFocusByDay: week })))
+    await assertSucceeds(setDoc(ana, stats({ bio: '', pinned: [] })))
+    await assertFails(setDoc(ana, stats({ bio: 'x'.repeat(81) })))
+    await assertFails(setDoc(ana, stats({ bio: 7 })))
+    await assertFails(setDoc(ana, stats({ pinned: ['a', 'b', 'c', 'd'] })))
+    await assertFails(setDoc(ana, stats({ weekFocusByDay: [30, 0, 45] })))
+    await assertFails(setDoc(ana, stats({ weekFocusByDay: [30, 0, 45, 0, 0, 1441, 0] })))
+    await assertFails(setDoc(ana, stats({ weekFocusByDay: [30, 0, 45, 0, 0, -1, 0] })))
+  })
+
+  it('keeps the bio and pins to friends', async () => {
+    await seed('stats/ana', stats({ bio: 'Deep work till 6', pinned: ['streak-3'] }))
+    await assertFails(getDoc(doc(as('cat'), 'stats/ana')))
+    await seed('friendships/ana_ben', { members: ['ana', 'ben'] })
+    const seen = await getDoc(doc(as('ben'), 'stats/ana'))
+    expect(seen.data()?.bio).toBe('Deep work till 6')
   })
 
   it('is readable by the owner and friends only', async () => {

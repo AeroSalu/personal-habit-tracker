@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Copy, Lock, Target } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
+import { Avatar } from '../components/Avatar'
+import { useProfiles } from '../data/friends'
 import { useToast } from '../components/toast'
 import { closeRoom, forgetRoom, leaveRoom, removeRoomMember, setRoomSession, useMyRooms, useRoomMembers, useRooms } from '../data/rooms'
 import { timerText } from '../lib/focus'
@@ -43,6 +45,7 @@ export function RoomPage() {
   const mine = myRooms.data.find((r) => r.id === id)
   const room = useRooms(mine ? [id] : []).get(`rooms/${id}`)
   const members = useRoomMembers(mine ? id : null)
+  const cards = useProfiles(members.data.map((m) => m.uid))
   const [confirm, setConfirm] = useState('')
 
   useEffect(() => {
@@ -190,6 +193,7 @@ export function RoomPage() {
               const p = presenceOf(m, now)
               return (
                 <li key={m.uid}>
+                  <Avatar name={m.displayName} photo={cards.get(`profiles/${m.uid}`)?.photo} size={34} />
                   <span className={`${styles.dot} ${styles[p]}`} aria-hidden="true" />
                   <span className={styles.who}>
                     <strong>
