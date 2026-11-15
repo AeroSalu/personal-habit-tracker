@@ -8,7 +8,7 @@ All tokens live in [`src/styles/global.css`](../src/styles/global.css). Componen
 
 | Group | Tokens | Use |
 |---|---|---|
-| Neutrals | `--bg`, `--card`, `--card-raised`, `--border`, `--separator`, `--text`, `--muted`, `--faint` | Dark: graphite, never pure black. Light: Apple-like off-white `#f5f5f7` with white cards. |
+| Neutrals | `--bg`, `--card`, `--card-raised`, `--border`, `--separator`, `--text`, `--muted`, `--faint` | Dark: graphite, never pure black. Light: Apple-like off-white `#f5f5f7` with white cards. Every text colour (including `--faint` and the status colours) is at least 4.5:1 on `--bg` and `--card` in both themes; keep it that way when changing them. |
 | Accent | `--accent`, `--accent-soft`, `--accent-ink` | Primary actions, selection, ticks, the active item. Nothing else. |
 | Status | `--urgent`, `--warning`, `--success` (+ `-soft`) | Only when they mean something, always with an icon or words. |
 | Rings | `--ring-focus`, `--ring-tasks`, `--ring-habits` | The same three progress colours on every screen. Validated all-pairs for colour-blind separation in both themes. Always labelled. |
@@ -72,4 +72,9 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
    - **Saved state:** buttons that stay on screen after saving (the bio and profile forms) briefly read "Saved" with a tick in the success colour (`useFlash` with `data-saved`), instead of a toast.
    - **Badge alerts:** still one quiet toast, and only when Badge alerts is on, now with a View action to Challenges.
    - **Spacing:** every padding, margin and gap is on the scale (83 values mapped; 2 and 6 became tokens).
-7. **QA:** every flow in both themes, phone, tablet and desktop, reduced motion, timer accuracy across sleep and backgrounding, and the existing tests.
+7. **QA (November 2026):** done in the browser; a real-device pass is still to do.
+   - **Tests:** 216 unit tests (including new sleep, backgrounding and clock-jump cases for the focus timer), 56 security-rules tests and 4 reminder-sender tests pass, along with lint and the production build.
+   - **Layout:** all 17 screens at 375, 768 and 1280 px, with no sideways scrolling, nothing past the screen edge and no console errors. A hidden Browser pane freezes exit animations and leaves old pages behind, which looks like overflow; check with the pane shown.
+   - **Flows:** quick add in plain words, completing and deleting tasks with Undo, the command box, creating and ticking a habit (Today's rings follow), the evening review, Calendar's add sheet, and a focus session resuming correctly after a page reload.
+   - **Fixed:** faint and muted text, and light-theme success and warning, were below 4.5:1 and now pass on `--bg` and `--card` in both themes. The timer no longer shows more time than the session has if the device clock jumps back. Under reduced motion, endless animations (spinners, shimmer) run once instead of flickering.
+   - **Still to check on real devices:** Android vibration, the installed iPhone app, and a session across a locked screen.
