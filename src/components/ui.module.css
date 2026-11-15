@@ -53,6 +53,24 @@
   animation: spin 0.8s linear infinite;
 }
 
+/* Just saved: the label reads "Saved" with a tick, in the success colour, for a moment. */
+.button[data-saved] {
+  border-color: color-mix(in srgb, var(--success) 45%, transparent);
+  background: var(--success-soft);
+  color: var(--success);
+  animation: saved-in var(--dur-2) var(--ease-out);
+}
+
+.button[data-saved]:disabled {
+  opacity: 1;
+}
+
+@keyframes saved-in {
+  from {
+    transform: scale(0.97);
+  }
+}
+
 .primary {
   --spinner: var(--accent-ink);
   border-color: var(--accent);
@@ -99,7 +117,7 @@
 .field {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-1-5);
 }
 
 .label {

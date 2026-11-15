@@ -26,6 +26,7 @@ import { logId } from '../lib/habits'
 import { FocusContext, type FocusApi } from './focusContext'
 import { FocusOverlay } from './FocusOverlay'
 import { loadPrefs, savePrefs } from './prefs'
+import { haptic } from '../design/haptics'
 import { chime, playAmbient, unlockAudio, type Sound } from './sound'
 
 const KEY = 'lockin.focusState'
@@ -104,7 +105,10 @@ export function FocusProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const before = lastPhase.current
     lastPhase.current = phase
-    if (before === 'focus' && state?.phase === 'summary' && state.outcome === 'completed') chime()
+    if (before === 'focus' && state?.phase === 'summary' && state.outcome === 'completed') {
+      chime()
+      haptic('success')
+    }
     if (before === 'break' && phase === 'breakOver') chime()
   }, [phase, state])
 

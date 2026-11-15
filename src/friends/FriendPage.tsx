@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Inbox } from 'lucide-react'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
 import { ArrowLeft, Award, Flame, UserMinus } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -161,7 +163,9 @@ export function FriendPage() {
             ))}
           </ul>
         ) : (
-          <p className={styles.muted}>{first} hasn’t shared any tasks, habits or badges yet.</p>
+          <EmptyState compact icon={Inbox} title="Nothing shared yet">
+            {first} hasn’t shared any tasks, habits or badges.
+          </EmptyState>
         )}
       </article>
 

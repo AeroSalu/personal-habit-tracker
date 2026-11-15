@@ -1,4 +1,6 @@
 import { useCallback, useEffect, useState, type FormEvent, type CSSProperties } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Users } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { ChevronRight, Flame, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -256,7 +258,9 @@ export function FriendsPage() {
               Your friends <span className={`${styles.count} num`}>{friendIds.length}</span>
             </h2>
             {!friendIds.length ? (
-              <p className={styles.muted}>Search for a friend’s @username to add them. They’ll see your level, streak and weekly focus.</p>
+              <EmptyState compact icon={Users} title="No friends yet">
+                Search for a friend’s @username to add them. They’ll see your level, streak and weekly focus.
+              </EmptyState>
             ) : (
               <ul className={styles.list}>
                 {friendIds.map((uid, i) => {

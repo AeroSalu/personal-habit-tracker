@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
 import { useGame } from './useGame'
@@ -11,6 +12,8 @@ export function BadgeWatcher() {
   const { user, profile } = useSignedIn()
   const { loaded, badges } = useGame()
   const toast = useToast()
+  const navigate = useNavigate()
+  const view = { label: 'View', run: () => navigate('/challenges') }
   const earned = badges.filter((b) => b.earnedOn)
   const earnedKey = earned.map((b) => b.id).join()
 
@@ -28,8 +31,8 @@ export function BadgeWatcher() {
     // With alerts off, badges are still marked seen so turning alerts on never floods old ones.
     if (seen && profile.badgeAlerts) {
       const fresh = earned.filter((b) => !seen.includes(b.id))
-      if (fresh.length === 1) toast(`Badge unlocked: ${fresh[0].name}`)
-      else if (fresh.length > 1) toast(`${fresh.length} badges unlocked, including ${fresh[0].name}`)
+      if (fresh.length === 1) toast(`Badge unlocked: ${fresh[0].name}`, view)
+      else if (fresh.length > 1) toast(`${fresh.length} badges unlocked, including ${fresh[0].name}`, view)
     }
     try {
       localStorage.setItem(key, JSON.stringify([...new Set([...(seen ?? []), ...ids])]))

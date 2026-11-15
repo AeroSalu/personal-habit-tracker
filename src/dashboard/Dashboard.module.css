@@ -11,7 +11,7 @@
 .head {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-0-5);
   margin-bottom: var(--space-1);
 }
 
@@ -318,7 +318,7 @@
 }
 
 .habitIcon {
-  margin-left: 6px;
+  margin-left: var(--space-1-5);
   color: var(--faint);
   vertical-align: -1px;
 }
@@ -405,10 +405,6 @@
   font-weight: var(--weight-semibold);
 }
 
-.empty {
-  color: var(--muted);
-  font-size: var(--text-subhead);
-}
 
 /* Coming up: plain lines, no card. */
 .comingUp {

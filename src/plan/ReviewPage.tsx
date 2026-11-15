@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Moon } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
@@ -101,7 +103,9 @@ export function ReviewPage() {
             ))}
           </ul>
         ) : (
-          <p className={styles.muted}>No evening reviews this week. They show up here when you wrap up a day.</p>
+          <EmptyState compact icon={Moon} title="No evening reviews this week">
+            They show up here when you wrap up a day.
+          </EmptyState>
         )}
       </article>
 

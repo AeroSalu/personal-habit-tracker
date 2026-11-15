@@ -46,7 +46,7 @@
 }
 
 .soon {
-  padding: 1px 6px;
+  padding: 1px var(--space-1-5);
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
   font-size: var(--text-caption2);

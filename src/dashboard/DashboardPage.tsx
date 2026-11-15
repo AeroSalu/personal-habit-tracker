@@ -1,4 +1,6 @@
 import { useState, type CSSProperties } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Sun } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { CalendarCheck, ChevronDown, ChevronRight, Moon, Play, Repeat, SlidersHorizontal, Sunrise, Target } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -358,7 +360,9 @@ export function DashboardPage() {
             })}
           </ul>
         ) : (
-          <p className={styles.empty}>Nothing due today. Add a task above to plan your day.</p>
+          <EmptyState compact icon={Sun} title="A clear day">
+            Nothing is due today. Add a task above to plan it.
+          </EmptyState>
         )}
       </article>
 

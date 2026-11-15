@@ -56,24 +56,8 @@ summary.groupTitle {
   color: var(--muted);
 }
 
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-lg);
-}
 
-.empty h2 {
-  font-size: var(--text-title3);
-}
 
-.empty p {
-  max-width: 52ch;
-  color: var(--muted);
-}
 
 /* Habit card */
 .cards {
@@ -137,7 +121,7 @@ summary.groupTitle {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-0-5);
   min-width: 0;
   padding: 0;
   border: 0;
@@ -166,7 +150,7 @@ summary.groupTitle {
 .category {
   display: inline-block;
   margin-right: var(--space-2);
-  padding: 0 6px;
+  padding: 0 var(--space-1-5);
   border-radius: 4px;
   background: var(--card-raised);
   color: var(--muted);
@@ -181,13 +165,13 @@ summary.groupTitle {
   flex: none;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: var(--space-0-5);
 }
 
 .streak {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-0-5);
   color: var(--accent);
   font-size: var(--text-subhead);
   font-weight: var(--weight-bold);
@@ -213,7 +197,7 @@ summary.groupTitle {
 .row {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-0-5);
   width: 100%;
   padding: var(--space-3) var(--space-4);
   border: 0;
@@ -271,7 +255,7 @@ summary.groupTitle {
 .dayPicker {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: var(--space-1-5);
 }
 
 .dayPicker button {
@@ -497,7 +481,7 @@ summary.groupTitle {
 .legend {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   color: var(--faint);
   font-size: var(--text-caption);
 }

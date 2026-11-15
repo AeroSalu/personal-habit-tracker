@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { haptic } from '../design/haptics'
 import {
   closestCorners,
   DndContext,
@@ -188,7 +189,10 @@ export function TaskBoard({ tasks, now, today, focused, onOpen, onMove }: Props)
           draggable: 'To move a task, press space, use the arrow keys to choose a spot, then press space again. Escape cancels.',
         },
       }}
-      onDragStart={({ active: a }) => setActiveId(String(a.id))}
+      onDragStart={({ active: a }) => {
+        haptic('tap')
+        setActiveId(String(a.id))
+      }}
       onDragCancel={() => setActiveId(null)}
       onDragEnd={onDragEnd}
     >

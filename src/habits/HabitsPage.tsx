@@ -1,4 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Repeat } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import * as m from 'motion/react-m'
 import { BellRing, Plus } from 'lucide-react'
@@ -122,13 +124,17 @@ export function HabitsPage() {
       )}
 
       {!active.length ? (
-        <div className={styles.empty}>
-          <h2>Build your first habit</h2>
-          <p>Pick something you want to do regularly, like solving 2 LeetCode problems or reading for 30 minutes.</p>
-          <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => setForm('new')}>
-            Add a habit
-          </button>
-        </div>
+        <EmptyState
+          icon={Repeat}
+          title="Build your first habit"
+          action={
+            <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => setForm('new')}>
+              Add a habit
+            </button>
+          }
+        >
+          Pick something you want to do regularly, like solving 2 LeetCode problems or reading for 30 minutes.
+        </EmptyState>
       ) : (
         <>
           <div className={styles.group}>

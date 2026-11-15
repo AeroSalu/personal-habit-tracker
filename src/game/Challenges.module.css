@@ -125,7 +125,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 5px;
+  gap: var(--space-1-5);
   min-width: 0;
 }
 
@@ -200,7 +200,7 @@
 }
 
 .bests dd {
-  margin: 2px 0 0;
+  margin: var(--space-0-5) 0 0;
   font-size: var(--text-title3);
   font-weight: var(--weight-bold);
 }
@@ -245,7 +245,7 @@
     'icon text'
     'icon status';
   column-gap: var(--space-3);
-  row-gap: 2px;
+  row-gap: var(--space-0-5);
   padding: var(--space-3);
   border: 1px solid var(--border);
   border-radius: var(--radius);

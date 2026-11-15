@@ -26,7 +26,7 @@
 .link {
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   color: var(--faint);
   font-size: var(--text-footnote);
   overflow-wrap: anywhere;

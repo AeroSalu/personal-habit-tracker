@@ -10,6 +10,8 @@ import { NotificationSettings } from './NotificationSettings'
 import { PersonalSettings } from './PersonalSettings'
 import { SocialSettings } from './SocialSettings'
 import { loadTheme, saveTheme, type ThemeChoice } from './theme'
+import { useFlash } from '../components/useFlash'
+import { canVibrate, haptic, hapticsOn, setHapticsOn } from '../design/haptics'
 import ui from '../components/ui.module.css'
 import styles from './ProfilePage.module.css'
 
@@ -22,7 +24,9 @@ const THEMES: [ThemeChoice, string][] = [
 export function ProfilePage() {
   const { user, profile } = useSignedIn()
   const [status, setStatus] = useState('')
+  const [saved, flashSaved] = useFlash()
   const [theme, setTheme] = useState(loadTheme)
+  const [haptics, setHaptics] = useState(hapticsOn)
   const method = user.providerData.some((p) => p.providerId === 'google.com') ? 'Google' : 'Email and password'
 
   return (
@@ -34,8 +38,10 @@ export function ProfilePage() {
         <ProfileForm
           initial={profile}
           submitLabel="Save changes"
+          saved={saved}
           onSubmit={(fields) => {
-            setStatus('Saved')
+            setStatus('')
+            flashSaved()
             updateProfile(user.uid, fields).catch(() => setStatus('Could not save. Try again.'))
           }}
         />
@@ -84,6 +90,26 @@ export function ProfilePage() {
             <small>Pop up a message when you earn a badge. Your badges are always on the Challenges page.</small>
           </span>
         </label>
+        {canVibrate() && (
+          <label className={styles.toggle}>
+            <input
+              id="haptics"
+              type="checkbox"
+              role="switch"
+              className={ui.switch}
+              checked={haptics}
+              onChange={(e) => {
+                setHaptics(e.target.checked)
+                setHapticsOn(e.target.checked)
+                if (e.target.checked) haptic('tap')
+              }}
+            />
+            <span>
+              <strong>Vibration</strong>
+              <small>A light tap when you tick something off or finish a session. Saved on this device.</small>
+            </span>
+          </label>
+        )}
       </div>
 
       <NotificationSettings />

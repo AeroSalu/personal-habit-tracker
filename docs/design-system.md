@@ -15,7 +15,7 @@ All tokens live in [`src/styles/global.css`](../src/styles/global.css). Componen
 | Charts | `--cat-*`, `--heat-*`, `--chart-grid`, `--chart-axis` | Category hues and the heat ramp, validated per theme. |
 | Glass | `.glass`, `--glass`, `--glass-border` | Floating navigation, sheets, toasts and contextual controls only. Opaque fallback where blur isn't supported. |
 | Type | `--font`, `--font-display`, `--text-caption2` … `--text-large`, `--weight-regular` … `--weight-bold` | The platform font (SF Pro on Apple devices, Segoe UI Variable on Windows, Roboto on Android). Apple text-style sizes 11/12/13/14/15/17/20/24/28/34. Tabular numbers (`.num`) for timers and statistics. |
-| Spacing | `--space-1` … `--space-9` | 4, 8, 12, 16, 24, 32, 40, 48, 64. |
+| Spacing | `--space-0-5`, `--space-1`, `--space-1-5`, `--space-2` … `--space-9` | 2, 4, 6, 8, 12, 16, 24, 32, 40, 48, 64. The half steps (2 and 6) are for tight inner padding, such as tags and chips. Only 1px hairlines sit outside the scale. |
 | Corners | `--radius-xs` 6, `--radius-sm` 10, `--radius` 12, `--radius-lg` 16, `--radius-xl` 22, `--radius-sheet` 26, `--radius-pill` | Controls, nested boxes, cards, hero cards, sheets, pills. Inner corners are smaller than the container's. |
 | Depth | `--shadow-1` … `--shadow-3` | Light shadows only where depth means something. Prefer surface contrast. |
 | Motion | `--dur-instant` 100 · `--dur-1` 160 · `--dur-2` 250 · `--dur-3` 350 · `--dur-4` 500 · `--dur-5` 800; `--ease-standard`, `--ease-out` (enter), `--ease-in` (exit) | Presses, small changes, items, pages and sheets, expressive moments, data visualisations. Reduced motion zeroes all durations and delays. |
@@ -62,8 +62,14 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
    - **Focus (done):** the idle screen is one calm ring showing the session length over today's progress, a segmented length picker whose selection glides, what you're working on, and Start; sound and strict mode fold away. The ring grows into the running timer, which has a slow breathing glow behind it that rests while paused (none with reduced motion).
    - **Calendar (done):** the month sits on one card, with days as plain numbers rather than boxes. A soft ring marks the chosen day and glides to the next one; months and weeks slide in the direction you move, and a sideways swipe changes them on phones.
    - **Analytics (done):** the report card leads with the period's three rings (focus against the goal for the days so far, tasks on time, habits as planned) and its sentences. A new period's numbers and charts crossfade in, and the charts themselves never animate their values. Segmented controls on Calendar and Analytics have a gliding selection.
-   - **Not done:** a separate success state for buttons (saving already confirms with a toast) and the remaining off-scale spacings. Both move to Phase 6.
+   - **Moved to Phase 6:** the button success state and the remaining off-scale spacings. Both are done there.
 
    The goal: Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
-6. **Polish:** micro-interactions, achievement feedback kept subtle, considered empty and loading states, Android haptics.
+6. **Polish:** done.
+   - **Springs:** the shared spring is critically damped (damping 30, stiffness 220), so cards, sheets and gliding selections settle without overshoot.
+   - **Haptics:** a light tap when a task or habit is ticked off or a board card is picked up, and two soft pulses when a focus session completes. Android only (iOS Safari has no web haptics), with a per-device Vibration switch in Settings that appears only where it works.
+   - **Empty states:** one `EmptyState` (icon, a title, one sentence, at most one action) on Tasks, Habits, Today, Calendar, Focus history, Friends, a friend's page, Leaderboards and the weekly review. The full form stands alone on a page; the compact form sits inside a card.
+   - **Saved state:** buttons that stay on screen after saving (the bio and profile forms) briefly read "Saved" with a tick in the success colour (`useFlash` with `data-saved`), instead of a toast.
+   - **Badge alerts:** still one quiet toast, and only when Badge alerts is on, now with a View action to Challenges.
+   - **Spacing:** every padding, margin and gap is on the scale (83 values mapped; 2 and 6 became tokens).
 7. **QA:** every flow in both themes, phone, tablet and desktop, reduced motion, timer accuracy across sleep and backgrounding, and the existing tests.

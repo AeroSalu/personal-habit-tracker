@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react'
+import { Check } from 'lucide-react'
 import {
   FOCUS_GOAL_PRESETS,
   formatMinutes,
@@ -11,11 +12,13 @@ import styles from './ProfileForm.module.css'
 type Props = {
   initial: ProfileFields
   submitLabel: string
+  /** Briefly true after a save, to show "Saved" on the button. */
+  saved?: boolean
   onSubmit: (fields: ProfileFields) => void
 }
 
 /** Name and daily focus goal, shared by first-time setup and Profile & Settings. */
-export function ProfileForm({ initial, submitLabel, onSubmit }: Props) {
+export function ProfileForm({ initial, submitLabel, saved = false, onSubmit }: Props) {
   const [displayName, setDisplayName] = useState(initial.displayName)
   const [goal, setGoal] = useState(initial.dailyFocusGoalMinutes)
   const [custom, setCustom] = useState(!FOCUS_GOAL_PRESETS.includes(initial.dailyFocusGoalMinutes))
@@ -92,8 +95,14 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: Props) {
       <p className={ui.error} role="alert">
         {error}
       </p>
-      <button type="submit" className={`${ui.button} ${ui.primary} ${ui.block}`}>
-        {submitLabel}
+      <button type="submit" className={`${ui.button} ${ui.primary} ${ui.block}`} data-saved={saved || undefined}>
+        {saved ? (
+          <>
+            <Check size={18} aria-hidden="true" /> Saved
+          </>
+        ) : (
+          submitLabel
+        )}
       </button>
     </form>
   )

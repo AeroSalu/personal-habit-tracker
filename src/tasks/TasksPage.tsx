@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { ListChecks, SearchX } from 'lucide-react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { ArrowDownUp, Columns3, LayoutTemplate, List, Plus, Search } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -239,13 +241,17 @@ export function TasksPage() {
       )}
 
       {!tasks.data.length ? (
-        <div className={styles.empty}>
-          <h2>Plan what matters</h2>
-          <p>Add the things you need to get done, with a priority and a deadline. Big ones can be split into subtasks.</p>
-          <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => setEditing({})}>
-            Add a task
-          </button>
-        </div>
+        <EmptyState
+          icon={ListChecks}
+          title="Plan what matters"
+          action={
+            <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => setEditing({})}>
+              Add a task
+            </button>
+          }
+        >
+          Add the things you need to get done, with a priority and a deadline. Big ones can be split into subtasks.
+        </EmptyState>
       ) : onBoard ? (
         <TaskBoard
           tasks={visible}
@@ -262,10 +268,20 @@ export function TasksPage() {
             <ul className={styles.list}>{[...visible].sort(byOrder).map(row)}</ul>
           </div>
         ) : (
-          <p className={styles.quiet}>No tasks match these filters.</p>
+          <EmptyState compact icon={SearchX} title="No tasks match">
+            Try clearing the search or a filter.
+          </EmptyState>
         )
       ) : !groups.length ? (
-        <p className={styles.quiet}>{filtered ? 'No tasks match these filters.' : 'Nothing open. Add a task or show done ones.'}</p>
+        filtered ? (
+          <EmptyState compact icon={SearchX} title="No tasks match">
+            Try clearing the search or a filter.
+          </EmptyState>
+        ) : (
+          <EmptyState compact icon={ListChecks} title="All clear">
+            Nothing open right now. Add a task, or show the done ones.
+          </EmptyState>
+        )
       ) : (
         groups.map((group) => (
           <div key={group.id} className={styles.group}>

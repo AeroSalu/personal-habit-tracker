@@ -1,4 +1,5 @@
 import { useToast } from '../components/toast'
+import { haptic } from '../design/haptics'
 import { logHabit, unlogHabit } from '../data/habits'
 import { doneLine, streak, streakLabel, type Habit } from '../lib/habits'
 
@@ -16,6 +17,7 @@ export function useHabitToggle(uid: string) {
       return false
     }
     const at = new Date()
+    haptic('tap')
     logHabit(uid, habit, at).catch(failed)
     const run = streak(habit, new Set([...keys, today]), today).current
     toast(`${doneLine(habit, at)}${run > 1 ? ` · ${streakLabel(habit, run)} streak` : ''}`, {

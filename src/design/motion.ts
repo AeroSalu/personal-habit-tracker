@@ -16,8 +16,11 @@ export const ease = {
   exit: [0.4, 0, 1, 1],
 } as const
 
-/** For things that move with the hand or settle into place: sheets, cards expanding, drags. */
-export const spring = { type: 'spring', damping: 20, stiffness: 180, mass: 1 } as const
+/**
+ * For things that move with the hand or settle into place: sheets, cards expanding, drags,
+ * gliding selections. Critically damped (damping ≥ 2·√stiffness), so it settles without overshoot.
+ */
+export const spring = { type: 'spring', damping: 30, stiffness: 220, mass: 1 } as const
 
 /** A firmer spring for small indicators that should arrive without wobble. */
 export const snappy = { type: 'spring', damping: 30, stiffness: 380, mass: 0.8 } as const

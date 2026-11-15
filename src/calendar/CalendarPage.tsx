@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { CalendarDays } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import { AnimatePresence, type Variants } from 'motion/react'
 import * as m from 'motion/react-m'
@@ -210,7 +212,9 @@ export function CalendarPage() {
             ))}
           </ul>
         ) : (
-          <p className={styles.quiet}>Nothing due this day.</p>
+          <EmptyState compact icon={CalendarDays} title="Nothing due this day">
+            Add a task to give this day a plan.
+          </EmptyState>
         )}
       </div>
 

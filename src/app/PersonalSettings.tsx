@@ -1,4 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
+import { Check } from 'lucide-react'
+import { useFlash } from '../components/useFlash'
 import { Camera, Pin } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { Avatar } from '../components/Avatar'
@@ -34,13 +36,15 @@ export function PersonalSettings() {
     toast(photo ? 'Photo updated' : 'Photo removed')
   }
 
+  const [saved, flashSaved] = useFlash()
+
   function saveBio(e: FormEvent) {
     e.preventDefault()
     const next = bio.trim().slice(0, MAX_BIO)
     setBio(next)
     if (next === profile.bio) return
     setPersonal(user.uid, { bio: next }).catch(failed)
-    toast('Bio saved')
+    flashSaved()
   }
 
   function togglePin(id: string) {
@@ -103,8 +107,14 @@ export function PersonalSettings() {
             onChange={(e) => setBio(e.target.value)}
           />
         </label>
-        <button type="submit" className={ui.button} disabled={bio.trim() === profile.bio}>
-          Save
+        <button type="submit" className={ui.button} disabled={!saved && bio.trim() === profile.bio} data-saved={saved || undefined}>
+          {saved ? (
+            <>
+              <Check size={16} aria-hidden="true" /> Saved
+            </>
+          ) : (
+            'Save'
+          )}
         </button>
       </form>
 

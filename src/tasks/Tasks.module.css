@@ -72,7 +72,7 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   min-height: 34px;
   padding: 0 var(--space-3);
   border: 0;
@@ -91,7 +91,7 @@
 .sortPick {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  gap: var(--space-1-5);
   color: var(--faint);
 }
 
@@ -116,7 +116,7 @@
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-0-5);
   min-width: 0;
   padding: var(--space-3);
   border: 0;
@@ -209,24 +209,8 @@
   color: var(--muted);
 }
 
-.empty {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-3);
-  padding: var(--space-5);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius-lg);
-}
 
-.empty h2 {
-  font-size: var(--text-title3);
-}
 
-.empty p {
-  max-width: 52ch;
-  color: var(--muted);
-}
 
 /* Row */
 .list {
@@ -306,7 +290,7 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: var(--space-1) 10px;
+  gap: var(--space-1) var(--space-2);
   color: var(--muted);
   font-size: var(--text-caption);
 }
@@ -314,7 +298,7 @@
 .metaIcon {
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-0-5);
 }
 
 .over {
@@ -332,7 +316,7 @@
 }
 
 .priority {
-  padding: 0 6px;
+  padding: 0 var(--space-1-5);
   border-radius: 4px;
   font-size: var(--text-caption2);
   font-weight: var(--weight-semibold);
@@ -362,7 +346,7 @@
 }
 
 .progress {
-  padding: 0 6px;
+  padding: 0 var(--space-1-5);
   border-radius: 4px;
   background: var(--accent-soft);
   color: var(--accent);
@@ -445,7 +429,7 @@
 .dayPicker {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: var(--space-1-5);
   max-width: 340px;
 }
 

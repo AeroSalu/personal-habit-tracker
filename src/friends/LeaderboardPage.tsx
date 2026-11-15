@@ -1,4 +1,6 @@
 import { useState, type FormEvent, type CSSProperties } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { Copy, Crown, Medal, Target, Users } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
@@ -47,7 +49,11 @@ function Board({ entries, metric, today, me }: { entries: Entry[]; metric: Metri
   const ranked = rank(entries, metric, today)
   const cards = useProfiles(ranked.map((e) => e.uid))
   if (ranked.length < 2) {
-    return <p className={styles.muted}>It’s just you so far. Add friends or invite people to a group to compete.</p>
+    return (
+      <EmptyState compact icon={Trophy} title="It’s just you so far">
+        Add friends or invite people to a group to compete.
+      </EmptyState>
+    )
   }
   return (
     <ol className={styles.board}>

@@ -253,7 +253,7 @@
 }
 
 .sessionNote {
-  margin-top: 2px;
+  margin-top: var(--space-0-5);
   font-size: var(--text-subhead);
 }
 
@@ -262,12 +262,12 @@
   flex: none;
   flex-direction: column;
   align-items: flex-end;
-  gap: 2px;
+  gap: var(--space-0-5);
 }
 
 .badgeDone,
 .badgeStopped {
-  padding: 0 6px;
+  padding: 0 var(--space-1-5);
   border-radius: 4px;
   font-size: var(--text-caption2);
   font-weight: var(--weight-semibold);
@@ -403,7 +403,7 @@
 }
 
 .strict {
-  padding: 0 6px;
+  padding: 0 var(--space-1-5);
   border: 1px solid var(--warning);
   border-radius: 4px;
   color: var(--warning);

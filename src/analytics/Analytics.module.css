@@ -212,7 +212,7 @@
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-0-5);
   color: var(--muted);
   font-size: var(--text-caption);
   font-weight: var(--weight-semibold);
@@ -268,7 +268,7 @@
 .report {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-1-5);
   padding-left: 1.1em;
   list-style: disc;
 }

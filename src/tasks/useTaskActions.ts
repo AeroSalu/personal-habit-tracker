@@ -1,5 +1,6 @@
 import { useRef } from 'react'
 import { useToast } from '../components/toast'
+import { haptic } from '../design/haptics'
 import { completeTask, createTask, deleteTask, moveTask, reopenTask, restoreTask, saveTask } from '../data/tasks'
 import { deleteTemplate, saveTemplate } from '../data/templates'
 import { dueLabel, nextDueDate, type Status, type Task, type TaskFields } from '../lib/tasks'
@@ -25,6 +26,7 @@ export function useTaskActions(uid: string, tasks: Task[]) {
         return
       }
       const at = new Date()
+      haptic('tap')
       completeTask(uid, task, at).catch(failed)
       const next = nextDueDate(task, dayKey(at))
       toast(next ? `Done. Next one: ${dueLabel({ dueDate: next, dueTime: task.dueTime }, dayKey(at))}` : 'Task done', {

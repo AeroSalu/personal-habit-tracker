@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { EmptyState } from '../components/EmptyState'
+import { History } from 'lucide-react'
 import { useSearchParams } from 'react-router-dom'
 import * as m from 'motion/react-m'
 import { ChevronDown, Play } from 'lucide-react'
@@ -232,7 +234,9 @@ export function FocusPage() {
       <div className={styles.history}>
         <h2 className={styles.groupTitle}>Session history</h2>
         {!days.length ? (
-          <p className={styles.muted}>Finished sessions show up here, with how long you focused and any notes.</p>
+          <EmptyState compact icon={History} title="No sessions yet">
+            Finished sessions show up here, with how long you focused and any notes.
+          </EmptyState>
         ) : (
           days.map((d) => {
             const list = recent.filter((s) => s.dayKey === d)

@@ -161,7 +161,7 @@
 
 .tag {
   flex: none;
-  padding: 2px var(--space-2);
+  padding: var(--space-0-5) var(--space-2);
   border-radius: var(--radius-pill);
   background: var(--card-raised);
   color: var(--muted);
@@ -227,7 +227,7 @@
 .friendStats dd {
   display: flex;
   align-items: center;
-  gap: 3px;
+  gap: var(--space-0-5);
   margin: 0;
   font-weight: var(--weight-semibold);
 }
@@ -293,14 +293,14 @@
 .feedBody {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: var(--space-1-5);
   min-width: 0;
 }
 
 .cheers {
   display: flex;
   flex-wrap: wrap;
-  gap: 6px;
+  gap: var(--space-1-5);
 }
 
 .cheer {
@@ -405,7 +405,7 @@
 .profileText {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: var(--space-0-5);
   min-width: 0;
 }
 
