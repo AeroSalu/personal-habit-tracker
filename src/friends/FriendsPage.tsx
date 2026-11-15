@@ -168,7 +168,7 @@ export function FriendsPage() {
                   onChange={(e) => setTerm(e.target.value)}
                 />
               </label>
-              <button type="submit" className={ui.button} disabled={searching}>
+              <button type="submit" className={ui.button} disabled={searching} aria-busy={searching}>
                 Find
               </button>
             </form>

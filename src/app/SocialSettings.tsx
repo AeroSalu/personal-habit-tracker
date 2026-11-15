@@ -78,7 +78,7 @@ export function SocialSettings() {
             />
           </span>
         </label>
-        <button type="submit" className={ui.button} disabled={busy}>
+        <button type="submit" className={ui.button} disabled={busy} aria-busy={busy}>
           {profile.username ? 'Change' : 'Claim'}
         </button>
       </form>
@@ -125,6 +125,8 @@ export function SocialSettings() {
         <input
           id="share-achievements"
           type="checkbox"
+          role="switch"
+          className={ui.switch}
           checked={profile.shareAchievements}
           onChange={(e) => setShareAchievements(user.uid, e.target.checked).catch(() => setError('Could not save that setting.'))}
         />

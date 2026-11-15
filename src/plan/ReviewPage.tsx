@@ -13,6 +13,7 @@ import { formatMinutes } from '../lib/profile'
 import { compareTasks, type Task } from '../lib/tasks'
 import { useNow } from '../lib/useNow'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Plan.module.css'
 
 const RATINGS = ['', 'Rough', 'Meh', 'Okay', 'Good', 'Great']
@@ -32,7 +33,13 @@ export function ReviewPage() {
   const today = dayKey(now)
 
   const loaded = [tasks, habits, logs, sessions, days, weeks].every((r) => r.loaded)
-  if (!loaded) return <section className={styles.page} aria-busy="true" />
+  if (!loaded) {
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
+  }
 
   const start = reviewWeekStart(today)
   const range = rangeFor('week', start)

@@ -102,6 +102,7 @@ export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onF
           <input
             id="task-title"
             className={ui.input}
+            aria-invalid={/title/i.test(error)}
             value={title}
             maxLength={120}
             placeholder="Finish the DSA assignment"
@@ -267,7 +268,7 @@ export function TaskForm({ task, defaultDate = '', preset, onSave, onDelete, onF
         </fieldset>
 
         <label className={styles.shareToggle}>
-          <input id="task-shared" type="checkbox" checked={shared} onChange={(e) => setShared(e.target.checked)} />
+          <input id="task-shared" type="checkbox" role="switch" className={ui.switch} checked={shared} onChange={(e) => setShared(e.target.checked)} />
           <span>
             <strong>Share with friends</strong>
             <small>When you complete it, friends see “completed {title.trim() || 'this task'}” in their feed.</small>

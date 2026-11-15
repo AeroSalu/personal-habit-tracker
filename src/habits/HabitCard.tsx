@@ -1,7 +1,8 @@
 import type { CSSProperties } from 'react'
-import { Check, Flame } from 'lucide-react'
+import { Flame } from 'lucide-react'
 import { clock, parseClock } from '../lib/dates'
 import { completionRate, doneLine, streak, weekProgress, type Habit, type HabitLog } from '../lib/habits'
+import { Tick } from '../components/Tick'
 import styles from './Habits.module.css'
 
 type Props = {
@@ -45,7 +46,7 @@ export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onO
         aria-label={`${log ? 'Undo' : 'Complete'} ${habit.name}`}
         onClick={onToggle}
       >
-        <Check size={20} strokeWidth={3} aria-hidden="true" />
+        <Tick size={20} />
       </button>
       <button type="button" className={styles.cardBody} onClick={onOpen}>
         <span className={styles.name}>{habit.name}</span>

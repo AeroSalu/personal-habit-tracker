@@ -39,7 +39,16 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
 
 1. **Audit:** done (above).
 2. **Design system:** done. Tokens above, base type in the platform font, the glass material, ring colours, and literal sizes, weights, radii and on-scale spacings across all CSS modules mapped onto tokens. The off-scale spacings that remain (2, 3, 6, 10px …) are settled per component in Phase 3. Charts keep their exact sizes.
-3. **Core components:** buttons (press, loading, success), inputs (focus, validation), toggles, checkboxes with a drawn tick, cards, progress rings, toasts with undo, skeletons.
+3. **Core components:** done.
+   - **Buttons:** press, and a loading spinner via `aria-busy` (`ui.button`).
+   - **Inputs:** a focus halo, and a red state via `aria-invalid`.
+   - **Chips:** hover and press.
+   - **On/off settings:** switches (`ui.switch` with `role="switch"`, label left, switch right).
+   - **Every completion control:** a drawn tick (`Tick`).
+   - **`Ring`:** single or concentric progress rings that sweep in and describe themselves.
+   - **Toasts:** can carry an action; completing a task or habit, or deleting a task, offers Undo.
+   - **`PageSkeleton`:** replaces blank pages while data loads.
+   - **Not done yet:** a separate success state for buttons (saving already confirms with a toast), and the remaining off-scale spacings. Both are left for the screen work in Phase 5.
 4. **Navigation and motion:** add `motion` (Motion for React) for springs, exit animations and shared-element transitions: tab crossfades, pushes for detail pages, sheets with drag-to-dismiss, habit card → habit detail, focus card → focus mode. A glass bottom bar and sidebar.
 5. **Screens:** Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
 6. **Polish:** micro-interactions, achievement feedback kept subtle, considered empty and loading states, Android haptics.

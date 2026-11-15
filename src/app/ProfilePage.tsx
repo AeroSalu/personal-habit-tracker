@@ -74,6 +74,8 @@ export function ProfilePage() {
           <input
             id="badge-alerts"
             type="checkbox"
+            role="switch"
+            className={ui.switch}
             checked={profile.badgeAlerts}
             onChange={(e) => setBadgeAlerts(user.uid, e.target.checked).catch(() => setStatus('Could not save that setting.'))}
           />

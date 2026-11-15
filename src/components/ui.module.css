@@ -1,5 +1,6 @@
 /* Shared controls. Screens import these classes rather than restyling buttons and inputs. */
 .button {
+  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -10,32 +11,59 @@
   border-radius: var(--radius-sm);
   background: var(--card-raised);
   font-weight: var(--weight-semibold);
-  transition: background var(--dur-1), border-color var(--dur-1), transform var(--dur-1);
+  transition:
+    background var(--dur-1) var(--ease-standard),
+    border-color var(--dur-1) var(--ease-standard),
+    color var(--dur-1) var(--ease-standard),
+    box-shadow var(--dur-1) var(--ease-standard),
+    transform var(--dur-instant) var(--ease-out);
 }
 
 .button:hover {
   border-color: var(--faint);
 }
 
+/* A press sinks slightly and springs back on release. */
 .button:active {
-  transform: scale(0.98);
+  transform: scale(0.97);
 }
 
 .button:disabled {
-  opacity: 0.55;
+  opacity: 0.5;
   cursor: default;
   transform: none;
 }
 
+/* Waiting on the server: the label fades and a small spinner takes its place. */
+.button[aria-busy='true'] {
+  color: transparent;
+  pointer-events: none;
+}
+
+.button[aria-busy='true']::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 18px;
+  height: 18px;
+  margin: auto;
+  border: 2px solid var(--spinner, var(--text));
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
 .primary {
+  --spinner: var(--accent-ink);
   border-color: var(--accent);
   background: var(--accent);
   color: var(--accent-ink);
+  box-shadow: 0 1px 2px color-mix(in srgb, var(--accent) 30%, transparent);
 }
 
 .primary:hover {
   border-color: var(--accent);
-  filter: brightness(1.06);
+  background: color-mix(in srgb, var(--accent) 90%, var(--text));
 }
 
 .ghost {
@@ -46,6 +74,7 @@
 
 .ghost:hover {
   border-color: transparent;
+  background: var(--card-raised);
   color: var(--text);
 }
 
@@ -86,12 +115,32 @@
   border: 1px solid var(--border);
   border-radius: var(--radius-sm);
   background: var(--bg);
-  transition: border-color var(--dur-1);
+  transition:
+    border-color var(--dur-1) var(--ease-standard),
+    box-shadow var(--dur-1) var(--ease-standard);
 }
 
+.input::placeholder {
+  color: var(--faint);
+}
+
+.input:hover:not(:focus) {
+  border-color: color-mix(in srgb, var(--faint) 60%, var(--border));
+}
+
+/* Focus: the border takes the accent and a soft halo appears around the field. */
 .input:focus {
   border-color: var(--accent);
   outline: none;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.input[aria-invalid='true'] {
+  border-color: var(--urgent);
+}
+
+.input[aria-invalid='true']:focus {
+  box-shadow: 0 0 0 3px var(--urgent-soft);
 }
 
 .error {
@@ -116,12 +165,79 @@
   font-size: var(--text-subhead);
   font-weight: var(--weight-semibold);
   font-variant-numeric: tabular-nums;
+  transition:
+    background var(--dur-1) var(--ease-standard),
+    border-color var(--dur-1) var(--ease-standard),
+    color var(--dur-1) var(--ease-standard),
+    transform var(--dur-instant) var(--ease-out);
+}
+
+.chip:hover {
+  border-color: var(--faint);
+  color: var(--text);
+}
+
+.chip:active {
+  transform: scale(0.96);
 }
 
 .chip[aria-pressed='true'] {
   border-color: var(--accent);
   background: var(--accent-soft);
   color: var(--accent);
+}
+
+/* An on/off switch: a checkbox with role="switch". The thumb slides; the track fills. */
+input[type='checkbox'].switch {
+  position: relative;
+  flex: none;
+  width: 46px;
+  height: 28px;
+  margin: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--card-raised);
+  box-shadow: inset 0 0 0 1px var(--border);
+  appearance: none;
+  cursor: pointer;
+  transition:
+    background var(--dur-2) var(--ease-standard),
+    box-shadow var(--dur-2) var(--ease-standard);
+}
+
+input[type='checkbox'].switch::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--knob);
+  box-shadow: var(--shadow-2);
+  transition: transform var(--dur-2) var(--ease-out);
+}
+
+input[type='checkbox'].switch:checked {
+  background: var(--accent);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+
+input[type='checkbox'].switch:checked::before {
+  transform: translateX(18px);
+}
+
+input[type='checkbox'].switch:active::before {
+  width: 26px;
+}
+
+input[type='checkbox'].switch:checked:active::before {
+  transform: translateX(14px);
+}
+
+input[type='checkbox'].switch:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 .card {
@@ -142,4 +258,10 @@ button.card {
 a.card:hover,
 button.card:hover {
   box-shadow: var(--shadow-2);
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

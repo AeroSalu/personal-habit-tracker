@@ -30,6 +30,7 @@ import { TaskRow } from './TaskRow'
 import { TemplatePicker } from './TemplatePicker'
 import { useTaskActions } from './useTaskActions'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Tasks.module.css'
 
 const capital = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
@@ -111,7 +112,13 @@ export function TasksPage() {
     />
   )
 
-  if (!tasks.loaded) return <section className={styles.page} aria-busy="true" />
+  if (!tasks.loaded) {
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
+  }
 
   return (
     <section className={styles.page}>

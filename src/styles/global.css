@@ -61,6 +61,8 @@
   --glass: rgb(22 24 29 / 0.72);
   --glass-border: rgb(255 255 255 / 0.08);
   --separator: rgb(255 255 255 / 0.06);
+  /* Switch knobs stay white in both themes, as on the platform. */
+  --knob: #ffffff;
 
   color-scheme: dark;
 
@@ -327,6 +329,29 @@ button {
 
 .num {
   font-variant-numeric: tabular-nums;
+}
+
+/* The completion tick (src/components/Tick.tsx): drawn in when its button turns on. */
+.tick path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset var(--dur-2) var(--ease-out);
+}
+
+[aria-pressed='true'] > .tick path {
+  stroke-dashoffset: 0;
+  transition-delay: 60ms;
+}
+
+.tick-drawn path {
+  stroke-dashoffset: 0;
+  animation: tick-draw var(--dur-2) var(--ease-out) 60ms backwards;
+}
+
+@keyframes tick-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
 }
 
 /* Shared entrances. .page-enter wraps each screen; .enter rows rise in turn, with --i set

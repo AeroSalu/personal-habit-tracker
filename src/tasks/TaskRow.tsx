@@ -1,8 +1,9 @@
 import type { CSSProperties } from 'react'
-import { Check, Clock3, ListChecks, Repeat } from 'lucide-react'
+import { Clock3, ListChecks, Repeat } from 'lucide-react'
 import { clock, parseClock } from '../lib/dates'
 import { formatMinutes } from '../lib/profile'
 import { dueLabel, isOverdue, STATUS_LABEL, subtaskProgress, type Task } from '../lib/tasks'
+import { Tick } from '../components/Tick'
 import styles from './Tasks.module.css'
 
 type Props = {
@@ -34,7 +35,7 @@ export function TaskRow({ task, now, today, onToggle, onOpen, hideDate, focusMin
         aria-label={`${done ? 'Reopen' : 'Complete'} ${task.title}`}
         onClick={onToggle}
       >
-        <Check size={16} strokeWidth={3} aria-hidden="true" />
+        <Tick size={16} />
       </button>
       <button type="button" className={styles.rowBody} onClick={onOpen}>
         <span className={styles.title}>{task.title}</span>

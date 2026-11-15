@@ -67,7 +67,7 @@ export function AccountData() {
       <h2>Your data</h2>
       <p className={styles.help}>Everything you’ve put into Cadence, yours to keep.</p>
       <div className={styles.photoActions}>
-        <button type="button" className={ui.button} onClick={download} disabled={busy}>
+        <button type="button" className={ui.button} onClick={download} disabled={busy} aria-busy={busy && !deleting}>
           <Download size={16} aria-hidden="true" /> Download my data
         </button>
         <button
@@ -115,7 +115,7 @@ export function AccountData() {
               {error}
             </p>
             <div className={styles.photoActions}>
-              <button type="submit" className={`${ui.button} ${styles.dangerButton}`} disabled={busy}>
+              <button type="submit" className={`${ui.button} ${styles.dangerButton}`} disabled={busy} aria-busy={busy}>
                 {busy ? 'Deleting…' : 'Delete everything'}
               </button>
               <button

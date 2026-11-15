@@ -13,7 +13,9 @@ import { formatMinutes } from '../lib/profile'
 import { dueLabel, type Task } from '../lib/tasks'
 import type { DayRecord } from '../lib/plan'
 import { useNow } from '../lib/useNow'
+import { Tick } from '../components/Tick'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Plan.module.css'
 
 const RATINGS = ['Rough', 'Meh', 'Okay', 'Good', 'Great']
@@ -40,7 +42,11 @@ export function PlanPage() {
   const [mode, setMode] = useState<'plan' | 'review'>(now.getHours() >= REVIEW_FROM_HOUR ? 'review' : 'plan')
   const failed = () => toast('That change could not be saved. Check your connection.')
 
-  if (!tasks.loaded || !habits.loaded || !logs.loaded || !days.loaded) return <section className={styles.page} aria-busy="true" />
+  if (!tasks.loaded || !habits.loaded || !logs.loaded || !days.loaded) return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton cards={2} rows={4} />
+      </section>
+    )
 
   const groups = planGroups(tasks.data, today)
   const planned = tasks.data.filter((t) => t.dueDate === today)
@@ -70,7 +76,7 @@ export function PlanPage() {
           aria-label={`${inToday ? 'Remove from today' : 'Add to today'}: ${t.title}`}
           onClick={() => toggle(t)}
         >
-          <Check size={14} strokeWidth={3} aria-hidden="true" />
+          <Tick />
         </button>
         <span className={styles.title}>
           {t.title}

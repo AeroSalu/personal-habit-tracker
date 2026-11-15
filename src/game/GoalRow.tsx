@@ -1,6 +1,6 @@
-import { Check } from 'lucide-react'
 import { formatMinutes } from '../lib/profile'
 import type { Goal } from '../lib/missions'
+import { Tick } from '../components/Tick'
 import styles from './Challenges.module.css'
 
 /** One mission or challenge with its progress bar and XP reward. */
@@ -9,7 +9,7 @@ export function GoalRow({ goal, xp }: { goal: Goal; xp: number }) {
   return (
     <li className={`${styles.goal} ${goal.done ? styles.goalDone : ''}`}>
       <span className={styles.goalCheck} aria-hidden="true">
-        {goal.done && <Check size={14} strokeWidth={3} />}
+        {goal.done && <Tick drawn />}
       </span>
       <div className={styles.goalBody}>
         <div className={styles.goalHead}>

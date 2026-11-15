@@ -15,6 +15,7 @@ import { useNow } from '../lib/useNow'
 import { ColumnChart } from '../analytics/charts/ColumnChart'
 import { FeedRow } from './FeedRow'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Friends.module.css'
 
 /** A friend's profile: how their week is going, what they've pinned and shared, and cheers. */
@@ -49,7 +50,13 @@ export function FriendPage() {
     </Link>
   )
 
-  if (!friendships.loaded || p === undefined) return <section className={styles.page} aria-busy="true" />
+  if (!friendships.loaded || p === undefined) {
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
+  }
 
   if (!isFriend || !p) {
     return (

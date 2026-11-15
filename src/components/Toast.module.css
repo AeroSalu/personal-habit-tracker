@@ -3,10 +3,14 @@
   left: 50%;
   bottom: calc(var(--bottom-bar-height) + var(--space-3) + env(safe-area-inset-bottom));
   z-index: 50;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
   width: max-content;
-  max-width: calc(100% - 32px);
-  padding: 10px 14px;
-  border-radius: var(--radius-sm);
+  max-width: calc(100% - var(--space-6));
+  min-height: 44px;
+  padding: var(--space-2) var(--space-2) var(--space-2) var(--space-4);
+  border-radius: var(--radius);
   background: var(--text);
   color: var(--bg);
   font-size: var(--text-subhead);
@@ -14,6 +18,22 @@
   transform: translateX(-50%);
   box-shadow: var(--shadow-3);
   animation: up var(--dur-3) var(--ease-out);
+}
+
+.action {
+  flex: none;
+  min-height: 32px;
+  padding: 0 var(--space-3);
+  border: 0;
+  border-radius: var(--radius-xs);
+  background: color-mix(in srgb, var(--bg) 14%, transparent);
+  color: var(--bg);
+  font-weight: var(--weight-bold);
+  transition: background var(--dur-1) var(--ease-standard);
+}
+
+.action:hover {
+  background: color-mix(in srgb, var(--bg) 24%, transparent);
 }
 
 .leaving {

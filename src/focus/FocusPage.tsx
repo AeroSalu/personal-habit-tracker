@@ -186,7 +186,7 @@ export function FocusPage() {
 
         <div className={styles.options}>
           <label className={styles.toggle}>
-            <input id="focus-strict" type="checkbox" checked={strict} onChange={(e) => setStrict(e.target.checked)} />
+            <input id="focus-strict" type="checkbox" role="switch" className={ui.switch} checked={strict} onChange={(e) => setStrict(e.target.checked)} />
             <span>
               <strong>Strict mode</strong>
               <small>Leaving the app for over 30 seconds ends the session.</small>

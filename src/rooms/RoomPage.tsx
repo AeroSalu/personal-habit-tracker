@@ -21,6 +21,7 @@ import { useFocus } from '../focus/focusContext'
 import { loadPrefs, planFromPrefs } from '../focus/prefs'
 import { setViewingRoom } from './viewing'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Rooms.module.css'
 
 /** A clock that ticks every second while the page is open, for the shared countdown. */
@@ -55,7 +56,13 @@ export function RoomPage() {
 
   const failed = () => toast('That didn’t go through. Check your connection.')
 
-  if (!myRooms.loaded) return <section className={styles.page} aria-busy="true" />
+  if (!myRooms.loaded) {
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
+  }
   if (!mine) {
     return (
       <section className={styles.page}>
@@ -77,7 +84,13 @@ export function RoomPage() {
       </section>
     )
   }
-  if (!room) return <section className={styles.page} aria-busy="true" />
+  if (!room) {
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
+  }
 
   const isHost = room.hostUid === me
   const left = sessionRemaining(room.session, now)

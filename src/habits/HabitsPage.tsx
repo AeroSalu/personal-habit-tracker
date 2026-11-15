@@ -21,6 +21,7 @@ import { HabitDetail } from './HabitDetail'
 import { HabitForm } from './HabitForm'
 import { useHabitToggle } from './useHabitToggle'
 import ui from '../components/ui.module.css'
+import { PageSkeleton } from '../components/Skeleton'
 import styles from './Habits.module.css'
 
 function nextDueLabel(habit: Habit, keys: Set<string>, today: string): string {
@@ -88,7 +89,11 @@ export function HabitsPage() {
   }
 
   if (!habits.loaded || !logs.loaded) {
-    return <section className={styles.page} aria-busy="true" />
+    return (
+      <section className={styles.page} aria-busy="true">
+        <PageSkeleton />
+      </section>
+    )
   }
 
   return (

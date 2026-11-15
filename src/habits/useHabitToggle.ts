@@ -18,7 +18,10 @@ export function useHabitToggle(uid: string) {
     const at = new Date()
     logHabit(uid, habit, at).catch(failed)
     const run = streak(habit, new Set([...keys, today]), today).current
-    toast(`${doneLine(habit, at)}${run > 1 ? ` · ${streakLabel(habit, run)} streak` : ''}`)
+    toast(`${doneLine(habit, at)}${run > 1 ? ` · ${streakLabel(habit, run)} streak` : ''}`, {
+      label: 'Undo',
+      run: () => unlogHabit(uid, habit, today).catch(failed),
+    })
     return true
   }
 }

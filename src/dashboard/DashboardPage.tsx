@@ -1,6 +1,6 @@
 import { useState, type CSSProperties } from 'react'
 import { Link } from 'react-router-dom'
-import { CalendarCheck, Check, ChevronDown, ChevronRight, Moon, Play, Repeat, SlidersHorizontal, Sunrise, Target } from 'lucide-react'
+import { CalendarCheck, ChevronDown, ChevronRight, Moon, Play, Repeat, SlidersHorizontal, Sunrise, Target } from 'lucide-react'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
 import { useDays, useWeeks } from '../data/days'
@@ -21,27 +21,10 @@ import { loadPrefs, planFromPrefs } from '../focus/prefs'
 import { useFlip } from '../components/useFlip'
 import { useHabitToggle } from '../habits/useHabitToggle'
 import { useTaskActions } from '../tasks/useTaskActions'
+import { Ring } from '../components/Ring'
+import { Tick } from '../components/Tick'
 import ui from '../components/ui.module.css'
 import styles from './Dashboard.module.css'
-
-const RING = 2 * Math.PI * 52
-
-function FocusRing({ share }: { share: number }) {
-  return (
-    <svg className={styles.ring} viewBox="0 0 120 120" aria-hidden="true">
-      <circle cx="60" cy="60" r="52" className={styles.ringTrack} />
-      <circle
-        cx="60"
-        cy="60"
-        r="52"
-        className={styles.ringValue}
-        strokeDasharray={RING}
-        strokeDashoffset={RING * (1 - Math.min(1, share))}
-        transform="rotate(-90 60 60)"
-      />
-    </svg>
-  )
-}
 
 function timeLabel(time: string) {
   const [h, m] = time.split(':').map(Number)
@@ -161,7 +144,7 @@ export function DashboardPage() {
                   aria-label={`${t.status === 'done' ? 'Undo' : 'Complete'} ${t.title}`}
                   onClick={() => taskActions.toggle(t)}
                 >
-                  <Check size={14} strokeWidth={3} aria-hidden="true" />
+                  <Tick />
                 </button>
                 <span className={styles.itemText}>
                   <span className={styles.title}>{t.title}</span>
@@ -176,11 +159,12 @@ export function DashboardPage() {
       <article className={`${ui.card} ${styles.focus}`}>
         <div className={styles.focusMain}>
           <div className={styles.ringWrap}>
-            <FocusRing share={minutes / goal} />
-            <div className={styles.ringLabel}>
-              <strong className="num">{formatMinutes(minutes)}</strong>
-              <span className="num">of {formatMinutes(goal)}</span>
-            </div>
+            <Ring rings={[{ value: minutes / goal, color: 'var(--ring-focus)', label: 'Focus goal' }]} size={112} stroke={9}>
+              <span className={styles.ringLabel}>
+                <strong className="num">{formatMinutes(minutes)}</strong>
+                <span className="num">of {formatMinutes(goal)}</span>
+              </span>
+            </Ring>
           </div>
           <div className={styles.focusBody}>
             <p className={styles.toGo}>
@@ -270,7 +254,7 @@ export function DashboardPage() {
                     aria-label={`${item.done ? 'Undo' : 'Complete'} ${title}`}
                     onClick={() => toggle(item)}
                   >
-                    <Check size={14} strokeWidth={3} aria-hidden="true" />
+                    <Tick />
                   </button>
                   <span className={styles.itemText}>
                     <span className={styles.title}>{title}</span>

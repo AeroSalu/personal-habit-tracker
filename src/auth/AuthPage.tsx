@@ -129,6 +129,7 @@ export function AuthPage() {
             <input
               id="auth-email"
               className={ui.input}
+              aria-invalid={/email/i.test(error)}
               type="email"
               autoComplete="email"
               value={email}
@@ -141,6 +142,7 @@ export function AuthPage() {
               <input
                 id="auth-password"
                 className={ui.input}
+                aria-invalid={/password/i.test(error)}
                 type="password"
                 autoComplete={mode === 'signup' ? 'new-password' : 'current-password'}
                 value={password}
@@ -152,7 +154,7 @@ export function AuthPage() {
           <p className={ui.error} role="alert">
             {error}
           </p>
-          <button type="submit" className={`${ui.button} ${ui.primary} ${ui.block}`} disabled={busy}>
+          <button type="submit" className={`${ui.button} ${ui.primary} ${ui.block}`} disabled={busy} aria-busy={busy}>
             {COPY[mode].button}
           </button>
         </form>

@@ -135,22 +135,20 @@
 
 .toggle {
   display: flex;
-  align-items: flex-start;
-  gap: var(--space-3);
+  flex-direction: row-reverse;
+  align-self: stretch;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
   cursor: pointer;
 }
 
-.toggle input {
-  flex: none;
-  width: 20px;
-  height: 20px;
-  margin: 2px 0 0;
-  accent-color: var(--accent);
-}
-
+/* Label on the left, switch on the right, as in system settings. */
 .toggle span {
   display: flex;
+  flex: 1;
   flex-direction: column;
+  min-width: 0;
 }
 
 .toggle small {

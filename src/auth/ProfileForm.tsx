@@ -36,6 +36,7 @@ export function ProfileForm({ initial, submitLabel, onSubmit }: Props) {
         <input
           id="profile-name"
           className={ui.input}
+          aria-invalid={/name/i.test(error)}
           value={displayName}
           maxLength={40}
           autoComplete="name"

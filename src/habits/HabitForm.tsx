@@ -52,6 +52,7 @@ export function HabitForm({ habit, onSave, onArchive, onClose }: Props) {
           <input
             id="habit-name"
             className={ui.input}
+            aria-invalid={/name|habit/i.test(error)}
             value={name}
             maxLength={80}
             placeholder="Read for 30 minutes"
@@ -124,7 +125,7 @@ export function HabitForm({ habit, onSave, onArchive, onClose }: Props) {
         </div>
 
         <label className={styles.shareToggle}>
-          <input id="habit-shared" type="checkbox" checked={shared} onChange={(e) => setShared(e.target.checked)} />
+          <input id="habit-shared" type="checkbox" role="switch" className={ui.switch} checked={shared} onChange={(e) => setShared(e.target.checked)} />
           <span>
             <strong>Share with friends</strong>
             <small>Each time you tick it, friends see it in their feed.</small>

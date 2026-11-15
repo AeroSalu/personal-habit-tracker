@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, updateDoc, writeBatch, type DocumentData } from 'firebase/firestore'
+import { addDoc, collection, deleteDoc, doc, setDoc, updateDoc, writeBatch, type DocumentData } from 'firebase/firestore'
 import { db } from '../firebase'
 import { dayKey } from '../lib/dates'
 import { CATEGORIES, type Category } from '../lib/habits'
@@ -162,6 +162,11 @@ export function moveTask(uid: string, task: Task, status: Status, order: number,
   if (task.status !== 'done' && status === 'done') return completeTask(uid, moved, at)
   if (task.status === 'done' && status !== 'done') return reopenTask(uid, moved, all, status)
   return updateDoc(doc(tasksRef(uid), task.id), { status, order })
+}
+
+/** Puts a deleted task back exactly as it was, for Undo. */
+export function restoreTask(uid: string, task: Task) {
+  return setDoc(doc(tasksRef(uid), task.id), stored(task))
 }
 
 export function deleteTask(uid: string, id: string) {

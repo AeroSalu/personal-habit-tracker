@@ -1,5 +1,6 @@
+import { useRef } from 'react'
 import { useToast } from '../components/toast'
-import { completeTask, createTask, deleteTask, moveTask, reopenTask, saveTask } from '../data/tasks'
+import { completeTask, createTask, deleteTask, moveTask, reopenTask, restoreTask, saveTask } from '../data/tasks'
 import { deleteTemplate, saveTemplate } from '../data/templates'
 import { dueLabel, nextDueDate, type Status, type Task, type TaskFields } from '../lib/tasks'
 import { templateFromTask, type Template } from '../lib/templates'
@@ -9,6 +10,13 @@ import { dayKey } from '../lib/dates'
 export function useTaskActions(uid: string, tasks: Task[]) {
   const toast = useToast()
   const failed = () => toast('That change could not be saved. Check your connection.')
+  // Undo runs seconds later, so it reads the list as it is then, not as it was.
+  const latest = useRef(tasks)
+  latest.current = tasks
+  const undoDone = (id: string) => () => {
+    const now = latest.current.find((t) => t.id === id)
+    if (now?.status === 'done') reopenTask(uid, now, latest.current).catch(failed)
+  }
 
   return {
     toggle(task: Task) {
@@ -19,7 +27,10 @@ export function useTaskActions(uid: string, tasks: Task[]) {
       const at = new Date()
       completeTask(uid, task, at).catch(failed)
       const next = nextDueDate(task, dayKey(at))
-      toast(next ? `Done. Next one: ${dueLabel({ dueDate: next, dueTime: task.dueTime }, dayKey(at))}` : 'Task done')
+      toast(next ? `Done. Next one: ${dueLabel({ dueDate: next, dueTime: task.dueTime }, dayKey(at))}` : 'Task done', {
+        label: 'Undo',
+        run: undoDone(task.id),
+      })
     },
 
     save(task: Task | null, fields: TaskFields) {
@@ -29,7 +40,7 @@ export function useTaskActions(uid: string, tasks: Task[]) {
 
     remove(task: Task) {
       deleteTask(uid, task.id).catch(failed)
-      toast(`Deleted “${task.title}”`)
+      toast(`Deleted “${task.title}”`, { label: 'Undo', run: () => restoreTask(uid, task).catch(failed) })
     },
 
     move(task: Task, status: Status, order: number) {
@@ -37,7 +48,10 @@ export function useTaskActions(uid: string, tasks: Task[]) {
       moveTask(uid, task, status, order, tasks, at).catch(failed)
       if (status === 'done' && task.status !== 'done') {
         const next = nextDueDate(task, dayKey(at))
-        toast(next ? `Done. Next one: ${dueLabel({ dueDate: next, dueTime: task.dueTime }, dayKey(at))}` : 'Task done')
+        toast(next ? `Done. Next one: ${dueLabel({ dueDate: next, dueTime: task.dueTime }, dayKey(at))}` : 'Task done', {
+          label: 'Undo',
+          run: undoDone(task.id),
+        })
       }
     },
 

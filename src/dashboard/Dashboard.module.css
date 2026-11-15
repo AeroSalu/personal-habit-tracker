@@ -93,28 +93,10 @@
   }
 }
 
-.ring {
-  width: 100%;
-  height: 100%;
-}
 
-.ringTrack {
-  fill: none;
-  stroke: var(--card-raised);
-  stroke-width: 9;
-}
 
-.ringValue {
-  fill: none;
-  stroke: var(--accent);
-  stroke-width: 9;
-  stroke-linecap: round;
-  transition: stroke-dashoffset calc(var(--dur-3) * 1.5) var(--ease-out);
-}
 
 .ringLabel {
-  position: absolute;
-  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;

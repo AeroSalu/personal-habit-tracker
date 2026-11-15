@@ -48,7 +48,7 @@ export function NotificationSettings() {
 
   const check = (key: 'habits' | 'tasks' | 'plan' | 'review' | 'streak', title: string, text: string) => (
     <label className={styles.toggle}>
-      <input type="checkbox" checked={prefs[key]} onChange={(e) => save({ [key]: e.target.checked })} />
+      <input type="checkbox" role="switch" className={ui.switch} checked={prefs[key]} onChange={(e) => save({ [key]: e.target.checked })} />
       <span>
         <strong>{title}</strong>
         <small>{text}</small>
@@ -84,7 +84,7 @@ export function NotificationSettings() {
       )}
 
       <label className={styles.toggle}>
-        <input type="checkbox" checked={prefs.on} onChange={(e) => save({ on: e.target.checked })} />
+        <input type="checkbox" role="switch" className={ui.switch} checked={prefs.on} onChange={(e) => save({ on: e.target.checked })} />
         <span>
           <strong>Send me reminders</strong>
           <small>Turn off to pause them on every device.</small>

@@ -1,0 +1,68 @@
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  width: 100%;
+  animation: page-in var(--dur-3) var(--ease-out) backwards;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--card);
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+/* One slow sweep of light across each placeholder; reduced motion leaves it still. */
+.block {
+  display: block;
+  border-radius: var(--radius-xs);
+  background: linear-gradient(
+    90deg,
+    var(--card-raised) 0%,
+    color-mix(in srgb, var(--card-raised) 60%, var(--text) 6%) 50%,
+    var(--card-raised) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.6s var(--ease-in-out) infinite;
+}
+
+.title {
+  width: 38%;
+  height: 28px;
+  border-radius: var(--radius-sm);
+}
+
+.heading {
+  width: 30%;
+  height: 16px;
+}
+
+.dot {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+}
+
+.line {
+  height: 14px;
+}
+
+@keyframes shimmer {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
