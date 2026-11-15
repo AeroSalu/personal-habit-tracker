@@ -7,7 +7,7 @@ import { useDays, useWeeks } from '../data/days'
 import { useHabitLogs, useHabits } from '../data/habits'
 import { useSessions } from '../data/sessions'
 import { useTasks } from '../data/tasks'
-import { greeting, productivityScore, todayList, upcomingDeadlines, type TodayItem } from '../lib/dashboard'
+import { greeting, productivityScore, todayList, upcomingDeadlines, weekRings, type TodayItem } from '../lib/dashboard'
 import { dayKey, weekStart } from '../lib/dates'
 import { reviewWeekStart, todayPrompt } from '../lib/plan'
 import { minutesOn } from '../lib/focus'
@@ -80,12 +80,39 @@ export function DashboardPage() {
   const taskItems = items.filter((i) => i.kind === 'task')
   const habitItems = items.filter((i) => i.kind === 'habit')
 
+  const tasksDone = taskItems.filter((i) => i.done).length
+  const habitsDone = habitItems.filter((i) => i.done).length
+  const rings = [
+    {
+      id: 'focus',
+      label: 'Focus',
+      value: minutes / goal,
+      color: 'var(--ring-focus)',
+      detail: `${formatMinutes(minutes)} of ${formatMinutes(goal)}`,
+    },
+    {
+      id: 'tasks',
+      label: 'Tasks',
+      value: taskItems.length ? tasksDone / taskItems.length : 0,
+      color: 'var(--ring-tasks)',
+      detail: taskItems.length ? `${tasksDone} of ${taskItems.length}` : 'None due',
+    },
+    {
+      id: 'habits',
+      label: 'Habits',
+      value: habitItems.length ? habitsDone / habitItems.length : 0,
+      color: 'var(--ring-habits)',
+      detail: habitItems.length ? `${habitsDone} of ${habitItems.length}` : 'None due',
+    },
+  ]
+  const week = weekRings({ sessions: sessions.data, tasks: tasks.data, habits: habits.data, logs: logs.data, goal }, today)
+
   const score = productivityScore({
     focusMinutes: minutes,
     focusGoal: goal,
-    tasksDone: taskItems.filter((i) => i.done).length,
+    tasksDone,
     tasksTotal: taskItems.length,
-    habitsDone: habitItems.filter((i) => i.done).length,
+    habitsDone,
     habitsTotal: habitItems.length,
   })
   const comingUp = upcomingDeadlines(tasks.data, today)
@@ -158,38 +185,86 @@ export function DashboardPage() {
         </article>
       )}
 
-      <article className={`${ui.card} ${styles.focus}`}>
+      <article className={`${ui.card} ${styles.focus}`} aria-label="Today at a glance">
         <div className={styles.focusMain}>
           <div className={styles.ringWrap}>
             {/* While a session runs, focus mode owns the ring; starting from here expands it there. */}
             <m.div layoutId={focus.state ? undefined : 'focus-ring'} transition={spring}>
-              <Ring rings={[{ value: minutes / goal, color: 'var(--ring-focus)', label: 'Focus goal' }]} size={112} stroke={9}>
-                <span className={styles.ringLabel}>
-                  <strong className="num">{formatMinutes(minutes)}</strong>
-                  <span className="num">of {formatMinutes(goal)}</span>
-                </span>
-              </Ring>
-              </m.div>
+              <Ring rings={rings} size={128} stroke={12} gap={3} />
+            </m.div>
           </div>
-          <div className={styles.focusBody}>
-            <p className={styles.toGo}>
-              {minutes >= goal ? 'Focus goal reached' : `${formatMinutes(goal - minutes)} of focus to go`}
-            </p>
-            {nextUp && (
-              <p className={styles.nextUp}>
+          <ul className={styles.legend}>
+            {rings.map((r) => (
+              <li key={r.id}>
+                <span className={styles.swatch} style={{ background: r.color }} aria-hidden="true" />
+                <span className={styles.legendLabel}>{r.label}</span>
+                <span className={`${styles.legendValue} num`}>{r.detail}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <div className={styles.focusBody}>
+          <p className={styles.nextUp}>
+            {nextUp ? (
+              <>
                 Next: <strong>{nextUp.title}</strong>
-              </p>
+              </>
+            ) : minutes >= goal ? (
+              'Focus goal reached'
+            ) : (
+              `${formatMinutes(goal - minutes)} of focus to go`
             )}
-            <div className={styles.focusActions}>
-              <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => focus.start(quickPlan)}>
-                <Play size={16} aria-hidden="true" />
-                Start focus<span className={styles.minutes}> · {quickPlan.focusMinutes} min</span>
-              </button>
-              <Link to="/focus" className={`${ui.button} ${ui.ghost} ${styles.iconButton}`} aria-label="Focus options" title="Focus options">
-                <SlidersHorizontal size={18} aria-hidden="true" />
-              </Link>
-            </div>
+          </p>
+          <div className={styles.focusActions}>
+            <button type="button" className={`${ui.button} ${ui.primary}`} onClick={() => focus.start(quickPlan)}>
+              <Play size={16} aria-hidden="true" />
+              Start focus<span className={styles.minutes}> · {quickPlan.focusMinutes} min</span>
+            </button>
+            <Link to="/focus" className={`${ui.button} ${ui.ghost} ${styles.iconButton}`} aria-label="Focus options" title="Focus options">
+              <SlidersHorizontal size={18} aria-hidden="true" />
+            </Link>
           </div>
+        </div>
+
+        <div className={styles.week}>
+          <div className={styles.cardHead}>
+            <h3>This week</h3>
+            <Link to="/analytics" className={styles.more}>
+              Analytics <ChevronRight size={14} aria-hidden="true" />
+            </Link>
+          </div>
+          <ol className={styles.weekDays}>
+            {week.map((d) => (
+              <li
+                key={d.key}
+                className={`${d.future ? styles.future : ''} ${d.today ? styles.isToday : ''}`}
+                aria-current={d.today ? 'date' : undefined}
+              >
+                <Ring
+                  size={40}
+                  stroke={4}
+                  gap={1.5}
+                  rings={[
+                    { value: d.focus, color: 'var(--ring-focus)', label: `${d.label} focus` },
+                    {
+                      value: d.tasks ?? 0,
+                      color: 'var(--ring-tasks)',
+                      label: d.tasks === null ? `${d.label} tasks, none due,` : `${d.label} tasks`,
+                    },
+                    {
+                      value: d.habits ?? 0,
+                      color: 'var(--ring-habits)',
+                      label: d.habits === null ? `${d.label} habits, none due,` : `${d.label} habits`,
+                    },
+                  ].map((r) => (d.future ? { ...r, value: 0 } : r))}
+                />
+                <span className={styles.dayLabel} aria-hidden="true">
+                  {d.label.slice(0, 1)}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
 
         <details className={styles.score}>

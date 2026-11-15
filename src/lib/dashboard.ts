@@ -2,7 +2,7 @@
 // Everything is derived from stored records, never stored itself, so it can't drift or be
 // claimed twice, and every number can be explained.
 
-import { addDays, dayKey, weekday } from './dates'
+import { addDays, dayKey, weekday, weekStart } from './dates'
 import type { Habit, HabitLog } from './habits'
 import type { Session } from './focus'
 import { compareTasks, isOverdue, type Task } from './tasks'
@@ -277,4 +277,48 @@ const LINES = [
 export function lineFor(key: string): string {
   const n = [...key].reduce((sum, c) => sum + c.charCodeAt(0), 0)
   return LINES[n % LINES.length]
+}
+
+// ---- Week of rings ----
+
+export type DayRings = {
+  key: string
+  /** Mon, Tue… */
+  label: string
+  /** 0–1 each; null when nothing was due, so the ring reads as empty rather than missed. */
+  focus: number
+  tasks: number | null
+  habits: number | null
+  future: boolean
+  today: boolean
+}
+
+/**
+ * This week's days, Monday first, as three ring values each: focus minutes against the daily
+ * goal, tasks due that day that got done, and exact-day habits scheduled that day that were
+ * ticked. Days still to come are marked so they can be shown faint.
+ */
+export function weekRings(
+  input: { sessions: Session[]; tasks: Task[]; habits: Habit[]; logs: HabitLog[]; goal: number },
+  today: string,
+): DayRings[] {
+  const start = weekStart(today)
+  const ticked = new Set(input.logs.map((l) => `${l.habitId}_${l.dayKey}`))
+  const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
+  return Array.from({ length: 7 }, (_, i) => {
+    const key = addDays(start, i)
+    let minutes = 0
+    for (const s of input.sessions) if (s.dayKey === key) minutes += s.minutes
+    const due = input.tasks.filter((t) => t.dueDate === key)
+    const scheduled = habitsScheduledOn(input.habits, key)
+    return {
+      key,
+      label: names[weekday(key)],
+      focus: Math.min(1, minutes / Math.max(1, input.goal)),
+      tasks: due.length ? due.filter((t) => t.status === 'done').length / due.length : null,
+      habits: scheduled.length ? scheduled.filter((h) => ticked.has(`${h.id}_${key}`)).length / scheduled.length : null,
+      future: key > today,
+      today: key === today,
+    }
+  })
 }

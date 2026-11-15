@@ -10,6 +10,7 @@ import {
   todayList,
   todaysTasks,
   upcomingDeadlines,
+  weekRings,
   xpBreakdown,
 } from './dashboard'
 import type { Session } from './focus'
@@ -226,5 +227,44 @@ describe('todayList', () => {
   it('marks a task past its time today as overdue', () => {
     const list = todayList([task({ title: 'call', dueDate: TODAY, dueTime: '09:00' })], [], [], at(10))
     expect(list[0].overdue).toBe(true)
+  })
+})
+
+describe('weekRings', () => {
+  // TODAY (2026-11-02) is a Monday, so use Wednesday 2026-11-04 to have past and future days.
+  const WED = '2026-11-04'
+  const input = {
+    sessions: [session('2026-11-02', 'completed', 30), session('2026-11-02', 'stopped', 30), session('2026-11-03', 'completed', 90)],
+    tasks: [
+      task({ title: 'a', dueDate: '2026-11-02', status: 'done' }),
+      task({ title: 'b', dueDate: '2026-11-02' }),
+      task({ title: 'c', dueDate: '2026-11-06' }),
+    ],
+    habits: [habit('run', [1, 3])], // Mondays and Wednesdays
+    logs: [log('run', '2026-11-02')],
+    goal: 60,
+  }
+  const week = weekRings(input, WED)
+
+  it('runs Monday to Sunday and marks today and the days to come', () => {
+    expect(week.map((d) => d.label)).toEqual(['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'])
+    expect(week[0].key).toBe('2026-11-02')
+    expect(week.map((d) => d.today)).toEqual([false, false, true, false, false, false, false])
+    expect(week.map((d) => d.future)).toEqual([false, false, false, true, true, true, true])
+  })
+
+  it('counts all focused minutes against the goal, capped at a full ring', () => {
+    expect(week[0].focus).toBe(1)
+    expect(week[1].focus).toBe(1)
+    expect(week[2].focus).toBe(0)
+  })
+
+  it('leaves tasks and habits empty on days where nothing was due', () => {
+    expect(week[0].tasks).toBe(0.5)
+    expect(week[1].tasks).toBeNull()
+    expect(week[4].tasks).toBe(0)
+    expect(week[0].habits).toBe(1)
+    expect(week[1].habits).toBeNull()
+    expect(week[2].habits).toBe(0)
   })
 })

@@ -333,11 +333,50 @@ summary.groupTitle {
   font-size: var(--text-footnote);
 }
 
-/* Detail */
-.detailFacts {
-  margin-top: calc(var(--space-2) * -1);
+/* Habit page */
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  width: fit-content;
   color: var(--muted);
   font-size: var(--text-subhead);
+}
+
+.back:hover {
+  color: var(--text);
+}
+
+.hero {
+  gap: var(--space-4);
+  padding: var(--space-4);
+  border-radius: var(--radius-lg);
+}
+
+.heroName {
+  font-size: var(--text-title2);
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+.done .heroName {
+  color: var(--text);
+}
+
+.heroEdit {
+  flex: none;
+  align-self: flex-start;
+  width: 44px;
+  padding: 0;
+}
+
+.stats.pageStats div {
+  border: 1px solid var(--border);
+  background: var(--card);
+}
+
+.panel {
+  padding: var(--space-4);
 }
 
 .stats {

@@ -65,7 +65,7 @@ export function CommandPalette({ onClose, onShortcuts }: { onClose: () => void; 
       })
     }
     for (const h of habits.data.filter((h) => !h.archived && h.name.toLowerCase().includes(q)).slice(0, MAX_HABITS)) {
-      items.push({ id: `habit-${h.id}`, icon: Repeat, label: h.name, hint: 'Habit', run: done(() => navigate(`/habits?open=${h.id}`)) })
+      items.push({ id: `habit-${h.id}`, icon: Repeat, label: h.name, hint: 'Habit', run: done(() => navigate(`/habits/${h.id}`)) })
     }
   }
 

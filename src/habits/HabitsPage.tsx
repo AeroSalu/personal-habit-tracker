@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useNavigate, useSearchParams } from 'react-router-dom'
+import * as m from 'motion/react-m'
 import { BellRing, Plus } from 'lucide-react'
+import { spring } from '../design/motion'
 import { useSignedIn } from '../auth/authContext'
 import { useToast } from '../components/toast'
-import { createHabit, setHabitArchived, setLogNote, updateHabit, useHabitLogs, useHabits } from '../data/habits'
+import { createHabit, setHabitArchived, updateHabit, useHabitLogs, useHabits } from '../data/habits'
 import { addDays, clock, dayKey, parseClock, WEEK, weekday } from '../lib/dates'
 import {
   byUsualTime,
@@ -17,7 +19,6 @@ import {
 } from '../lib/habits'
 import { useNow } from '../lib/useNow'
 import { HabitCard } from './HabitCard'
-import { HabitDetail } from './HabitDetail'
 import { HabitForm } from './HabitForm'
 import { useHabitToggle } from './useHabitToggle'
 import ui from '../components/ui.module.css'
@@ -49,17 +50,16 @@ export function HabitsPage() {
   const today = dayKey(now)
 
   const [form, setForm] = useState<Habit | 'new' | null>(null)
-  const [openId, setOpenId] = useState<string | null>(null)
+  const navigate = useNavigate()
+  const openHabit = (id: string) => navigate(`/habits/${id}`)
   const [justDone, setJustDone] = useState('')
 
-  // The command box links here with ?open=<habit id>.
-  const [params, setParams] = useSearchParams()
+  // Older links used ?open=<habit id>; send them to the habit's own page.
+  const [params] = useSearchParams()
   useEffect(() => {
     const id = params.get('open')
-    if (!id) return
-    setOpenId(id)
-    setParams({}, { replace: true })
-  }, [params, setParams])
+    if (id) navigate(`/habits/${id}`, { replace: true })
+  }, [params, navigate])
 
   const logsByHabit = useMemo(() => {
     const map = new Map<string, HabitLog[]>()
@@ -74,7 +74,6 @@ export function HabitsPage() {
   const archived = habits.data.filter((h) => h.archived).sort(byUsualTime)
   const overdue = due.filter((h) => isOverdue(h, keysOf(h), now))
   const doneCount = due.filter((h) => keysOf(h).has(today)).length
-  const open = habits.data.find((h) => h.id === openId)
 
   const failed = () => toast('That change could not be saved. Check your connection.')
 
@@ -147,7 +146,7 @@ export function HabitsPage() {
                     overdue={overdue.includes(h)}
                     pop={justDone === h.id}
                     onToggle={() => toggle(h)}
-                    onOpen={() => setOpenId(h.id)}
+                    onOpen={() => openHabit(h.id)}
                   />
                 ))}
               </ul>
@@ -161,14 +160,14 @@ export function HabitsPage() {
               <h2 className={styles.groupTitle}>Not today</h2>
               <ul className={styles.rows}>
                 {later.map((h) => (
-                  <li key={h.id}>
-                    <button type="button" className={styles.row} onClick={() => setOpenId(h.id)}>
+                  <m.li key={h.id} layoutId={`habit-card-${h.id}`} transition={spring}>
+                    <button type="button" className={styles.row} onClick={() => openHabit(h.id)}>
                       <span className={styles.name}>{h.name}</span>
                       <span className={styles.meta}>
                         {scheduleLabel(h.schedule)} · {nextDueLabel(h, keysOf(h), today)}
                       </span>
                     </button>
-                  </li>
+                  </m.li>
                 ))}
               </ul>
             </div>
@@ -192,19 +191,6 @@ export function HabitsPage() {
         </details>
       )}
 
-      {open && !form && (
-        <HabitDetail
-          key={open.id}
-          habit={open}
-          logs={logsByHabit.get(open.id) ?? []}
-          keys={keysOf(open)}
-          today={today}
-          onSaveNote={(log, note) => setLogNote(uid, log.id, note).catch(failed)}
-          onEdit={() => setForm(open)}
-          onClose={() => setOpenId(null)}
-        />
-      )}
-
       {form && (
         <HabitForm
           habit={form === 'new' ? null : form}
@@ -215,7 +201,6 @@ export function HabitsPage() {
               : () => {
                   setHabitArchived(uid, form.id, !form.archived).catch(failed)
                   setForm(null)
-                  setOpenId(null)
                   toast(form.archived ? `${form.name} restored` : `${form.name} archived`)
                 }
           }

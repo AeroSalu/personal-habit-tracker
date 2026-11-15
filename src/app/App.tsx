@@ -18,6 +18,7 @@ import { AchievementPoster } from '../game/AchievementPoster'
 import { BadgeWatcher } from '../game/BadgeWatcher'
 import { ChallengesPage } from '../game/ChallengesPage'
 import { StatsPublisher } from '../game/StatsPublisher'
+import { HabitPage } from '../habits/HabitPage'
 import { HabitsPage } from '../habits/HabitsPage'
 import { PlanPage } from '../plan/PlanPage'
 import { ReviewPage } from '../plan/ReviewPage'
@@ -47,6 +48,7 @@ function SignedInRoutes() {
         <Route path="focus" element={<FocusPage />} />
         <Route path="calendar" element={<CalendarPage />} />
         <Route path="habits" element={<HabitsPage />} />
+        <Route path="habits/:id" element={<HabitPage />} />
         <Route path="analytics" element={<AnalyticsPage />} />
         <Route path="challenges" element={<ChallengesPage />} />
         <Route path="friends" element={<FriendsPage />} />

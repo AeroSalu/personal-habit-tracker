@@ -1,8 +1,10 @@
 import type { CSSProperties } from 'react'
+import * as m from 'motion/react-m'
 import { Flame } from 'lucide-react'
 import { clock, parseClock } from '../lib/dates'
 import { completionRate, doneLine, streak, weekProgress, type Habit, type HabitLog } from '../lib/habits'
 import { Tick } from '../components/Tick'
+import { spring } from '../design/motion'
 import styles from './Habits.module.css'
 
 type Props = {
@@ -35,7 +37,10 @@ export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onO
   }
 
   return (
-    <li
+    // Shares its identity with the top of the habit's page, so opening it grows the card there.
+    <m.li
+      layoutId={`habit-card-${habit.id}`}
+      transition={spring}
       className={`${styles.card} ${log ? styles.done : ''} ${pop ? styles.pop : ''} enter`}
       style={{ '--i': index } as CSSProperties}
     >
@@ -66,6 +71,6 @@ export function HabitCard({ habit, keys, today, log, overdue, pop, onToggle, onO
           {rate}%
         </span>
       </div>
-    </li>
+    </m.li>
   )
 }

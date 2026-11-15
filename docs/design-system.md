@@ -55,7 +55,12 @@ There is one app: a React + Vite PWA, installed on phones from the browser. Ther
    - **Phone tab bar:** a floating glass bar with a highlight that slides to the chosen tab.
    - **Phone sheets:** drag the handle or header down to close; a short pull springs back.
    - **Shared element:** the focus ring on Today expands into focus mode's ring, and returns from the session summary, which now shows the completed ring.
-   - **Moved to Phase 5:** habit card → habit detail needs a detail page first.
-5. **Screens:** Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
+   - **Habit card → habit page:** moved to Phase 5 and done there.
+5. **Screens:** in progress.
+   - **Today (done):** one overview card with three concentric rings (focus, tasks, habits) and a legend naming each with its numbers, Next and Start focus, and this week as seven small ring sets, Monday first, with future days faint. Streaks and XP stay off Today.
+   - **Habits (done):** each habit has its own page (`/habits/:id`); its card or row grows into the page header and shrinks back on Back. The page has the tick (only when due), stats, the month calendar, today's note and history; editing and archiving open from the pencil.
+   - **Still to do:** Focus, Calendar, Analytics, the button success state and the remaining off-scale spacings.
+
+   The goal: Today as an at-a-glance overview with three rings (focus, tasks, habits), the week's consistency and what's next. Habits with satisfying completion, undo and a detail view. Focus mode as the signature immersive timer, still driven by timestamps. A lighter calendar with a selection indicator and month slides. Analytics with animated rings and charts that read without animation.
 6. **Polish:** micro-interactions, achievement feedback kept subtle, considered empty and loading states, Android haptics.
 7. **QA:** every flow in both themes, phone, tablet and desktop, reduced motion, timer accuracy across sleep and backgrounding, and the existing tests.
