@@ -358,7 +358,7 @@ cheer(mine, ME.uid, 'priya-demo', '👏', 80)
 cheer(mine, ME.uid, 'kabir-demo', '🔥', 70)
 cheer(mine, ME.uid, 'rohan-demo', '💪', 65)
 
-const GROUP = { id: 'dit-study-circle', name: 'DIT Study Circle', code: 'K7QPXM', targetMinutes: 900 }
+const GROUP = { id: 'dit-study-circle', name: 'DIT Study Circle', code: 'K7QPXM', targetMinutes: 4800 }
 const ROOM = { id: ROOM_ID, name: 'Exam Prep Room', code: 'R4MZTW', goalMinutes: 960 }
 
 // ---- Writing ----
@@ -387,7 +387,7 @@ class Writer {
 
 /** Friends' heartbeats and the shared session, which go stale within minutes of seeding. */
 async function freshenRoom() {
-  const now = new Date()
+  const now = NOW
   const started = new Date(now.getTime() - 14 * 60_000)
   const ends = new Date(started.getTime() + 50 * 60_000)
   await db.doc(`rooms/${ROOM.id}`).set({ session: { startedAt: iso(started), endsAt: iso(ends), minutes: 50 } }, { merge: true })
