@@ -1,0 +1,12 @@
+{
+  "name": "cadence-video",
+  "private": true,
+  "description": "The Cadence product demo video: demo data, screen recordings and the Remotion edit.",
+  "type": "module",
+  "scripts": {
+    "seed": "node seed.mjs"
+  },
+  "dependencies": {
+    "firebase-admin": "14.5.0"
+  }
+}
