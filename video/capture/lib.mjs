@@ -66,7 +66,7 @@ export async function openApp({ clock, theme = 'dark', view = VIEW, scale = SCAL
  * clicks. `script` drives the page through the returned `act` helpers.
  */
 export async function record(page, name, script, { quality = 92 } = {}) {
-  const dir = path.join('captures', name)
+  const dir = path.join('public', 'captures', name)
   fs.rmSync(dir, { recursive: true, force: true })
   fs.mkdirSync(path.join(dir, 'frames'), { recursive: true })
   const cdp = await page.context().newCDPSession(page)

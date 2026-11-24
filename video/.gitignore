@@ -1,2 +1,5 @@
 out/
 captures/
+public/captures/
+public/audio/
+src/clips.json

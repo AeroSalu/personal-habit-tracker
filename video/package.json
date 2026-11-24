@@ -4,7 +4,13 @@
   "description": "The Cadence product demo video: demo data, screen recordings and the Remotion edit.",
   "type": "module",
   "scripts": {
-    "seed": "node seed.mjs"
+    "seed": "node seed.mjs",
+    "record": "node capture/clips.mjs",
+    "manifest": "node capture/manifest.mjs",
+    "music": "node audio/compose.mjs",
+    "studio": "remotion studio src/index.ts",
+    "stills": "node render/stills.mjs",
+    "render": "node render/render.mjs"
   },
   "dependencies": {
     "@remotion/bundler": "^4.0.546",
