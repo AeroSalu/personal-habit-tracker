@@ -45,9 +45,6 @@ export function Feature({ scene, index, length, tail }: { scene: FeatureScene; i
           </AppWindow>
         </div>
       </div>
-      <Sequence from={0} durationInFrames={70} layout="none">
-        <Audio src={staticFile('audio/whoosh.wav')} volume={0.16} />
-      </Sequence>
       {chime !== undefined && (
         <Sequence from={Math.round(sceneTimeOf(scene, chime, seconds) * FPS)} durationInFrames={140} layout="none">
           <Audio src={staticFile('audio/chime.wav')} volume={0.3} />

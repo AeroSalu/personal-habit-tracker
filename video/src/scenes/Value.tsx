@@ -1,4 +1,4 @@
-import { AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion'
 import { AppWindow } from '../components/AppWindow'
 import { ClipView } from '../components/ClipView'
 import { CLIPS } from '../clips'
@@ -80,9 +80,6 @@ export function Value({ length, tail }: { length: number; tail: number }) {
           <div style={{ position: 'absolute', top: 10, left: '50%', width: 96, height: 26, marginLeft: -48, borderRadius: 20, background: '#000' }} />
         </div>
       </div>
-      <Sequence from={0} durationInFrames={70} layout="none">
-        <Audio src={staticFile('audio/whoosh.wav')} volume={0.2} />
-      </Sequence>
     </AbsoluteFill>
   )
 }

@@ -1,4 +1,4 @@
-import { AbsoluteFill, Audio, Sequence, interpolate, staticFile, useCurrentFrame } from 'remotion'
+import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion'
 import { AppWindow } from '../components/AppWindow'
 import { Caption } from '../components/Caption'
 import { ClipView } from '../components/ClipView'
@@ -35,9 +35,6 @@ export function Reveal({ clip, segments, camera, title, body, length, tail }: { 
           </AppWindow>
         </div>
       </div>
-      <Sequence from={0} durationInFrames={70} layout="none">
-        <Audio src={staticFile('audio/whoosh.wav')} volume={0.2} />
-      </Sequence>
     </AbsoluteFill>
   )
 }
